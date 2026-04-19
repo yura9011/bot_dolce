@@ -7,6 +7,10 @@ DECISIONS.md
 JOURNAL.md
 TODO.md
 
+# Archivos de documentación personal (no publicar)
+*.md
+!README.md
+
 # Phase work directories (user-specific)
 .planning/
 .summaries/
