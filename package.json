@@ -1,0 +1,15 @@
+{
+  "name": "whatsapp-bot-cotillon",
+  "version": "1.0.0",
+  "description": "Bot de WhatsApp para cotillón - MVP",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "whatsapp-web.js": "^1.23.0",
+    "qrcode-terminal": "^0.12.0",
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.5"
+  }
+}

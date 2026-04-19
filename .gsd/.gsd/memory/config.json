@@ -1,0 +1,17 @@
+{
+  "external_sources": [
+    "D:/tareas/Obsidian Vault"
+  ],
+  "file_patterns": [
+    "*.md",
+    "*.txt"
+  ],
+  "exclude_patterns": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/.obsidian/**",
+    "**/dist/**",
+    "**/build/**"
+  ],
+  "index_path": ".gsd/memory/.index/external.db"
+}
