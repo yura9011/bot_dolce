@@ -162,7 +162,8 @@ function pausarUsuario(userId, razon) {
   usuariosPausados[userId] = {
     pausado: true,
     timestamp: Date.now(),
-    razon: razon
+    razon: razon,
+    notificado: false  // Para enviar notificación en próximo mensaje
   };
   guardarEstadoPausas();
   log(`⏸️ Usuario ${userId} pausado (${razon})`);
@@ -213,7 +214,7 @@ function guardarEnHistorial(userId, role, texto) {
 function esAdmin(numero) {
   // Normalizar número (quitar @c.us si existe)
   const numeroLimpio = numero.replace("@c.us", "");
-  return ADMIN_NUMBERS.some(admin => numeroLimpio.includes(admin));
+  return ADMIN_NUMBERS.some(admin => numeroLimpio === admin);
 }
 
 // Función helper para responder y marcar como mensaje del bot
@@ -348,14 +349,6 @@ client.on("message_create", async (message) => {
   // Pausar usuario
   pausarUsuario(clienteId, "intervencion_manual");
   guardarEnHistorial(clienteId, "manual", message.body);
-  
-  // Notificar al cliente
-  try {
-    const chat = await client.getChatById(clienteId);
-    await chat.sendMessage("⏸️ Un agente está atendiendo tu consulta. Te responderá en breve.");
-  } catch (error) {
-    log(`⚠️ Error enviando notificación: ${error.message}`, "WARN");
-  }
 });
 
 // ─── MODERACIÓN DE CONTENIDO ─────────────────────────────────────────────────
@@ -469,6 +462,14 @@ client.on("message", async (message) => {
 
   // ── VERIFICAR PAUSA POR USUARIO ──────────────────────────────────────────
   if (usuariosPausados[userId]?.pausado) {
+    // Si no se ha notificado, enviar notificación ahora
+    if (!usuariosPausados[userId].notificado) {
+      await message.reply("⏸️ Un agente está atendiendo tu consulta. Te responderá en breve.");
+      usuariosPausados[userId].notificado = true;
+      guardarEstadoPausas();
+      log(`📢 Notificación enviada a ${userId}`);
+    }
+    
     log(`⏸️ Usuario ${userId} en atención manual - Bot no responde`);
     return;
   }
@@ -476,8 +477,8 @@ client.on("message", async (message) => {
   // ── FLUJO: Primera interacción (enviar bienvenida) ───────────────────────
   if (!estadosUsuario[userId]) {
     estadosUsuario[userId] = ESTADOS.INICIAL;
-    await message.reply(getMensajeBienvenida());
-    await message.reply(getMensajePedirNombre());
+    await responderBot(message, getMensajeBienvenida());
+    await responderBot(message, getMensajePedirNombre());
     estadosUsuario[userId] = ESTADOS.ESPERANDO_NOMBRE;
     log(`👋 Nuevo usuario: ${userId} - Enviando bienvenida`);
     return;
@@ -486,8 +487,8 @@ client.on("message", async (message) => {
   // ── FLUJO: Esperando nombre ──────────────────────────────────────────────
   if (estadosUsuario[userId] === ESTADOS.ESPERANDO_NOMBRE) {
     datosUsuario[userId] = { nombre: texto };
-    await message.reply(`Encantado de conocerte, ${texto}! 😊`);
-    await message.reply(getMenuPrincipal());
+    await responderBot(message, `Encantado de conocerte, ${texto}! 😊`);
+    await responderBot(message, getMenuPrincipal());
     estadosUsuario[userId] = ESTADOS.MENU_PRINCIPAL;
     log(`✅ Usuario ${userId} registrado como: ${texto}`);
     return;
@@ -495,7 +496,7 @@ client.on("message", async (message) => {
 
   // ── NAVEGACIÓN: Volver al menú principal (opción 0) ──────────────────────
   if (texto === "0") {
-    await message.reply(getMenuPrincipal());
+    await responderBot(message, getMenuPrincipal());
     estadosUsuario[userId] = ESTADOS.MENU_PRINCIPAL;
     return;
   }
@@ -505,7 +506,7 @@ client.on("message", async (message) => {
     if (texto === "1") {
       // Realizar pedido - Usar IA conversacional
       estadosUsuario[userId] = ESTADOS.PEDIDO;
-      await message.reply("Perfecto! ¿Qué productos necesitás para tu pedido?");
+      await responderBot(message, "Perfecto! ¿Qué productos necesitás para tu pedido?");
       log(`🛒 Usuario ${userId} inició pedido`);
       return;
     }
@@ -513,45 +514,45 @@ client.on("message", async (message) => {
     if (texto === "2") {
       // Catálogo de globos - Usar IA conversacional
       estadosUsuario[userId] = ESTADOS.CATALOGO;
-      await message.reply("¡Claro! ¿Qué tipo de globos estás buscando? (cumpleaños, temáticos, números, etc.)");
+      await responderBot(message, "¡Claro! ¿Qué tipo de globos estás buscando? (cumpleaños, temáticos, números, etc.)");
       log(`🎈 Usuario ${userId} consultó catálogo`);
       return;
     }
     
     if (texto === "3") {
       // Consulta sobre paquetería
-      await message.reply(getMenuPaqueteria());
+      await responderBot(message, getMenuPaqueteria());
       estadosUsuario[userId] = ESTADOS.MENU_PAQUETERIA;
       return;
     }
     
-    await message.reply(getMensajeNoEntiendo());
-    await message.reply(getMenuPrincipal());
+    await responderBot(message, getMensajeNoEntiendo());
+    await responderBot(message, getMenuPrincipal());
     return;
   }
 
   // ── FLUJO: Menú paquetería ───────────────────────────────────────────────
   if (estadosUsuario[userId] === ESTADOS.MENU_PAQUETERIA) {
     if (texto === "1") {
-      await message.reply(getInfoCorreoArgentino());
+      await responderBot(message, getInfoCorreoArgentino());
       estadosUsuario[userId] = ESTADOS.INFO_CORREO;
       return;
     }
     
     if (texto === "2") {
-      await message.reply(getInfoAndreani());
+      await responderBot(message, getInfoAndreani());
       estadosUsuario[userId] = ESTADOS.INFO_ANDREANI;
       return;
     }
     
     if (texto === "3") {
-      await message.reply(getInfoMercadoLibre());
+      await responderBot(message, getInfoMercadoLibre());
       estadosUsuario[userId] = ESTADOS.INFO_MERCADOLIBRE;
       return;
     }
     
-    await message.reply(getMensajeNoEntiendo());
-    await message.reply(getMenuPaqueteria());
+    await responderBot(message, getMensajeNoEntiendo());
+    await responderBot(message, getMenuPaqueteria());
     return;
   }
 
@@ -561,14 +562,14 @@ client.on("message", async (message) => {
       estadosUsuario[userId] === ESTADOS.INFO_MERCADOLIBRE) {
     // Si escribe 0, volver al menú principal
     if (texto === "0") {
-      await message.reply(getMenuPrincipal());
+      await responderBot(message, getMenuPrincipal());
       estadosUsuario[userId] = ESTADOS.MENU_PRINCIPAL;
       return;
     }
     
     // Si escribe otra cosa, asumir que quiere volver al menú de paquetería
-    await message.reply("¿Querés consultar otro servicio de envío?");
-    await message.reply(getMenuPaqueteria());
+    await responderBot(message, "¿Querés consultar otro servicio de envío?");
+    await responderBot(message, getMenuPaqueteria());
     estadosUsuario[userId] = ESTADOS.MENU_PAQUETERIA;
     return;
   }
@@ -578,7 +579,7 @@ client.on("message", async (message) => {
     // Validar longitud del mensaje
     if (texto.length > MAX_MESSAGE_LENGTH) {
       log(`⚠️ Mensaje muy largo: ${userId} (${texto.length} caracteres)`);
-      await message.reply(
+      await responderBot(message,
         `Tu mensaje es muy largo (${texto.length} caracteres). Por favor, enviá un mensaje de máximo ${MAX_MESSAGE_LENGTH} caracteres.`
       );
       return;
@@ -588,7 +589,7 @@ client.on("message", async (message) => {
     const temaProhibido = contieneTemaProhibido(texto);
     if (temaProhibido) {
       log(`🚫 Tema prohibido bloqueado: "${temaProhibido}" de ${userId}`, "WARN");
-      await message.reply(
+      await responderBot(message,
         "Disculpá, solo puedo ayudarte con temas de la tienda. ¿Te puedo ayudar con algo más sobre productos o pedidos?"
       );
       return;
@@ -601,7 +602,7 @@ client.on("message", async (message) => {
 
     // Detección de handoff
     if (texto.toLowerCase().includes("humano")) {
-      await message.reply(
+      await responderBot(message,
         "Entendido 👋 Un agente se va a comunicar con vos a la brevedad. ¡Gracias por tu paciencia!"
       );
       log(`🚨 HANDOFF solicitado por ${userId}`);
@@ -659,7 +660,7 @@ client.on("message", async (message) => {
       
     } catch (error) {
       log(`❌ Error después de ${MAX_RETRIES} intentos: ${error.message}`, "ERROR");
-      await message.reply(
+      await responderBot(message,
         "Ups, tuve un problema técnico. Por favor intentá de nuevo en un momento."
       );
     }
@@ -667,7 +668,7 @@ client.on("message", async (message) => {
   }
 
   // ── FLUJO: Cualquier otro estado (volver al menú) ────────────────────────
-  await message.reply(getMenuPrincipal());
+  await responderBot(message, getMenuPrincipal());
   estadosUsuario[userId] = ESTADOS.MENU_PRINCIPAL;
 });
 
