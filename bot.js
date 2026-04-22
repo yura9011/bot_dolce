@@ -66,6 +66,11 @@ function log(mensaje, nivel = "INFO") {
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT;
 
+// Números autorizados para comandos administrativos
+const ADMIN_NUMBERS = process.env.ADMIN_NUMBERS 
+  ? process.env.ADMIN_NUMBERS.split(',').map(n => n.trim())
+  : [];
+
 // Validar que las variables de entorno estén configuradas
 if (!GEMINI_API_KEY) {
   console.error("❌ Error: GEMINI_API_KEY no está configurada en el archivo .env");
@@ -103,6 +108,182 @@ const estadosUsuario = {};
 // Datos del usuario (nombre, etc.)
 const datosUsuario = {};
 
+// ─── SISTEMA DE CONTROL MANUAL ───────────────────────────────────────────────
+
+// IDs de mensajes enviados por el bot (para distinguir bot vs manual)
+const mensajesDelBot = new Set();
+
+// Usuarios pausados (atención manual activa)
+let usuariosPausados = {};
+
+// Pausa global
+let pausaGlobal = false;
+
+// Archivos de persistencia
+const ARCHIVO_PAUSAS = path.join(__dirname, "data", "pausas.json");
+const ARCHIVO_HISTORIAL = path.join(__dirname, "data", "historial.json");
+
+// Crear carpeta data si no existe
+if (!fs.existsSync(path.join(__dirname, "data"))) {
+  fs.mkdirSync(path.join(__dirname, "data"), { recursive: true });
+}
+
+// Cargar estado de pausas al iniciar
+function cargarEstadoPausas() {
+  try {
+    if (fs.existsSync(ARCHIVO_PAUSAS)) {
+      const data = fs.readFileSync(ARCHIVO_PAUSAS, "utf8");
+      const estado = JSON.parse(data);
+      usuariosPausados = estado.usuarios || {};
+      pausaGlobal = estado.global || false;
+      log(`📂 Estado de pausas cargado: ${Object.keys(usuariosPausados).length} usuarios pausados`);
+    }
+  } catch (error) {
+    log(`⚠️ Error cargando estado de pausas: ${error.message}`, "WARN");
+  }
+}
+
+// Guardar estado de pausas
+function guardarEstadoPausas() {
+  try {
+    const estado = {
+      global: pausaGlobal,
+      usuarios: usuariosPausados,
+      timestamp: Date.now()
+    };
+    fs.writeFileSync(ARCHIVO_PAUSAS, JSON.stringify(estado, null, 2));
+  } catch (error) {
+    log(`⚠️ Error guardando estado de pausas: ${error.message}`, "WARN");
+  }
+}
+
+// Pausar usuario
+function pausarUsuario(userId, razon) {
+  usuariosPausados[userId] = {
+    pausado: true,
+    timestamp: Date.now(),
+    razon: razon
+  };
+  guardarEstadoPausas();
+  log(`⏸️ Usuario ${userId} pausado (${razon})`);
+}
+
+// Reanudar usuario
+function reanudarUsuario(userId) {
+  if (usuariosPausados[userId]) {
+    delete usuariosPausados[userId];
+    guardarEstadoPausas();
+    log(`▶️ Usuario ${userId} reanudado`);
+    return true;
+  }
+  return false;
+}
+
+// Guardar mensaje en historial
+function guardarEnHistorial(userId, role, texto) {
+  try {
+    let historial = {};
+    
+    // Cargar historial existente
+    if (fs.existsSync(ARCHIVO_HISTORIAL)) {
+      const data = fs.readFileSync(ARCHIVO_HISTORIAL, "utf8");
+      historial = JSON.parse(data);
+    }
+    
+    // Inicializar array para usuario si no existe
+    if (!historial[userId]) {
+      historial[userId] = [];
+    }
+    
+    // Agregar mensaje
+    historial[userId].push({
+      timestamp: Date.now(),
+      role: role, // "user", "bot", "manual"
+      text: texto
+    });
+    
+    // Guardar
+    fs.writeFileSync(ARCHIVO_HISTORIAL, JSON.stringify(historial, null, 2));
+  } catch (error) {
+    log(`⚠️ Error guardando historial: ${error.message}`, "WARN");
+  }
+}
+
+// Verificar si es número admin
+function esAdmin(numero) {
+  // Normalizar número (quitar @c.us si existe)
+  const numeroLimpio = numero.replace("@c.us", "");
+  return ADMIN_NUMBERS.some(admin => numeroLimpio.includes(admin));
+}
+
+// Función helper para responder y marcar como mensaje del bot
+async function responderBot(message, texto) {
+  const respuesta = await message.reply(texto);
+  // Marcar este mensaje como del bot
+  if (respuesta && respuesta.id && respuesta.id._serialized) {
+    mensajesDelBot.add(respuesta.id._serialized);
+  }
+  // Guardar en historial
+  guardarEnHistorial(message.from, "bot", texto);
+  return respuesta;
+}
+
+// Procesar comandos administrativos
+async function procesarComandoAdmin(message, comando) {
+  const partes = comando.trim().split(" ");
+  const cmd = partes.slice(0, 3).join(" ").toUpperCase(); // Primeras 3 palabras
+  
+  // PAUSAR BOT GLOBAL
+  if (cmd === "PAUSAR BOT GLOBAL") {
+    pausaGlobal = true;
+    guardarEstadoPausas();
+    await message.reply("✅ Bot pausado globalmente. Ningún cliente recibirá respuestas automáticas.");
+    log("🔴 Bot pausado globalmente por admin");
+    return true;
+  }
+  
+  // REANUDAR BOT GLOBAL
+  if (cmd === "REANUDAR BOT GLOBAL") {
+    pausaGlobal = false;
+    guardarEstadoPausas();
+    await message.reply("✅ Bot reanudado globalmente. Volviendo a responder automáticamente.");
+    log("🟢 Bot reanudado globalmente por admin");
+    return true;
+  }
+  
+  // ESTADO BOT
+  if (partes[0].toUpperCase() === "ESTADO" && partes[1].toUpperCase() === "BOT") {
+    const usuariosPausadosCount = Object.keys(usuariosPausados).length;
+    let respuesta = "📊 *Estado del Bot*\n\n";
+    respuesta += `• Global: ${pausaGlobal ? "⏸️ Pausado" : "✅ Activo"}\n`;
+    respuesta += `• Usuarios pausados: ${usuariosPausadosCount}\n`;
+    
+    if (usuariosPausadosCount > 0) {
+      respuesta += "\n*Usuarios en atención manual:*\n";
+      for (const [userId, pausa] of Object.entries(usuariosPausados)) {
+        const minutos = Math.floor((Date.now() - pausa.timestamp) / 60000);
+        respuesta += `  - ${userId.replace("@c.us", "")} (hace ${minutos} min)\n`;
+      }
+    }
+    
+    await message.reply(respuesta);
+    return true;
+  }
+  
+  // REANUDAR [numero]
+  if (partes[0].toUpperCase() === "REANUDAR" && partes.length >= 2) {
+    const numero = partes[1] + "@c.us";
+    if (reanudarUsuario(numero)) {
+      await message.reply(`✅ Usuario ${partes[1]} reanudado. El bot volverá a responderle.`);
+    } else {
+      await message.reply(`⚠️ Usuario ${partes[1]} no estaba pausado.`);
+    }
+    return true;
+  }
+  
+  return false;
+}
+
 // ─── CLIENTE DE WHATSAPP ──────────────────────────────────────────────────────
 
 const client = new Client({
@@ -122,6 +303,59 @@ client.on("ready", () => {
   
   const stats = obtenerEstadisticasCatalogo();
   log(`📦 Catálogo: ${stats.totalProductos} productos en ${stats.totalCategorias} categorías`);
+  
+  // Cargar estado de pausas
+  cargarEstadoPausas();
+  
+  if (ADMIN_NUMBERS.length > 0) {
+    log(`🔐 ${ADMIN_NUMBERS.length} números admin configurados`);
+  } else {
+    log(`⚠️ No hay números admin configurados. Los comandos no funcionarán.`, "WARN");
+  }
+});
+
+// ─── DETECCIÓN DE INTERVENCIÓN MANUAL ────────────────────────────────────────
+
+client.on("message_create", async (message) => {
+  // Solo procesar mensajes enviados por el bot/personal (fromMe = true)
+  if (!message.fromMe) return;
+  
+  // Ignorar mensajes a grupos
+  if (message.to.includes("@g.us")) return;
+  
+  // Ignorar mensajes de estado/notificaciones
+  const tiposIgnorados = ["revoked", "e2e_notification", "notification_template"];
+  if (tiposIgnorados.includes(message.type)) return;
+  
+  const clienteId = message.to;
+  const messageId = message.id._serialized;
+  
+  // Si el mensaje está en nuestro Set, es respuesta automática del bot
+  if (mensajesDelBot.has(messageId)) {
+    mensajesDelBot.delete(messageId); // Limpiar para liberar memoria
+    return;
+  }
+  
+  // Si llegamos acá, es respuesta MANUAL del personal
+  log(`🤚 Intervención manual detectada para ${clienteId}`);
+  
+  // Si ya está pausado, solo actualizar historial
+  if (usuariosPausados[clienteId]) {
+    guardarEnHistorial(clienteId, "manual", message.body);
+    return;
+  }
+  
+  // Pausar usuario
+  pausarUsuario(clienteId, "intervencion_manual");
+  guardarEnHistorial(clienteId, "manual", message.body);
+  
+  // Notificar al cliente
+  try {
+    const chat = await client.getChatById(clienteId);
+    await chat.sendMessage("⏸️ Un agente está atendiendo tu consulta. Te responderá en breve.");
+  } catch (error) {
+    log(`⚠️ Error enviando notificación: ${error.message}`, "WARN");
+  }
 });
 
 // ─── MODERACIÓN DE CONTENIDO ─────────────────────────────────────────────────
@@ -217,6 +451,27 @@ client.on("message", async (message) => {
   lastMessageTime[userId] = ahora;
 
   log(`📩 [${userId}]: ${texto}`);
+  
+  // Guardar mensaje del usuario en historial
+  guardarEnHistorial(userId, "user", texto);
+
+  // ── COMANDOS ADMINISTRATIVOS ─────────────────────────────────────────────
+  if (esAdmin(userId)) {
+    const esComando = await procesarComandoAdmin(message, texto);
+    if (esComando) return; // Si era un comando, no continuar con lógica normal
+  }
+
+  // ── VERIFICAR PAUSA GLOBAL ───────────────────────────────────────────────
+  if (pausaGlobal) {
+    log(`⏸️ Bot pausado globalmente - Mensaje ignorado de ${userId}`);
+    return;
+  }
+
+  // ── VERIFICAR PAUSA POR USUARIO ──────────────────────────────────────────
+  if (usuariosPausados[userId]?.pausado) {
+    log(`⏸️ Usuario ${userId} en atención manual - Bot no responde`);
+    return;
+  }
 
   // ── FLUJO: Primera interacción (enviar bienvenida) ───────────────────────
   if (!estadosUsuario[userId]) {
@@ -397,10 +652,10 @@ client.on("message", async (message) => {
       });
 
       log(`🤖 Bot: ${respuesta}`);
-      await message.reply(respuesta);
+      await responderBot(message, respuesta);
       
       // Ofrecer volver al menú
-      await message.reply("\n¿Necesitás algo más? Respondé *0* para volver al menú principal.");
+      await responderBot(message, "\n¿Necesitás algo más? Respondé *0* para volver al menú principal.");
       
     } catch (error) {
       log(`❌ Error después de ${MAX_RETRIES} intentos: ${error.message}`, "ERROR");
