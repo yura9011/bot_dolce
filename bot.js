@@ -86,7 +86,7 @@ if (!SYSTEM_PROMPT) {
 const MAX_MESSAGE_LENGTH = 500;
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 2000;
-const DEBOUNCE_TIME_MS = 1000;
+const DEBOUNCE_TIME_MS = 300;
 
 // ─── INICIALIZACIÓN ───────────────────────────────────────────────────────────
 
@@ -602,11 +602,18 @@ client.on("message", async (message) => {
 
     // Detección de handoff
     if (texto.toLowerCase().includes("humano")) {
+      // PRIMERO: Pausar al usuario para atención manual
+      pausarUsuario(userId, "handoff_solicitado");
+      
+      // SEGUNDO: Enviar mensaje de confirmación
       await responderBot(message,
         "Entendido 👋 Un agente se va a comunicar con vos a la brevedad. ¡Gracias por tu paciencia!"
       );
+      
+      // TERCERO: Log del evento
       log(`🚨 HANDOFF solicitado por ${userId}`);
-      estadosUsuario[userId] = ESTADOS.MENU_PRINCIPAL;
+      
+      // NO cambiar estado a MENU_PRINCIPAL - el usuario queda pausado
       return;
     }
 
@@ -626,8 +633,15 @@ client.on("message", async (message) => {
 
     // Búsqueda en catálogo (RAG)
     log(`🔍 Buscando productos: "${texto}"`);
-    const productosEncontrados = buscarProductos(texto, 5);
-    log(`📦 Productos encontrados: ${productosEncontrados.length}`);
+
+    let productosEncontrados = [];
+    try {
+      productosEncontrados = buscarProductos(texto, 5);
+      log(`📦 Productos encontrados: ${productosEncontrados.length}`);
+    } catch (error) {
+      log(`⚠️ Error buscando productos: ${error.message}`, "WARN");
+      // Continuar sin productos - el bot responderá sin contexto del catálogo
+    }
 
     let contextoProductos = "";
     if (productosEncontrados.length > 0) {
