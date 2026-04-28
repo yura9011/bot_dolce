@@ -40,7 +40,9 @@ const {
   getMensajeBienvenida,
   getMenuPrincipal,
   getMenuPaqueteria,
-  getInfoCorreoArgentino,
+  getMenuCorreoArgentino,
+  getInfoCorreoArgentinoRetirar,
+  getInfoCorreoArgentinoEnviar,
   getInfoAndreani,
   getInfoMercadoLibre,
   getMensajePedirNombre,
@@ -407,8 +409,9 @@ client.on("message", async (message) => {
   // ── FLUJO: Menú paquetería ───────────────────────────────────────────────
   if (estadosUsuario[userId] === ESTADOS.MENU_PAQUETERIA) {
     if (texto === "1") {
-      await responderBot(message, getInfoCorreoArgentino());
-      estadosUsuario[userId] = ESTADOS.INFO_CORREO;
+      // Correo Argentino - Mostrar submenú
+      await responderBot(message, getMenuCorreoArgentino());
+      estadosUsuario[userId] = ESTADOS.MENU_CORREO_ARGENTINO;
       return;
     }
     
@@ -429,8 +432,37 @@ client.on("message", async (message) => {
     return;
   }
 
+  // ── FLUJO: Submenú Correo Argentino ──────────────────────────────────────
+  if (estadosUsuario[userId] === ESTADOS.MENU_CORREO_ARGENTINO) {
+    if (texto === "1") {
+      // Retirar envío
+      await responderBot(message, getInfoCorreoArgentinoRetirar());
+      estadosUsuario[userId] = ESTADOS.INFO_CORREO_RETIRAR;
+      return;
+    }
+    
+    if (texto === "2") {
+      // Hacer envío
+      await responderBot(message, getInfoCorreoArgentinoEnviar());
+      estadosUsuario[userId] = ESTADOS.INFO_CORREO_ENVIAR;
+      return;
+    }
+    
+    if (texto === "0") {
+      // Volver al menú de paquetería
+      await responderBot(message, getMenuPaqueteria());
+      estadosUsuario[userId] = ESTADOS.MENU_PAQUETERIA;
+      return;
+    }
+    
+    await responderBot(message, getMensajeNoEntiendo());
+    await responderBot(message, getMenuCorreoArgentino());
+    return;
+  }
+
   // ── FLUJO: Viendo info de paquetería (esperar 0 o nueva consulta) ────────
-  if (estadosUsuario[userId] === ESTADOS.INFO_CORREO || 
+  if (estadosUsuario[userId] === ESTADOS.INFO_CORREO_RETIRAR ||
+      estadosUsuario[userId] === ESTADOS.INFO_CORREO_ENVIAR ||
       estadosUsuario[userId] === ESTADOS.INFO_ANDREANI || 
       estadosUsuario[userId] === ESTADOS.INFO_MERCADOLIBRE) {
     // Si escribe 0, volver al menú principal

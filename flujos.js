@@ -40,8 +40,8 @@ ${INFO_SUCURSAL.horario}
 function getMenuPrincipal() {
   return `Por favor, elegí una opción:
 
-1️⃣ Realizar pedido
-2️⃣ Envíos y paquetería
+1️⃣ Realizar pedido cotillón
+2️⃣ Entrega y recepción de envíos
 
 Respondé con el número de la opción que necesitás.`;
 }
@@ -60,8 +60,21 @@ Elegí el servicio de envío:
 Respondé con el número de la opción.`;
 }
 
-function getInfoCorreoArgentino() {
+function getMenuCorreoArgentino() {
   return `*📦 Correo Argentino*
+
+¿Qué necesitás hacer?
+
+1️⃣ Retirar un envío
+2️⃣ Hacer un envío
+
+0️⃣ Volver al menú anterior
+
+Respondé con el número de la opción.`;
+}
+
+function getInfoCorreoArgentinoRetirar() {
+  return `*📦 Correo Argentino - Retirar envío*
 
 Podés consultar el estado de tu pedido acá:
 ${LINKS.correoArgentino}
@@ -76,13 +89,32 @@ ${LINKS.correoArgentino}
 Respondé *0* para volver al menú principal.`;
 }
 
+function getInfoCorreoArgentinoEnviar() {
+  return `*📦 Correo Argentino - Hacer envío*
+
+Para despachar tu envío, necesitás:
+
+✅ Paquete bien envuelto y cerrado
+✅ Carátula del envío impresa y pegada
+✅ Envío ya pagado
+
+Una vez que lo tengas listo, podés traerlo en nuestro horario de atención:
+${INFO_SUCURSAL.horario}
+
+📍 ${INFO_SUCURSAL.direccion}
+
+¿Necesitás algo más?
+Respondé *0* para volver al menú principal.`;
+}
+
 function getInfoAndreani() {
   return `*📦 Andreani*
 
 El seguimiento de tu pedido aparece en tu app de Andreani.
 
 *Para retirar:*
-• Venir con el *DNI del titular* de la compra
+• Necesitás el *QR* de tu pedido
+• Y el *DNI del titular* de la compra
 
 ¿Necesitás algo más?
 Respondé *0* para volver al menú principal.`;
@@ -95,6 +127,8 @@ El seguimiento de tu compra aparece en tu app de Mercado Libre.
 
 *Para retirar:*
 • Solo necesitás venir con el *código QR* de tu compra
+
+⚠️ *Importante:* Momentáneamente NO estamos habilitados para recibir devoluciones.
 
 ¿Necesitás algo más?
 Respondé *0* para volver al menú principal.`;
@@ -161,7 +195,9 @@ const ESTADOS = {
   ESPERANDO_NOMBRE: "esperando_nombre",
   MENU_PRINCIPAL: "menu_principal",
   MENU_PAQUETERIA: "menu_paqueteria",
-  INFO_CORREO: "info_correo",
+  MENU_CORREO_ARGENTINO: "menu_correo_argentino",
+  INFO_CORREO_RETIRAR: "info_correo_retirar",
+  INFO_CORREO_ENVIAR: "info_correo_enviar",
   INFO_ANDREANI: "info_andreani",
   INFO_MERCADOLIBRE: "info_mercadolibre",
   PEDIDO: "pedido",
@@ -174,7 +210,9 @@ module.exports = {
   getMensajeBienvenida,
   getMenuPrincipal,
   getMenuPaqueteria,
-  getInfoCorreoArgentino,
+  getMenuCorreoArgentino,
+  getInfoCorreoArgentinoRetirar,
+  getInfoCorreoArgentinoEnviar,
   getInfoAndreani,
   getInfoMercadoLibre,
   getMensajePedirNombre,
