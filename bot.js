@@ -1,9 +1,35 @@
 require("dotenv").config();
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const fs = require("fs");
-const path = require("path");
+const express = require("express");
+
+// ─── MÓDULOS INTERNOS ────────────────────────────────────────────────────────
+const { log } = require("./lib/logging");
+const { validarDatosIniciales, validarConfiguracionAdmin } = require("./lib/validation");
+const { inicializarModelo, llamarGeminiConReintentos } = require("./lib/llm");
+const { detectarHijacking, logearIntentoHijacking, RESPUESTAS_ANTI_HIJACKING } = require("./lib/security");
+const { contieneTemaProhibido, contieneInsulto } = require("./lib/moderation");
+const { 
+  cargarEstadoPausas, 
+  pausarUsuario, 
+  reanudarUsuario, 
+  guardarEnHistorial,
+  getPausaGlobal,
+  setPausaGlobal,
+  estaUsuarioPausado,
+  getUsuariosPausados
+} = require("./lib/control-manual");
+const { esAdmin, procesarComandoAdmin } = require("./lib/admin-commands");
+const { initializeClient, getClient } = require("./lib/whatsapp-client");
+const { 
+  inicializarEstadisticas,
+  registrarMensaje,
+  registrarHandoff,
+  registrarHijacking,
+  registrarBusqueda
+} = require("./lib/statistics");
+
+// ─── MÓDULOS DE DATOS ────────────────────────────────────────────────────────
 const {
   buscarProductos,
   formatearProductosParaContexto,
@@ -17,84 +43,31 @@ const {
   getInfoCorreoArgentino,
   getInfoAndreani,
   getInfoMercadoLibre,
-  getMenuEnvios,
-  getInfoPreparacionPaquete,
-  getInfoPaqueteListo,
   getMensajePedirNombre,
   getMensajeNoEntiendo,
 } = require("./flujos.js");
 
-// ─── UTILIDADES DE LOGGING ────────────────────────────────────────────────────
-
-const LOG_FILE = path.join(__dirname, "logs", "bot.log");
-
-// Crear carpeta de logs si no existe
-if (!fs.existsSync(path.join(__dirname, "logs"))) {
-  fs.mkdirSync(path.join(__dirname, "logs"), { recursive: true });
-}
-
-// Función para obtener timestamp formateado [DD/MM/YYYY HH:mm:ss]
-function getTimestamp() {
-  const now = new Date();
-  const day = String(now.getDate()).padStart(2, "0");
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const year = now.getFullYear();
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
-  return `[${day}/${month}/${year} ${hours}:${minutes}:${seconds}]`;
-}
-
-// Función para hacer log (consola + archivo)
-function log(mensaje, nivel = "INFO") {
-  const timestamp = getTimestamp();
-  const logLine = `${timestamp} [${nivel}] ${mensaje}`;
-  
-  // Consola
-  console.log(logLine);
-  
-  // Archivo
-  try {
-    fs.appendFileSync(LOG_FILE, logLine + "\n");
-  } catch (error) {
-    console.error(`Error escribiendo log: ${error.message}`);
-  }
-}
-
 // ─── CONFIGURACIÓN ───────────────────────────────────────────────────────────
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT;
-
-// Números autorizados para comandos administrativos
-const ADMIN_NUMBERS = process.env.ADMIN_NUMBERS 
-  ? process.env.ADMIN_NUMBERS.split(',').map(n => n.trim())
-  : [];
-
-// Validar que las variables de entorno estén configuradas
-if (!GEMINI_API_KEY) {
-  console.error("❌ Error: GEMINI_API_KEY no está configurada en el archivo .env");
+// Validar datos iniciales antes de continuar
+log("🔍 Validando configuración inicial...");
+if (!validarDatosIniciales()) {
+  console.error("❌ Error: Faltan datos críticos. El bot no puede iniciar.");
   process.exit(1);
 }
 
-if (!SYSTEM_PROMPT) {
-  console.error("❌ Error: SYSTEM_PROMPT no está configurada en el archivo .env");
-  process.exit(1);
-}
+// Inicializar sistema de estadísticas
+inicializarEstadisticas().catch(error => {
+  log(`⚠️ Error inicializando estadísticas: ${error.message}`, "WARN");
+});
 
-// Configuración de límites y reintentos
+// Configuración de límites
 const MAX_MESSAGE_LENGTH = 500;
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 2000;
 const DEBOUNCE_TIME_MS = 300;
 
 // ─── INICIALIZACIÓN ───────────────────────────────────────────────────────────
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash", // Modelo estable recomendado para producción
-  systemInstruction: SYSTEM_PROMPT,
-});
+const model = inicializarModelo();
 
 // Memoria de conversaciones por usuario (se limpia al reiniciar el bot)
 const conversaciones = {};
@@ -108,195 +81,84 @@ const estadosUsuario = {};
 // Datos del usuario (nombre, etc.)
 const datosUsuario = {};
 
-// ─── SISTEMA DE CONTROL MANUAL ───────────────────────────────────────────────
+// ─── CLIENTE DE WHATSAPP ──────────────────────────────────────────────────────
 
-// IDs de mensajes enviados por el bot (para distinguir bot vs manual)
-const mensajesDelBot = new Set();
+const client = initializeClient();
 
-// Usuarios pausados (atención manual activa)
-let usuariosPausados = {};
-
-// Pausa global
-let pausaGlobal = false;
-
-// Archivos de persistencia
-const ARCHIVO_PAUSAS = path.join(__dirname, "data", "pausas.json");
-const ARCHIVO_HISTORIAL = path.join(__dirname, "data", "historial.json");
-
-// Crear carpeta data si no existe
-if (!fs.existsSync(path.join(__dirname, "data"))) {
-  fs.mkdirSync(path.join(__dirname, "data"), { recursive: true });
-}
-
-// Cargar estado de pausas al iniciar
-function cargarEstadoPausas() {
-  try {
-    if (fs.existsSync(ARCHIVO_PAUSAS)) {
-      const data = fs.readFileSync(ARCHIVO_PAUSAS, "utf8");
-      const estado = JSON.parse(data);
-      usuariosPausados = estado.usuarios || {};
-      pausaGlobal = estado.global || false;
-      log(`📂 Estado de pausas cargado: ${Object.keys(usuariosPausados).length} usuarios pausados`);
-    }
-  } catch (error) {
-    log(`⚠️ Error cargando estado de pausas: ${error.message}`, "WARN");
-  }
-}
-
-// Guardar estado de pausas
-function guardarEstadoPausas() {
-  try {
-    const estado = {
-      global: pausaGlobal,
-      usuarios: usuariosPausados,
-      timestamp: Date.now()
-    };
-    fs.writeFileSync(ARCHIVO_PAUSAS, JSON.stringify(estado, null, 2));
-  } catch (error) {
-    log(`⚠️ Error guardando estado de pausas: ${error.message}`, "WARN");
-  }
-}
-
-// Pausar usuario
-function pausarUsuario(userId, razon) {
-  usuariosPausados[userId] = {
-    pausado: true,
-    timestamp: Date.now(),
-    razon: razon,
-    notificado: false  // Para enviar notificación en próximo mensaje
-  };
-  guardarEstadoPausas();
-  log(`⏸️ Usuario ${userId} pausado (${razon})`);
-}
-
-// Reanudar usuario
-function reanudarUsuario(userId) {
-  if (usuariosPausados[userId]) {
-    delete usuariosPausados[userId];
-    guardarEstadoPausas();
-    log(`▶️ Usuario ${userId} reanudado`);
-    return true;
-  }
-  return false;
-}
-
-// Guardar mensaje en historial
-function guardarEnHistorial(userId, role, texto) {
-  try {
-    let historial = {};
-    
-    // Cargar historial existente
-    if (fs.existsSync(ARCHIVO_HISTORIAL)) {
-      const data = fs.readFileSync(ARCHIVO_HISTORIAL, "utf8");
-      historial = JSON.parse(data);
-    }
-    
-    // Inicializar array para usuario si no existe
-    if (!historial[userId]) {
-      historial[userId] = [];
-    }
-    
-    // Agregar mensaje
-    historial[userId].push({
-      timestamp: Date.now(),
-      role: role, // "user", "bot", "manual"
-      text: texto
-    });
-    
-    // Guardar
-    fs.writeFileSync(ARCHIVO_HISTORIAL, JSON.stringify(historial, null, 2));
-  } catch (error) {
-    log(`⚠️ Error guardando historial: ${error.message}`, "WARN");
-  }
-}
-
-// Verificar si es número admin
-function esAdmin(numero) {
-  // Normalizar número (quitar @c.us si existe)
-  const numeroLimpio = numero.replace("@c.us", "");
-  return ADMIN_NUMBERS.some(admin => numeroLimpio === admin);
-}
-
-// Función helper para responder y marcar como mensaje del bot
+// Función helper para responder y guardar en historial
 async function responderBot(message, texto) {
   const respuesta = await message.reply(texto);
-  // Marcar este mensaje como del bot
-  if (respuesta && respuesta.id && respuesta.id._serialized) {
-    mensajesDelBot.add(respuesta.id._serialized);
-  }
+  // Registrar mensaje enviado en estadísticas (async, no bloquear)
+  registrarMensaje(message.from, "enviado").catch(error => {
+    log(`⚠️ Error registrando mensaje enviado: ${error.message}`, "WARN");
+  });
   // Guardar en historial
   guardarEnHistorial(message.from, "bot", texto);
   return respuesta;
 }
 
-// Procesar comandos administrativos
-async function procesarComandoAdmin(message, comando) {
-  const partes = comando.trim().split(" ");
-  const cmd = partes.slice(0, 3).join(" ").toUpperCase(); // Primeras 3 palabras
-  
-  // PAUSAR BOT GLOBAL
-  if (cmd === "PAUSAR BOT GLOBAL") {
-    pausaGlobal = true;
-    guardarEstadoPausas();
-    await message.reply("✅ Bot pausado globalmente. Ningún cliente recibirá respuestas automáticas.");
-    log("🔴 Bot pausado globalmente por admin");
-    return true;
-  }
-  
-  // REANUDAR BOT GLOBAL
-  if (cmd === "REANUDAR BOT GLOBAL") {
-    pausaGlobal = false;
-    guardarEstadoPausas();
-    await message.reply("✅ Bot reanudado globalmente. Volviendo a responder automáticamente.");
-    log("🟢 Bot reanudado globalmente por admin");
-    return true;
-  }
-  
-  // ESTADO BOT
-  if (partes[0].toUpperCase() === "ESTADO" && partes[1].toUpperCase() === "BOT") {
-    const usuariosPausadosCount = Object.keys(usuariosPausados).length;
-    let respuesta = "📊 *Estado del Bot*\n\n";
-    respuesta += `• Global: ${pausaGlobal ? "⏸️ Pausado" : "✅ Activo"}\n`;
-    respuesta += `• Usuarios pausados: ${usuariosPausadosCount}\n`;
-    
-    if (usuariosPausadosCount > 0) {
-      respuesta += "\n*Usuarios en atención manual:*\n";
-      for (const [userId, pausa] of Object.entries(usuariosPausados)) {
-        const minutos = Math.floor((Date.now() - pausa.timestamp) / 60000);
-        respuesta += `  - ${userId.replace("@c.us", "")} (hace ${minutos} min)\n`;
-      }
-    }
-    
-    await message.reply(respuesta);
-    return true;
-  }
-  
-  // REANUDAR [numero]
-  if (partes[0].toUpperCase() === "REANUDAR" && partes.length >= 2) {
-    const numero = partes[1] + "@c.us";
-    if (reanudarUsuario(numero)) {
-      await message.reply(`✅ Usuario ${partes[1]} reanudado. El bot volverá a responderle.`);
-    } else {
-      await message.reply(`⚠️ Usuario ${partes[1]} no estaba pausado.`);
-    }
-    return true;
-  }
-  
-  return false;
-}
+// ─── API INTERNA PARA DASHBOARD ──────────────────────────────────────────────
 
-// ─── CLIENTE DE WHATSAPP ──────────────────────────────────────────────────────
+const dashboardApi = express();
+dashboardApi.use(express.json());
 
-const client = new Client({
-  authStrategy: new LocalAuth(), // guarda la sesión para no escanear el QR cada vez
-  puppeteer: {
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  },
+// GET /status - Estado del bot
+dashboardApi.get("/status", (req, res) => {
+  res.json({
+    activo: !getPausaGlobal(),
+    globalPausado: getPausaGlobal(),
+    usuariosPausados: Object.keys(getUsuariosPausados()).length,
+    timestamp: Date.now()
+  });
+});
+
+// POST /pause/:userId - Pausar usuario específico
+dashboardApi.post("/pause/:userId", (req, res) => {
+  const userId = req.params.userId;
+  if (!userId.includes("@")) {
+    return res.status(400).json({ success: false, error: "userId inválido" });
+  }
+  pausarUsuario(userId, "pausado_por_dashboard");
+  res.json({ success: true, message: `Usuario ${userId} pausado` });
+});
+
+// POST /resume/:userId - Reanudar usuario específico
+dashboardApi.post("/resume/:userId", (req, res) => {
+  const userId = req.params.userId;
+  if (!userId.includes("@")) {
+    return res.status(400).json({ success: false, error: "userId inválido" });
+  }
+  const resultado = reanudarUsuario(userId);
+  res.json({ success: resultado, message: resultado ? "Reanudado" : "No estaba pausado" });
+});
+
+// POST /pause-global - Pausar bot globalmente
+dashboardApi.post("/pause-global", (req, res) => {
+  setPausaGlobal(true);
+  res.json({ success: true, message: "Bot pausado globalmente" });
+});
+
+// POST /resume-global - Reanudar bot globalmente
+dashboardApi.post("/resume-global", (req, res) => {
+  setPausaGlobal(false);
+  res.json({ success: true, message: "Bot reanudado globalmente" });
+});
+
+// Iniciar API interna en puerto 3002
+const DASHBOARD_API_PORT = 3002;
+dashboardApi.listen(DASHBOARD_API_PORT, () => {
+  log(`🔌 API de control iniciada en puerto ${DASHBOARD_API_PORT}`);
 });
 
 client.on("qr", (qr) => {
-  log("\n📱 Escanea este QR con tu WhatsApp:\n");
+  log("\n📱 ===== ESCANEAR QR CON WHATSAPP =====");
+  log("1. Abrí WhatsApp en tu teléfono");
+  log("2. Tocá Menú (⋮) > Dispositivos vinculados");
+  log("3. Tocá 'Vincular un dispositivo'");
+  log("4. Escaneá este código QR:\n");
   qrcode.generate(qr, { small: true });
+  log("\n⏰ El código QR expira en 20 segundos");
+  log("🔄 Si no funciona, reiniciá el bot\n");
 });
 
 client.on("ready", () => {
@@ -308,17 +170,70 @@ client.on("ready", () => {
   // Cargar estado de pausas
   cargarEstadoPausas();
   
-  if (ADMIN_NUMBERS.length > 0) {
-    log(`🔐 ${ADMIN_NUMBERS.length} números admin configurados`);
+  // Validar configuración de admin
+  const configAdmin = validarConfiguracionAdmin();
+  if (configAdmin.valido) {
+    log(`🔐 ${configAdmin.mensaje}`);
   } else {
-    log(`⚠️ No hay números admin configurados. Los comandos no funcionarán.`, "WARN");
+    log(`⚠️ ${configAdmin.mensaje}. Los comandos no funcionarán.`, "WARN");
   }
 });
 
-// ─── DETECCIÓN DE INTERVENCIÓN MANUAL ────────────────────────────────────────
+client.on("authenticated", () => {
+  log("✅ Autenticación exitosa!");
+});
+
+client.on("auth_failure", (msg) => {
+  log(`❌ Error de autenticación: ${msg}`, "ERROR");
+  log("💡 Solución: Eliminá las carpetas .wwebjs_auth y .wwebjs_cache y reiniciá", "INFO");
+  
+  // Intentar limpiar automáticamente las carpetas corruptas
+  setTimeout(() => {
+    log("🔄 Intentando limpiar sesiones corruptas...", "INFO");
+    process.exit(1); // Salir para que el usuario pueda reiniciar
+  }, 2000);
+});
+
+client.on("disconnected", (reason) => {
+  log(`⚠️ Bot desconectado: ${reason}`, "WARN");
+  log("🔄 Reiniciando conexión en 5 segundos...", "INFO");
+  
+  // Reiniciar después de un breve delay
+  setTimeout(() => {
+    client.initialize().catch(error => {
+      log(`❌ Error reiniciando: ${error.message}`, "ERROR");
+      log("💡 Reiniciá el bot manualmente", "INFO");
+    });
+  }, 5000);
+});
+
+// Manejo de errores de Puppeteer
+process.on('unhandledRejection', (reason, promise) => {
+  if (reason && reason.message && reason.message.includes('Target closed')) {
+    log("⚠️ Error de Puppeteer detectado - Reiniciando...", "WARN");
+    setTimeout(() => {
+      process.exit(1);
+    }, 2000);
+  } else {
+    log(`❌ Promesa rechazada: ${reason}`, "ERROR");
+  }
+});
+
+process.on('uncaughtException', (error) => {
+  if (error.message && error.message.includes('Target closed')) {
+    log("⚠️ Error de Puppeteer detectado - Reiniciando...", "WARN");
+    setTimeout(() => {
+      process.exit(1);
+    }, 2000);
+  } else {
+    log(`❌ Excepción no capturada: ${error.message}`, "ERROR");
+  }
+});
+
+// ─── DETECCIÓN DE FINALIZACIÓN MANUAL ────────────────────────────────────────
 
 client.on("message_create", async (message) => {
-  // Solo procesar mensajes enviados por el bot/personal (fromMe = true)
+  // Solo procesar mensajes enviados desde el bot (fromMe = true)
   if (!message.fromMe) return;
   
   // Ignorar mensajes a grupos
@@ -329,98 +244,42 @@ client.on("message_create", async (message) => {
   if (tiposIgnorados.includes(message.type)) return;
   
   const clienteId = message.to;
-  const messageId = message.id._serialized;
+  const textoMensaje = message.body.trim();
   
-  // Si el mensaje está en nuestro Set, es respuesta automática del bot
-  if (mensajesDelBot.has(messageId)) {
-    mensajesDelBot.delete(messageId); // Limpiar para liberar memoria
-    return;
-  }
-  
-  // Si llegamos acá, es respuesta MANUAL del personal
-  log(`🤚 Intervención manual detectada para ${clienteId}`);
-  
-  // Si ya está pausado, solo actualizar historial
-  if (usuariosPausados[clienteId]) {
-    guardarEnHistorial(clienteId, "manual", message.body);
-    return;
-  }
-  
-  // Pausar usuario
-  pausarUsuario(clienteId, "intervencion_manual");
-  guardarEnHistorial(clienteId, "manual", message.body);
-});
-
-// ─── MODERACIÓN DE CONTENIDO ─────────────────────────────────────────────────
-
-// Tópicos prohibidos (política, religión, deportes, etc.)
-const TOPICOS_PROHIBIDOS = [
-  'hitler', 'nazi', 'fascis', 'comunis', 'socialist', 'capitalis',
-  'trump', 'biden', 'macri', 'cristina', 'milei', 'massa', 'kirchner',
-  'peronismo', 'dictadura', 'palestine', 'israel', 'gaza',
-  'dios', 'jesús', 'alá', 'buda', 'religión', 'iglesia', 'biblia', 'corán',
-  'aborto', 'drogas', 'armas', 'guerra', 'terroris',
-  'messi', 'ronaldo', 'mundial', 'netflix', 'película',
-  'fútbol', 'boca', 'river', 'matemática', 'física', 'universidad',
-];
-
-// Lenguaje ofensivo (para registrar, no bloquear)
-const LENGUAJE_OFENSIVO = [
-  'puta', 'puto', 'hijo de puta', 'hija de puta', 'hdp',
-  'concha de tu madre', 'pelotudo', 'pelotuda', 'boludo',
-  'forro', 'idiota', 'imbécil', 'tarado', 'estúpido',
-  'la puta madre', 'me cago en', 'andate a la mierda',
-];
-
-function contieneTemaProhibido(texto) {
-  const textoLower = texto.toLowerCase();
-  for (const palabra of TOPICOS_PROHIBIDOS) {
-    if (textoLower.includes(palabra)) {
-      return palabra;
-    }
-  }
-  return null;
-}
-
-function contieneInsulto(texto) {
-  const textoLower = texto.toLowerCase();
-  for (const palabra of LENGUAJE_OFENSIVO) {
-    if (textoLower.includes(palabra)) {
-      return palabra;
-    }
-  }
-  return null;
-}
-
-// ─── FUNCIÓN DE REINTENTO PARA LLAMADAS A GEMINI ─────────────────────────────
-
-// Función que reintenta la llamada a Gemini hasta MAX_RETRIES veces
-async function llamarGeminiConReintentos(chat, texto) {
-  let lastError;
-  
-  for (let intento = 1; intento <= MAX_RETRIES; intento++) {
-    try {
-      log(`🔄 Intento ${intento}/${MAX_RETRIES} de llamada a Gemini`);
-      const result = await chat.sendMessage(texto);
-      const respuesta = result.response.text();
-      return respuesta;
-    } catch (error) {
-      lastError = error;
-      log(`⚠️ Error en intento ${intento}: ${error.message}`, "WARN");
+  // Detectar si el personal escribió "MUCHAS GRACIAS" desde WhatsApp Web
+  if (textoMensaje.toUpperCase() === "MUCHAS GRACIAS") {
+    // Verificar que el cliente esté pausado (en atención manual)
+    if (estaUsuarioPausado(clienteId)) {
+      log(`🎯 Finalización detectada: Personal escribió "MUCHAS GRACIAS" a ${clienteId}`);
       
-      if (intento < MAX_RETRIES) {
-        log(`⏳ Esperando ${RETRY_DELAY_MS}ms antes de reintentar...`);
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+      // Enviar mensaje de despedida al cliente
+      const mensajeDespedida = "¡Muchas gracias por contactarnos! 😊\n\n" +
+        "Esperamos haberte ayudado. Si necesitás algo más, no dudes en escribirnos.\n\n" +
+        "¡Que tengas un excelente día! 🎈";
+      
+      try {
+        await client.sendMessage(clienteId, mensajeDespedida);
+        log(`📤 Mensaje de despedida enviado a ${clienteId}`);
+      } catch (error) {
+        log(`❌ Error enviando despedida a ${clienteId}: ${error.message}`, "ERROR");
       }
+      
+      // Reanudar cliente para futuras conversaciones
+      reanudarUsuario(clienteId);
+      log(`✅ Conversación finalizada con ${clienteId.replace(/@(c\.us|lid)$/, "")}`);
     }
   }
-  
-  throw lastError;
-}
+});
 
 client.on("message", async (message) => {
   // Ignorar mensajes de grupos
   if (message.from.includes("@g.us")) return;
+
+  // ⚠️ CRÍTICO: Ignorar respuestas a estados de WhatsApp (Stories)
+  if (message.from === 'status@broadcast' || message.isStatus) {
+    log(`📱 Estado de WhatsApp ignorado de ${message.from}`);
+    return; // silently ignore
+  }
 
   // Ignorar mensajes de estado y notificaciones
   const tiposIgnorados = ["revoked", "e2e_notification", "notification_template"];
@@ -445,34 +304,34 @@ client.on("message", async (message) => {
 
   log(`📩 [${userId}]: ${texto}`);
   
+  // Registrar mensaje en estadísticas (async, no bloquear)
+  registrarMensaje(userId, "recibido").catch(error => {
+    log(`⚠️ Error registrando mensaje: ${error.message}`, "WARN");
+  });
+  
   // Guardar mensaje del usuario en historial
   guardarEnHistorial(userId, "user", texto);
 
   // ── COMANDOS ADMINISTRATIVOS ─────────────────────────────────────────────
   if (esAdmin(userId)) {
-    const esComando = await procesarComandoAdmin(message, texto);
+    log(`🔐 Comando admin detectado de ${userId}`);
+    const esComando = await procesarComandoAdmin(message, texto, estadosUsuario);
     if (esComando) return; // Si era un comando, no continuar con lógica normal
   }
 
   // ── VERIFICAR PAUSA GLOBAL ───────────────────────────────────────────────
-  if (pausaGlobal) {
+  if (getPausaGlobal()) {
     log(`⏸️ Bot pausado globalmente - Mensaje ignorado de ${userId}`);
     return;
   }
 
   // ── VERIFICAR PAUSA POR USUARIO ──────────────────────────────────────────
-  if (usuariosPausados[userId]?.pausado) {
-    // Si no se ha notificado, enviar notificación ahora
-    if (!usuariosPausados[userId].notificado) {
-      await message.reply("⏸️ Un agente está atendiendo tu consulta. Te responderá en breve.");
-      usuariosPausados[userId].notificado = true;
-      guardarEstadoPausas();
-      log(`📢 Notificación enviada a ${userId}`);
-    }
-    
+  if (estaUsuarioPausado(userId)) {
     log(`⏸️ Usuario ${userId} en atención manual - Bot no responde`);
-    return;
+    return; // No enviar ningún mensaje automático
   }
+
+  log(`✅ Procesando mensaje de ${userId}: "${texto}"`);
 
   // ── FLUJO: Primera interacción (enviar bienvenida) ───────────────────────
   if (!estadosUsuario[userId]) {
@@ -486,11 +345,33 @@ client.on("message", async (message) => {
 
   // ── FLUJO: Esperando nombre ──────────────────────────────────────────────
   if (estadosUsuario[userId] === ESTADOS.ESPERANDO_NOMBRE) {
-    datosUsuario[userId] = { nombre: texto };
-    await responderBot(message, `Encantado de conocerte, ${texto}! 😊`);
+    // Extraer solo el nombre de la respuesta
+    let nombre = texto;
+    
+    // Si dice "mi nombre es X" o "me llamo X", extraer solo el nombre
+    const patronNombre = /(?:mi nombre es|me llamo|soy|claro,?\s*mi nombre es)\s+([a-záéíóúñ]+)/i;
+    const match = texto.match(patronNombre);
+    if (match) {
+      nombre = match[1];
+    } else {
+      // Si es una frase larga, tomar solo la primera palabra que parezca un nombre
+      const palabras = texto.split(' ');
+      for (const palabra of palabras) {
+        if (palabra.length >= 2 && /^[a-záéíóúñ]+$/i.test(palabra)) {
+          nombre = palabra;
+          break;
+        }
+      }
+    }
+    
+    // Capitalizar primera letra
+    nombre = nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+    
+    datosUsuario[userId] = { nombre: nombre };
+    await responderBot(message, `Encantado de conocerte, ${nombre}! 😊`);
     await responderBot(message, getMenuPrincipal());
     estadosUsuario[userId] = ESTADOS.MENU_PRINCIPAL;
-    log(`✅ Usuario ${userId} registrado como: ${texto}`);
+    log(`✅ Usuario ${userId} registrado como: ${nombre}`);
     return;
   }
 
@@ -504,23 +385,15 @@ client.on("message", async (message) => {
   // ── FLUJO: Menú principal ────────────────────────────────────────────────
   if (estadosUsuario[userId] === ESTADOS.MENU_PRINCIPAL) {
     if (texto === "1") {
-      // Realizar pedido - Usar IA conversacional
+      // Realizar pedido - Usar IA conversacional (incluye catálogo)
       estadosUsuario[userId] = ESTADOS.PEDIDO;
-      await responderBot(message, "Perfecto! ¿Qué productos necesitás para tu pedido?");
+      await responderBot(message, "Perfecto! ¿Qué productos necesitás para tu pedido? También podés consultarme sobre nuestro catálogo de globos y decoración.");
       log(`🛒 Usuario ${userId} inició pedido`);
       return;
     }
     
     if (texto === "2") {
-      // Catálogo de globos - Usar IA conversacional
-      estadosUsuario[userId] = ESTADOS.CATALOGO;
-      await responderBot(message, "¡Claro! ¿Qué tipo de globos estás buscando? (cumpleaños, temáticos, números, etc.)");
-      log(`🎈 Usuario ${userId} consultó catálogo`);
-      return;
-    }
-    
-    if (texto === "3") {
-      // Consulta sobre paquetería
+      // Envíos y paquetería
       await responderBot(message, getMenuPaqueteria());
       estadosUsuario[userId] = ESTADOS.MENU_PAQUETERIA;
       return;
@@ -574,8 +447,19 @@ client.on("message", async (message) => {
     return;
   }
 
-  // ── FLUJO: Pedido o Catálogo (usar IA) ──────────────────────────────────
-  if (estadosUsuario[userId] === ESTADOS.PEDIDO || estadosUsuario[userId] === ESTADOS.CATALOGO) {
+  // ── FLUJO: Pedido (incluye catálogo) ────────────────────────────────────
+  if (estadosUsuario[userId] === ESTADOS.PEDIDO) {
+    // ── VERIFICACIÓN ANTI-HIJACKING ──────────────────────────────────────────
+    const tipoAtaque = detectarHijacking(texto);
+    if (tipoAtaque) {
+      logearIntentoHijacking(userId, texto, tipoAtaque);
+      registrarHijacking(userId, tipoAtaque).catch(error => {
+        log(`⚠️ Error registrando hijacking: ${error.message}`, "WARN");
+      });
+      await responderBot(message, RESPUESTAS_ANTI_HIJACKING[tipoAtaque]);
+      return;
+    }
+
     // Validar longitud del mensaje
     if (texto.length > MAX_MESSAGE_LENGTH) {
       log(`⚠️ Mensaje muy largo: ${userId} (${texto.length} caracteres)`);
@@ -601,9 +485,20 @@ client.on("message", async (message) => {
     }
 
     // Detección de handoff
-    if (texto.toLowerCase().includes("humano")) {
+    const textoLower = texto.toLowerCase();
+    if (textoLower.includes("humano") || 
+        textoLower.includes("encargado") || 
+        textoLower.includes("operador") ||
+        textoLower.includes("persona") ||
+        textoLower.includes("alguien") ||
+        textoLower.includes("agente")) {
       // PRIMERO: Pausar al usuario para atención manual
       pausarUsuario(userId, "handoff_solicitado");
+      
+      // Registrar handoff en estadísticas (async, no bloquear)
+      registrarHandoff(userId, "handoff_solicitado").catch(error => {
+        log(`⚠️ Error registrando handoff: ${error.message}`, "WARN");
+      });
       
       // SEGUNDO: Enviar mensaje de confirmación
       await responderBot(message,
@@ -638,8 +533,17 @@ client.on("message", async (message) => {
     try {
       productosEncontrados = buscarProductos(texto, 5);
       log(`📦 Productos encontrados: ${productosEncontrados.length}`);
+      
+      // Registrar búsqueda en estadísticas (async, no bloquear)
+      registrarBusqueda(texto, productosEncontrados.length).catch(error => {
+        log(`⚠️ Error registrando búsqueda: ${error.message}`, "WARN");
+      });
     } catch (error) {
       log(`⚠️ Error buscando productos: ${error.message}`, "WARN");
+      // Registrar búsqueda fallida (async, no bloquear)
+      registrarBusqueda(texto, 0).catch(error => {
+        log(`⚠️ Error registrando búsqueda fallida: ${error.message}`, "WARN");
+      });
       // Continuar sin productos - el bot responderá sin contexto del catálogo
     }
 
@@ -656,7 +560,10 @@ client.on("message", async (message) => {
 
       let mensajeConContexto = texto;
       if (contextoProductos) {
-        mensajeConContexto = `${contextoProductos}\n\n---\n\nPregunta del cliente: ${texto}\n\nInstrucción: Respondé usando SOLO la información de los productos listados arriba. Si el producto existe, mencioná nombre, precio y características. Si no existe o no hay productos listados, decí que no lo tenés en stock pero que pueden consultar por otros productos.`;
+        mensajeConContexto = `${contextoProductos}\n\n---\n\nPregunta del cliente: ${texto}\n\nInstrucciones especiales:\n1. Si el cliente usa lenguaje coloquial como "cositos", "flecos", "para colgar", INTERPRETÁ qué está buscando\n2. Los productos listados arriba son los más relevantes para su consulta\n3. Si no hay productos exactos, SUGERÍ productos similares o relacionados\n4. PREGUNTÁ para clarificar si es necesario (colores, ocasión, tamaño)\n5. Sé conversacional y ayudá al cliente a encontrar lo que necesita`;
+      } else {
+        // Si no hay productos, dar sugerencias generales
+        mensajeConContexto = `Pregunta del cliente: ${texto}\n\nNo se encontraron productos específicos para esta consulta, pero:\n1. INTERPRETÁ qué podría estar buscando el cliente\n2. SUGERÍ categorías de productos que podrían interesarle\n3. PREGUNTÁ para clarificar qué necesita exactamente\n4. Mencioná que tenés amplio catálogo de cotillón y decoración`;
       }
 
       const respuesta = await llamarGeminiConReintentos(chat, mensajeConContexto);
@@ -673,7 +580,7 @@ client.on("message", async (message) => {
       await responderBot(message, "\n¿Necesitás algo más? Respondé *0* para volver al menú principal.");
       
     } catch (error) {
-      log(`❌ Error después de ${MAX_RETRIES} intentos: ${error.message}`, "ERROR");
+      log(`❌ Error después de reintentos: ${error.message}`, "ERROR");
       await responderBot(message,
         "Ups, tuve un problema técnico. Por favor intentá de nuevo en un momento."
       );

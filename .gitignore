@@ -11,6 +11,9 @@ TODO.md
 *.md
 !README.md
 
+# Carpeta de documentación (no publicar)
+docs/
+
 # Phase work directories (user-specific)
 .planning/
 .summaries/
