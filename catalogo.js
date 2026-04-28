@@ -1,9 +1,89 @@
 const { productos } = require("./data/productos.js");
 
+// ─── MAPEO DE SINÓNIMOS Y LENGUAJE COLOQUIAL ─────────────────────────────────
+
+const SINONIMOS = {
+  // Lenguaje coloquial común
+  "cositos": ["decoración", "adornos", "accesorios"],
+  "cositas": ["decoración", "adornos", "accesorios"],
+  "cosa": ["decoración", "adorno", "accesorio"],
+  "cosas": ["decoración", "adornos", "accesorios"],
+  
+  // Para colgar / decoración colgante
+  "colgar": ["guirnalda", "banderín", "colgante", "decoración", "flecos", "cortina"],
+  "colgante": ["guirnalda", "banderín", "decoración", "flecos", "cortina"],
+  "colgantes": ["guirnaldas", "banderines", "decoración", "flecos", "cortinas"],
+  
+  // Flecos y cortinas
+  "flecos": ["cortina", "guirnalda", "decoración", "colgante", "lluvia"],
+  "fleco": ["cortina", "guirnalda", "decoración", "colgante"],
+  "lluvia": ["cortina", "flecos", "decoración", "colgante"],
+  
+  // Pared
+  "pared": ["guirnalda", "banderín", "decoración", "cortina", "flecos"],
+  
+  // Brillante
+  "brillante": ["metálico", "dorado", "plateado", "lentejuela", "brillantina"],
+  "brillantes": ["metálicos", "dorados", "plateados", "lentejuelas", "brillantina"],
+  "brillo": ["metálico", "dorado", "plateado", "lentejuela", "brillantina"],
+  "brillos": ["metálicos", "dorados", "plateados", "lentejuelas", "brillantina"],
+  
+  // Diminutivos
+  "globitos": ["globos"],
+  "globito": ["globo"],
+  "platitos": ["platos"],
+  "platito": ["plato"],
+  "vasitos": ["vasos"],
+  "vasito": ["vaso"],
+  "servilletitas": ["servilletas"],
+  "servilletita": ["servilleta"],
+  "banderitas": ["banderines", "banderín"],
+  "banderita": ["banderín"],
+  
+  // Luces
+  "lucecitas": ["luces", "led", "luminoso"],
+  "lucecita": ["luz", "led", "luminoso"],
+  "luces": ["led", "luminoso", "decoración"],
+  
+  // Tela/textil
+  "tela": ["mantel", "cortina", "decoración"],
+  "telita": ["mantel", "cortina", "decoración"],
+  
+  // Colores comunes
+  "doradito": ["dorado"],
+  "plateadito": ["plateado"],
+  "rosadito": ["rosa", "rosado"],
+  "azulito": ["azul"],
+  "rojito": ["rojo"],
+  "verdecito": ["verde"],
+};
+
+/**
+ * Expande una consulta con sinónimos y lenguaje coloquial
+ * @param {string} query - Consulta original
+ * @returns {Array} Array de términos expandidos
+ */
+function expandirConsulta(query) {
+  const queryLower = query.toLowerCase().trim();
+  const palabrasOriginales = queryLower.split(/\s+/);
+  const terminosExpandidos = new Set(palabrasOriginales);
+  
+  // Agregar sinónimos para cada palabra
+  palabrasOriginales.forEach(palabra => {
+    if (SINONIMOS[palabra]) {
+      SINONIMOS[palabra].forEach(sinonimo => {
+        terminosExpandidos.add(sinonimo);
+      });
+    }
+  });
+  
+  return Array.from(terminosExpandidos);
+}
+
 // ─── BÚSQUEDA DE PRODUCTOS ───────────────────────────────────────────────────
 
 /**
- * Busca productos en el catálogo usando búsqueda fuzzy simple
+ * Busca productos en el catálogo usando búsqueda fuzzy simple con sinónimos
  * @param {string} query - Texto de búsqueda del usuario
  * @param {number} limit - Cantidad máxima de resultados (default: 5)
  * @returns {Array} Array de productos encontrados
@@ -14,7 +94,10 @@ function buscarProductos(query, limit = 5) {
   }
 
   const queryLower = query.toLowerCase().trim();
-  const palabrasClave = queryLower.split(/\s+/);
+  
+  // Expandir consulta con sinónimos
+  const terminosExpandidos = expandirConsulta(queryLower);
+  const palabrasClave = [...new Set([...queryLower.split(/\s+/), ...terminosExpandidos])];
 
   // Calcular score de relevancia para cada producto
   const productosConScore = productos.map((producto) => {
@@ -22,13 +105,14 @@ function buscarProductos(query, limit = 5) {
     const nombreLower = producto.nombre.toLowerCase();
     const categoriaLower = producto.categoria.toLowerCase();
     const descripcionLower = (producto.descripcion || "").toLowerCase();
+    const textoCompleto = `${nombreLower} ${categoriaLower} ${descripcionLower}`;
 
     // Búsqueda exacta en nombre (mayor peso)
     if (nombreLower.includes(queryLower)) {
       score += 100;
     }
 
-    // Búsqueda por palabras individuales en nombre
+    // Búsqueda por palabras individuales (incluyendo sinónimos)
     palabrasClave.forEach((palabra) => {
       if (nombreLower.includes(palabra)) {
         score += 50;
@@ -44,6 +128,12 @@ function buscarProductos(query, limit = 5) {
     // Bonus si la categoría coincide exactamente
     if (categoriaLower === queryLower) {
       score += 80;
+    }
+    
+    // Bonus para coincidencias múltiples
+    const coincidencias = palabrasClave.filter(palabra => textoCompleto.includes(palabra)).length;
+    if (coincidencias > 1) {
+      score += coincidencias * 5;
     }
 
     return { ...producto, score };

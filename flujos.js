@@ -41,8 +41,7 @@ function getMenuPrincipal() {
   return `Por favor, elegí una opción:
 
 1️⃣ Realizar pedido
-2️⃣ Catálogo de globos
-3️⃣ Consulta sobre paquetería
+2️⃣ Envíos y paquetería
 
 Respondé con el número de la opción que necesitás.`;
 }
@@ -162,11 +161,9 @@ const ESTADOS = {
   ESPERANDO_NOMBRE: "esperando_nombre",
   MENU_PRINCIPAL: "menu_principal",
   MENU_PAQUETERIA: "menu_paqueteria",
-  MENU_ENVIOS: "menu_envios",
   INFO_CORREO: "info_correo",
   INFO_ANDREANI: "info_andreani",
   INFO_MERCADOLIBRE: "info_mercadolibre",
-  CATALOGO: "catalogo",
   PEDIDO: "pedido",
 };
 
@@ -180,9 +177,6 @@ module.exports = {
   getInfoCorreoArgentino,
   getInfoAndreani,
   getInfoMercadoLibre,
-  getMenuEnvios,
-  getInfoPreparacionPaquete,
-  getInfoPaqueteListo,
   getMensajePedirNombre,
   getMensajeNoEntiendo,
 };
