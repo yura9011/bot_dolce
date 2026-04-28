@@ -1,8 +1,8 @@
-# 🎈 Dolce Party - Bot de WhatsApp
+# Dolce Party - Bot de WhatsApp
 
 Bot inteligente de WhatsApp para tienda de cotillón y decoración con IA conversacional, catálogo de productos y dashboard de control.
 
-## 🚀 Inicio Rápido
+## Inicio Rápido
 
 ```bash
 # Instalar dependencias
@@ -19,24 +19,24 @@ npm start
 npm run dashboard
 ```
 
-## 📱 Funcionalidades
+## Funcionalidades
 
 ### **Bot de WhatsApp**
-- 🤖 **IA Conversacional**: Gemini AI para respuestas naturales
-- 📦 **Catálogo Inteligente**: 3800+ productos con búsqueda por sinónimos
-- 🛡️ **Anti-Hijacking**: Protección contra ataques de prompt injection
-- 👥 **Handoff Manual**: Transferencia a atención humana
-- ⏸️ **Control de Pausas**: Pausar usuarios o bot completo
-- 📊 **Estadísticas**: Registro automático de métricas
+- **IA Conversacional**: Gemini AI para respuestas naturales
+- **Catálogo Inteligente**: 3800+ productos con búsqueda por sinónimos
+- **Anti-Hijacking**: Protección contra ataques de prompt injection
+- **Handoff Manual**: Transferencia a atención humana
+- **Control de Pausas**: Pausar usuarios o bot completo
+- **Estadísticas**: Registro automático de métricas
 
 ### **Dashboard Web**
-- 🎛️ **Control Dual**: Controlar bot desde WhatsApp o web
-- 📈 **Estadísticas en Tiempo Real**: Métricas y gráficos
-- 💬 **Conversaciones**: Ver historial de chats
-- 🔐 **Usuarios Pausados**: Gestión de atención manual
-- 🚨 **Logs de Seguridad**: Monitoreo de ataques
+- **Control Dual**: Controlar bot desde WhatsApp o web
+- **Estadísticas en Tiempo Real**: Métricas y gráficos
+- **Conversaciones**: Ver historial de chats
+- **Usuarios Pausados**: Gestión de atención manual
+- **Logs de Seguridad**: Monitoreo de ataques
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 ```
 ├── bot.js              # Bot principal de WhatsApp
@@ -55,7 +55,7 @@ npm run dashboard
 └── docs/              # Documentación
 ```
 
-## 🔧 Configuración
+## Configuración
 
 ### **Variables de Entorno (.env)**
 ```env
@@ -81,18 +81,18 @@ REANUDAR 549XXXXXXX # Reanudar usuario específico
 SEGURIDAD BOT       # Ver logs de seguridad
 ```
 
-## 📊 Dashboard
+## Dashboard
 
 Acceder a: `http://localhost:3001`
 
 ### **Funcionalidades del Dashboard:**
-- 📈 **Métricas**: Mensajes, usuarios, handoffs, búsquedas
-- 🎛️ **Controles**: Pausar/reanudar bot y usuarios
-- 💬 **Conversaciones**: Últimas 10 conversaciones
-- 🚨 **Seguridad**: Intentos de hijacking detectados
-- 📅 **Historial**: Estadísticas de los últimos 7 días
+- **Métricas**: Mensajes, usuarios, handoffs, búsquedas
+- **Controles**: Pausar/reanudar bot y usuarios
+- **Conversaciones**: Últimas 10 conversaciones
+- **Seguridad**: Intentos de hijacking detectados
+- **Historial**: Estadísticas de los últimos 7 días
 
-## 🛡️ Seguridad
+## Seguridad
 
 ### **Anti-Hijacking**
 - Detección de prompt injection
@@ -105,7 +105,7 @@ Acceder a: `http://localhost:3001`
 - Validación de permisos en dashboard
 - Logs de todas las acciones administrativas
 
-## 📁 Documentación
+## Documentación
 
 La documentación está organizada en `docs/`:
 
@@ -116,7 +116,7 @@ La documentación está organizada en `docs/`:
 - `docs/specs/` - Especificaciones y planes
 - `docs/archive/` - Documentación histórica
 
-## 🔄 Scripts Útiles
+## Scripts Útiles
 
 ```bash
 # Limpiar sesiones de WhatsApp (si hay problemas de QR)
@@ -132,7 +132,7 @@ node test-catalogo.js
 node debug-bot.js
 ```
 
-## 🚨 Solución de Problemas
+## Solución de Problemas
 
 ### **Bot no genera QR**
 ```bash
@@ -152,7 +152,7 @@ npm start
 - Revisar logs en `logs/bot.log`
 - Reiniciar el bot
 
-## 📈 Métricas del Sistema
+## Métricas del Sistema
 
 - **Productos**: 3882 en catálogo
 - **Categorías**: 9 principales
@@ -160,7 +160,7 @@ npm start
 - **Tiempo de respuesta**: <100ms promedio
 - **Usuarios concurrentes**: Ilimitado
 
-## 🎯 Próximas Mejoras
+## Próximas Mejoras
 
 - [ ] Integración con sistema de inventario
 - [ ] Notificaciones push del dashboard
@@ -168,7 +168,7 @@ npm start
 - [ ] Backup automático de datos
 - [ ] API REST pública
 
-## 📞 Soporte
+## Soporte
 
 Para problemas técnicos, revisar:
 1. `logs/bot.log` - Logs del bot
@@ -178,5 +178,5 @@ Para problemas técnicos, revisar:
 
 ---
 
-**Desarrollado para Dolce Party** 🎈  
+**Desarrollado para Dolce Party**  
 *Bot inteligente de WhatsApp con IA conversacional*
