@@ -39,8 +39,8 @@ router.get('/:id/handoffs', async (req, res) => {
             if (data.razon === 'handoff_solicitado' && data.pausado) {
                 handoffs.push({
                     userId,
-                    fechaPausa: data.fechaPausa,
-                    tiempoTranscurrido: Date.now() - new Date(data.fechaPausa).getTime(),
+                    fechaPausa: data.timestamp, // Corregido: antes era fechaPausa
+                    tiempoTranscurrido: Date.now() - (data.timestamp || Date.now()),
                     chatId: userId.includes('@') ? userId : `${userId}@c.us`
                 });
             }
