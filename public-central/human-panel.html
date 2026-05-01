@@ -229,6 +229,17 @@
       font-weight: 600;
     }
 
+    .btn-intervene {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
     .empty-state {
       display: flex;
       flex-direction: column;
@@ -270,9 +281,14 @@
           <h3 id="chatUserName">Selecciona un chat</h3>
           <p id="chatUserStatus">Esperando selección...</p>
         </div>
-        <button id="btnResolve" class="btn-resolve" onclick="resolveHandoff()" style="display: none;">
-          ✅ Resolver Handoff
-        </button>
+        <div class="chat-header-actions">
+          <button id="btnIntervene" class="btn-intervene" onclick="forceHandoff()" style="display: none;">
+            ⏸️ Intervenir
+          </button>
+          <button id="btnResolve" class="btn-resolve" onclick="resolveHandoff()" style="display: none;">
+            ✅ Resolver Handoff
+          </button>
+        </div>
       </div>
 
       <div id="chatMessages" class="chat-messages">
