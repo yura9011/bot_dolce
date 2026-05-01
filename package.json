@@ -6,7 +6,12 @@
   "scripts": {
     "start": "node bot.js",
     "dashboard": "node dashboard.js",
-    "dev": "node bot.js & node dashboard.js"
+    "dev": "node bot.js & node dashboard.js",
+    "orchestrator:start": "node orchestrator.js start",
+    "orchestrator:start:agent": "node orchestrator.js start",
+    "orchestrator:stop": "node orchestrator.js stop",
+    "orchestrator:list": "node orchestrator.js list",
+    "dashboard:central": "node dashboard-central.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
