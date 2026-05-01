@@ -1,0 +1,52 @@
+{
+  "agents": [
+    {
+      "id": "santa-ana",
+      "name": "Dolce Party - Santa Ana",
+      "enabled": true,
+      "whatsappSession": "santa-ana-session",
+      "ports": {
+        "api": 3011,
+        "dashboard": 3001
+      },
+      "paths": {
+        "data": "data/santa-ana",
+        "logs": "logs/santa-ana",
+        "catalog": "catalogs/catalogo-santa-ana.js"
+      },
+      "info": {
+        "nombre": "Dolce Party - Santa Ana",
+        "telefono": "0351 855-9145",
+        "horario": "Lunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado",
+        "direccion": "Sta. Ana 2637, X5010EEK Córdoba"
+      },
+      "adminNumbers": ["5491158647529", "5493513782559"]
+    },
+    {
+      "id": "local-2",
+      "name": "Dolce Party - Local 2",
+      "enabled": false,
+      "whatsappSession": "local-2-session",
+      "ports": {
+        "api": 3012,
+        "dashboard": 3002
+      },
+      "paths": {
+        "data": "data/local-2",
+        "logs": "logs/local-2",
+        "catalog": "catalogs/catalogo-local-2.js"
+      },
+      "info": {
+        "nombre": "Dolce Party - Local 2",
+        "telefono": "[CONFIGURAR]",
+        "horario": "[CONFIGURAR]",
+        "direccion": "[CONFIGURAR]"
+      },
+      "adminNumbers": ["[CONFIGURAR]"]
+    }
+  ],
+  "dashboard": {
+    "port": 3000,
+    "enabled": true
+  }
+}
