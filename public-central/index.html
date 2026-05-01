@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Central - Dolce Party</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>🎈 Dashboard Central - Dolce Party</h1>
+        <div class="header-status">
+          <div class="last-update" id="lastUpdate">
+            Última actualización: --:--
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Agents Grid -->
+    <div id="agents-grid" class="agents-grid"></div>
+  </div>
+
+  <!-- Modal for Agent Details -->
+  <div id="agentModal" class="modal">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h2 id="modalAgentName">Detalles del Agente</h2>
+        <span class="modal-close" onclick="closeAgentModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- Controls Section -->
+        <div class="modal-section">
+          <h3>Controles</h3>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-warning" onclick="pauseAgentGlobal(currentAgentId)">Pausar Bot</button>
+            <button class="btn btn-success" onclick="resumeAgentGlobal(currentAgentId)">Reanudar Bot</button>
+          </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="modal-section">
+          <h3>📊 Estadísticas de Hoy</h3>
+          <div id="modalStats" class="stats-grid-mini"></div>
+        </div>
+
+        <!-- Conversations Section -->
+        <div class="modal-section">
+          <h3>💬 Conversaciones Recientes</h3>
+          <div id="modalConversations" class="conversations-list"></div>
+        </div>
+
+        <!-- Bottom Sections -->
+        <div class="modal-bottom">
+          <!-- Logs Section -->
+          <div class="modal-section">
+            <h3>📝 Logs Recientes</h3>
+            <div id="modalLogs" class="logs-list"></div>
+          </div>
+
+          <!-- Security Section -->
+          <div class="modal-section">
+            <h3>🔒 Seguridad</h3>
+            <div id="modalSecurity" class="security-list"></div>
+          </div>
+        </div>
+
+        <!-- Paused Users -->
+        <div class="modal-section">
+          <h3>⏸️ Usuarios Pausados</h3>
+          <div id="modalPausedUsers" class="paused-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

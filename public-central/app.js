@@ -149,8 +149,11 @@ async function createAgentCard(agent) {
                         </div>
                     </div>
                     <div class="agent-actions">
-                        <button onclick="showAgentDetails('${agent.id}')" class="btn btn-primary btn-small">
+                        <button onclick="window.open('/agente/${agent.id}', '_blank')" class="btn btn-primary btn-small">
                             Ver Detalles
+                        </button>
+                        <button onclick="window.open('/human-panel/${agent.id}', '_blank')" class="btn btn-warning btn-small">
+                            🧑‍💼 Panel Humano
                         </button>
                     </div>
                 `;
@@ -249,19 +252,45 @@ async function loadAgentModalData(agentId) {
 }
 
 function updateModalStats(stats) {
+    // Obtener el dia mas reciente con datos
+    const fechasMensajes = stats.mensajes ? Object.keys(stats.mensajes).sort().reverse() : [];
+    const fechaReciente = fechasMensajes.length > 0 ? fechasMensajes[0] : null;
+    
     const today = new Date().toISOString().split('T')[0];
     const todayStats = stats.mensajes?.[today] || { recibidos: 0, enviados: 0 };
+    const recentStats = fechaReciente ? stats.mensajes[fechaReciente] : { recibidos: 0, enviados: 0 };
     
+    // Usar stats de hoy si hay, sino las mas recientes
+    const displayStats = todayStats.recibidos > 0 || todayStats.enviados > 0 ? todayStats : recentStats;
+    const displayDate = todayStats.recibidos > 0 || todayStats.enviados > 0 ? today : fechaReciente;
+    
+    // Get additional stats for the display date
+    const handoffs = (stats.handoffs?.[displayDate]?.total || stats.handoffs?.[displayDate] || 0);
+    const hijacking = (stats.hijacking?.[displayDate]?.total || stats.hijacking?.[displayDate] || 0);
+    const busquedas = (stats.busquedas?.[displayDate]?.total || stats.busquedas?.[displayDate] || 0);
+
     const container = document.getElementById('modalStats');
     if (container) {
         container.innerHTML = `
             <div class="stat-mini">
-                <div class="stat-number">${todayStats.recibidos}</div>
+                <div class="stat-number">${displayStats.recibidos || 0}</div>
                 <div class="stat-label">Recibidos</div>
             </div>
             <div class="stat-mini">
-                <div class="stat-number">${todayStats.enviados}</div>
+                <div class="stat-number">${displayStats.enviados || 0}</div>
                 <div class="stat-label">Enviados</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-number">${handoffs}</div>
+                <div class="stat-label">Handoffs</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-number">${hijacking}</div>
+                <div class="stat-label">Hijacking</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-number">${busquedas}</div>
+                <div class="stat-label">Busquedas</div>
             </div>
         `;
     }
@@ -282,6 +311,15 @@ function updateModalConversations(conversations) {
                 <span class="conversation-user">${formatUserId(conv.userId)}</span>
                 <span class="conversation-time">${formatTime(conv.lastMessage)}</span>
             </div>
+            ${conv.messages && conv.messages.length ? `
+            <div class="messages">
+                ${conv.messages.slice(-3).map(msg => `
+                    <div class="message ${msg.type}">
+                        ${msg.type === 'user' ? '👤' : '🤖'}: ${msg.text}
+                    </div>
+                `).join('')}
+            </div>
+            ` : ''}
         </div>
     `).join('');
 }
