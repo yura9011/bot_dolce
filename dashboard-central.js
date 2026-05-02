@@ -321,6 +321,70 @@ app.get('/api/agents/:id/stats/searches', async (req, res) => {
   }
 });
 
+// ─── VIGILANCIA DE HISTORIALES PARA NOTIFICACIONES ───────────────────────────
+const historialWatchers = new Map(); // agentId -> watcher
+const lastMessageTimestamps = new Map(); // `${agentId}_${userId}` -> timestamp
+
+function setupHistorialWatchers() {
+  try {
+    const config = loadAgentsConfig();
+    
+    for (const agent of config.agents) {
+      if (!agent.enabled) continue;
+      if (historialWatchers.has(agent.id)) continue;
+      
+      const historialPath = path.join(__dirname, agent.paths.data, 'historial.json');
+      const watchDir = path.dirname(historialPath);
+      
+      console.log(`📡 Vigilando cambios en historial de ${agent.id}`);
+      
+      const watcher = fs.watch(watchDir, { persistent: true }, (eventType, filename) => {
+        if (eventType === 'change' || (filename && filename.endsWith('historial.json'))) {
+          clearTimeout(watcher.debounce);
+          watcher.debounce = setTimeout(() => {
+            handleHistorialChange(agent.id, historialPath);
+          }, 500);
+        }
+      });
+      
+      historialWatchers.set(agent.id, watcher);
+    }
+  } catch (error) {
+    console.error('Error configurando vigilancia:', error.message);
+  }
+}
+
+function handleHistorialChange(agentId, historialPath) {
+  try {
+    if (!fs.existsSync(historialPath)) return;
+    
+    const historial = JSON.parse(fs.readFileSync(historialPath, 'utf8'));
+    
+    for (const [userId, messages] of Object.entries(historial)) {
+      if (!Array.isArray(messages) || messages.length === 0) continue;
+      
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg.role !== 'user') continue;
+      
+      const key = `${agentId}_${userId}`;
+      const lastTracked = lastMessageTimestamps.get(key) || 0;
+      
+      if (lastMsg.timestamp > lastTracked) {
+        lastMessageTimestamps.set(key, lastMsg.timestamp);
+        console.log(`🔔 Nuevo mensaje de ${userId}: "${lastMsg.text.substring(0, 20)}..."`);
+        io.emit(`agent_${agentId}_new_message`, {
+          agentId,
+          userId,
+          message: lastMsg,
+          timestamp: Date.now()
+        });
+      }
+    }
+  } catch (error) {
+    console.error(`Error en historial de ${agentId}:`, error.message);
+  }
+}
+
 // ─── WEBSOCKET PARA TIEMPO REAL ─────────────────────────────────────────
 
 io.on('connection', async (socket) => {
@@ -407,4 +471,7 @@ server.listen(PORT, () => {
   console.log(`🔄 WebSocket activado (actualizaciones cada ${UPDATE_INTERVAL/1000}s)`);
   console.log(`📁 Leyendo datos de: ./data/ y ./logs/`);
   console.log(`=====================================\n`);
+
+  // Iniciar vigilancia de historiales para notificaciones
+  setupHistorialWatchers();
 });

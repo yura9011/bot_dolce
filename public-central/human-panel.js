@@ -6,17 +6,33 @@ let selectedUserId = null;
 let phoneAliases = {};
 let socket = null;
 let refreshInterval = null;
+let unreadMessages = new Set(); // UserIds con mensajes no leídos
+let soundEnabled = localStorage.getItem('humanPanelSound') !== 'disabled'; // Sonido activado por defecto
+let audioCtx = null; // AudioContext para notificaciones
 
 // Inicializacion
 
 document.addEventListener('DOMContentLoaded', () => {
-    const pathParts = window.location.pathname.split('/');
-    selectedAgentId = pathParts[pathParts.length - 1] || null;
+    // Obtener ID del agente de la URL de forma robusta
+    function getAgentIdFromPath() {
+        const pathParts = window.location.pathname.split('/').filter(p => p.trim() !== '');
+        const hpIndex = pathParts.indexOf('human-panel');
+        if (hpIndex !== -1 && hpIndex < pathParts.length - 1) {
+            return pathParts[hpIndex + 1];
+        }
+        return null;
+    }
+
+    selectedAgentId = getAgentIdFromPath();
+    // console.log('ID de agente detectado:', selectedAgentId);
+    // console.log('URL actual:', window.location.pathname);
 
     if (!selectedAgentId) {
-        alert('Error: No se especifico el ID del agente');
+        alert('Error: No se especificó el ID del agente. Usa: http://localhost:3000/human-panel/TU_AGENTE_ID');
         return;
     }
+
+    updateSoundButton(); // Inicializar estado del botón de sonido
 
     fetch('/api/phone-aliases')
         .then(r => r.json())
@@ -74,6 +90,32 @@ function initializeSocket() {
             updateHandoffStatus(data.paused);
         }
     });
+
+    // Nuevo mensaje recibido
+    socket.on(`agent_${selectedAgentId}_new_message`, (data) => {
+        console.log('🔔 Notificación recibida:', data);
+        const { userId, message } = data;
+
+        // Agregar a no leídos si no es el chat activo
+        if (userId !== selectedUserId) {
+            unreadMessages.add(userId);
+        }
+
+        highlightChat(userId);
+        playNotificationSound();
+        loadConversations(); // Refrescar lista
+    });
+
+    // Debug: verificar eventos disponibles
+    // console.log('🎧 Escuchando:', `agent_${selectedAgentId}_new_message`);
+
+    // Listener catch-all para debug
+    // socket.onAny((eventName, data) => {
+    //     console.log('📡 Evento recibido:', eventName, data);
+    // });
+
+// Debug: nuevo mensaje
+    // console.log('🔔 Notificación recibida:', data);
 }
 
 function updateHandoffStatus(pausedUsers) {
@@ -92,6 +134,86 @@ function updateHandoffStatus(pausedUsers) {
     if (btnResolve) {
         btnResolve.style.display = isPaused ? 'block' : 'none';
     }
+}
+
+// Funciones de notificación
+
+function initAudioContext() {
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      console.log('🔊 AudioContext inicializado');
+    } catch (e) {
+      console.log('Error creando AudioContext:', e);
+    }
+  }
+  // Resumir si está suspendido
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().then(() => console.log('🔊 AudioContext resumido'));
+  }
+}
+
+function highlightChat(userId) {
+  document.querySelectorAll('.chat-item').forEach(item => {
+    const onclick = item.getAttribute('onclick') || '';
+    const match = onclick.match(/'([^']+)'/);
+    if (match && match[1] === userId) {
+      item.classList.add('new-message');
+      setTimeout(() => item.classList.remove('new-message'), 3000);
+    }
+  });
+}
+
+function playNotificationSound() {
+  if (!soundEnabled) return;
+
+  try {
+    // Inicializar AudioContext si no existe o está suspendido
+    initAudioContext();
+    if (!audioCtx) return;
+
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.3);
+  } catch (e) {
+    console.log('No se pudo reproducir sonido:', e);
+  }
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('humanPanelSound', soundEnabled ? 'enabled' : 'disabled');
+
+  // Inicializar AudioContext en primer clic (requerido por Chrome)
+  if (soundEnabled) {
+    initAudioContext();
+    playNotificationSound(); // Reproducir sonido de prueba
+  }
+
+  const btn = document.getElementById('btnSound');
+  if (btn) {
+    btn.textContent = soundEnabled ? '🔊 Sonido' : '🔇 Silenciado';
+    btn.classList.toggle('muted', !soundEnabled);
+  }
+}
+
+function updateSoundButton() {
+  const btn = document.getElementById('btnSound');
+  if (btn) {
+    btn.textContent = soundEnabled ? '🔊 Sonido' : '🔇 Silenciado';
+    btn.classList.toggle('muted', !soundEnabled);
+  }
 }
 
 // Cargar info del agente
@@ -138,12 +260,14 @@ function updateChatsList(conversaciones) {
             ? (ultimoMsg.text.length > 50 ? ultimoMsg.text.substring(0, 50) + '...' : ultimoMsg.text)
             : 'Sin mensajes';
         const time = ultimoMsg ? formatTime(ultimoMsg.timestamp) : '';
+        const isUnread = unreadMessages.has(conv.userId);
+        const unreadBadge = isUnread ? '<span class="unread-badge">●</span>' : '';
 
         return `
-        <div class="chat-item ${selectedUserId === conv.userId ? 'active' : ''}"
+        <div class="chat-item ${selectedUserId === conv.userId ? 'active' : ''} ${isUnread ? 'unread' : ''}"
              onclick="selectChat('${conv.userId}', this)">
             <div class="chat-item-info">
-                <span class="chat-item-name">${formatUserId(conv.userId)}</span>
+                <span class="chat-item-name">${formatUserId(conv.userId)}${unreadBadge}</span>
                 <span class="chat-item-time">${time}</span>
             </div>
             <div class="chat-item-preview">${preview}</div>
@@ -156,6 +280,7 @@ function updateChatsList(conversaciones) {
 
 async function selectChat(userId, element) {
     selectedUserId = userId;
+    unreadMessages.delete(userId); // Limpiar no leído
 
     document.querySelectorAll('.chat-item').forEach(item => {
         item.classList.remove('active');
