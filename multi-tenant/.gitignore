@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+scripts/node_modules/
+
+# Backups
+backups/*
+!backups/.gitkeep
+
+# Client data (no subir datos de clientes)
+clients/*/data/
+clients/*/.wwebjs_auth/
+clients/*/logs/
+
+# Environment files
+.env
+*.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

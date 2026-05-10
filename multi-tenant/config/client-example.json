@@ -1,0 +1,21 @@
+{
+  "client_id": "dolce-party",
+  "name": "Dolce Party",
+  "enabled": true,
+  "created": "2026-05-10T00:00:00Z",
+  "ports": {
+    "dashboard": 5000,
+    "bots": [5001, 5002]
+  },
+  "business": {
+    "name": "Dolce Party - Cotillón",
+    "phone": "+54351XXXXXXX",
+    "address": "Santa Ana, Córdoba",
+    "hours": "Lun-Sáb: 9-20hs"
+  },
+  "admins": ["+54351XXXXXXX"],
+  "features": {
+    "voice_messages": false,
+    "payments": false
+  }
+}

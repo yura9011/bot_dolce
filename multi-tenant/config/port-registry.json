@@ -1,0 +1,13 @@
+{
+  "platform": {
+    "dashboard_maestro": 3000
+  },
+  "clients": {},
+  "next_available": 5010,
+  "reserved": [
+    3000,
+    3011,
+    4000,
+    4011
+  ]
+}
