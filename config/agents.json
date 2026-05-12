@@ -43,26 +43,40 @@
       ]
     },
     {
-      "id": "local-2",
-      "name": "Dolce Party - Local 2",
-      "enabled": false,
-      "whatsappSession": "local-2-session",
+      "id": "asturias",
+      "name": "Dolce Party - Asturias",
+      "enabled": true,
+      "whatsappSession": "asturias-session",
       "ports": {
         "api": 3012,
         "dashboard": 3002
       },
       "paths": {
-        "data": "data/local-2",
-        "logs": "logs/local-2",
-        "catalog": "catalogs/catalogo-local-2.js"
+        "data": "data/asturias",
+        "logs": "logs/asturias",
+        "catalog": "catalogs/catalogo-santa-ana.js"
       },
       "info": {
-        "nombre": "Dolce Party - Local 2",
-        "telefono": "[CONFIGURAR]",
-        "horario": "[CONFIGURAR]",
-        "direccion": "[CONFIGURAR]"
+        "nombre": "Dolce Party - Asturias",
+        "telefono": "0351 855-0000",
+        "horario": "Lunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado",
+        "direccion": "Av. Asturias 1234, Córdoba"
       },
-      "adminNumbers": ["[CONFIGURAR]"]
+      "adminNumbers": [],
+      "dashboardUsers": [
+        {
+          "username": "admin",
+          "password": "$2b$10$DD7OGqlJlDinBTTofXkH.eC6BRra9Sk8JB6cowtOCvvJYjh3gtOeW",
+          "role": "admin",
+          "name": "Administrador"
+        },
+        {
+          "username": "forma",
+          "password": "$2b$10$SDQ2uAULwoI1kMSJ5bzCyeHseqlNeDM3y8raV.0rN4hI0MArHAFZO",
+          "role": "admin",
+          "name": "Forma"
+        }
+      ]
     }
   ],
   "dashboard": {
