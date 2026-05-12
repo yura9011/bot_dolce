@@ -90,6 +90,7 @@ async function loadAgents() {
             }
         }
         
+        updateSystemStatus();
         updateLastUpdate();
         
         if (!webSocketReady && socket) {
@@ -145,6 +146,8 @@ async function createAgentCard(agent) {
                         🔴 ${pausedCount} chat${pausedCount > 1 ? 's' : ''} esperando atención humana
                     </div>
                     ` : ''}
+                    <input type="hidden" class="paused-count" value="${pausedCount}">
+                    card.dataset.pausedCount = pausedCount;
                     <div class="stats-section">
                         <h3>Estadisticas de Hoy</h3>
                         <div class="stats-grid-mini">
@@ -162,9 +165,9 @@ async function createAgentCard(agent) {
                         <button onclick="window.open('/agente/${agent.id}', '_blank')" class="btn btn-primary btn-small">
                             Ver Detalles
                         </button>
-                        <button onclick="window.open('http://${window.location.hostname}:${agent.ports.dashboard}', '_blank')" class="btn btn-warning btn-small">
-                            🧑‍💼 Panel Humano
-                        </button>
+                        <a href="http://${window.location.hostname}:${agent.ports.dashboard}" target="_blank" class="btn ${pausedCount > 0 ? 'btn-danger' : 'btn-warning'} btn-small">
+                            ${pausedCount > 0 ? `🔴 Atender (${pausedCount})` : '🧑‍💼 Panel Humano'}
+                        </a>
                     </div>
                 `;
             } else {
@@ -213,10 +216,40 @@ function updateAgentCard(agentId, data) {
     
     if (data.stats) {
         const statsSection = card.querySelector('.stats-section');
-        if (statsSection) {
-            updateStatsHTML(statsSection, data.stats);
+        if (statsSection) updateStatsHTML(statsSection, data.stats);
+    }
+    
+    // Actualizar indicador de chats pendientes
+    const existingAlert = card.querySelector('.pending-alert');
+    if (data.pausedCount !== undefined) {
+        if (data.pausedCount > 0) {
+            if (existingAlert) {
+                existingAlert.textContent = `🔴 ${data.pausedCount} chat${data.pausedCount > 1 ? 's' : ''} esperando atención humana`;
+            } else {
+                const alert = document.createElement('div');
+                alert.className = 'pending-alert';
+                alert.textContent = `🔴 ${data.pausedCount} chat${data.pausedCount > 1 ? 's' : ''} esperando atención humana`;
+                const info = card.querySelector('.agent-info');
+                if (info) info.after(alert);
+                else card.prepend(alert);
+            }
+        } else {
+            if (existingAlert) existingAlert.remove();
         }
     }
+    
+    // Actualizar botón Panel Humano
+    const actionsDiv = card.querySelector('.agent-actions');
+    if (actionsDiv && data.pausedCount !== undefined) {
+        const btn = actionsDiv.querySelector('.btn-warning, .btn-danger');
+        if (btn) {
+            btn.className = `btn ${data.pausedCount > 0 ? 'btn-danger' : 'btn-warning'} btn-small`;
+            btn.textContent = data.pausedCount > 0 ? `🔴 Atender (${data.pausedCount})` : '🧑‍💼 Panel Humano';
+        }
+    }
+    
+    card.dataset.pausedCount = data.pausedCount;
+    updateSystemStatus();
 }
 
 function updateStatsHTML(section, stats) {
@@ -441,6 +474,19 @@ function updateLastUpdate() {
         });
         lastUpdate.textContent = `Ultima actualizacion: ${timeString}`;
     }
+}
+
+function updateSystemStatus() {
+    const botsOnline = agents.filter(a => a.enabled).length;
+    let totalPending = 0;
+    agents.forEach(a => {
+        const card = document.getElementById(`agent-${a.id}`);
+        if (card && card.dataset.pausedCount) {
+            totalPending += parseInt(card.dataset.pausedCount) || 0;
+        }
+    });
+    document.getElementById('statusBots').textContent = `🤖 Bots online: ${botsOnline}`;
+    document.getElementById('statusPending').textContent = `⏳ Pendientes: ${totalPending}`;
 }
 
 // Controles

@@ -427,12 +427,14 @@ io.on('connection', async (socket) => {
             fetch(`http://localhost:${agent.ports.api}/security?lines=30`).then(r => r.json())
           ]);
           
+          const pausedCount = Array.isArray(paused) ? paused.length : Object.keys(paused).length;
           socket.emit(`agent_${agent.id}_initial`, {
             agentId: agent.id,
             stats,
             conversations: conversations.conversaciones || conversations,
             resumenPorNumero: conversations.resumenPorNumero || [],
             paused,
+            pausedCount,
             logs,
             security
           });
@@ -468,12 +470,14 @@ setInterval(async () => {
             fetch(`http://localhost:${agent.ports.api}/security?lines=30`).then(r => r.json())
           ]);
           
+          const pausedCount = Array.isArray(paused) ? paused.length : Object.keys(paused).length;
           io.emit(`agent_${agent.id}_update`, {
             agentId: agent.id,
             stats,
             conversations: conversations.conversaciones || conversations,
             resumenPorNumero: conversations.resumenPorNumero || [],
             paused,
+            pausedCount,
             logs,
             security
           });
