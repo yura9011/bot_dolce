@@ -140,6 +140,8 @@
 
 ### Immediate (Next 24h)
 
+- [ ] **Deploy dashboard fixes a VPS** — git push → git pull → pm2 restart
+- [ ] Verificar en producción — abrir F12, revisar console.logs de loadMessages
 - [ ] Handle Santa Ana phone number change (tomorrow)
 - [ ] Test number change procedure in DEV environment
 - [ ] Document number change process

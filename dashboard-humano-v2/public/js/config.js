@@ -16,11 +16,13 @@ async function loadAdminNumbers() {
 
 function renderAdminNumbers() {
   const container = document.getElementById('adminNumbersList');
-  document.getElementById('configContainer').innerHTML = '';
+  if (!container) return;
   const isAdmin = currentUser?.role === 'admin';
 
   if (adminNumbers.length === 0) {
-    document.getElementById('configContainer').innerHTML = '<p class="no-chats">No hay números configurados</p>';
+    container.innerHTML = '<p class="no-chats">No hay números configurados</p>';
+    const addBtn = document.getElementById('addNumberBtn');
+    if (addBtn) addBtn.style.display = isAdmin ? 'block' : 'none';
     return;
   }
 

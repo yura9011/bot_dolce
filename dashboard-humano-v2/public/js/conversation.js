@@ -4,10 +4,15 @@ async function loadMessages(userId) {
       credentials: 'include'
     });
     
+    console.log('loadMessages status:', response.status);
+    
     if (response.ok) {
       const messages = await response.json();
+      console.log('messages count:', messages.length, 'first:', messages[0]);
       renderMessages(messages);
       document.getElementById('chatName').textContent = userId.split('@')[0];
+    } else {
+      console.error('loadMessages error: response not ok', response.status);
     }
   } catch (error) {
     console.error('Error cargando mensajes:', error);
