@@ -50,3 +50,14 @@ function selectChat(userId) {
   
   loadMessages(userId);
 }
+
+// Búsqueda de chats en el sidebar
+document.getElementById('searchInput')?.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  const items = document.querySelectorAll('.chat-item');
+  items.forEach(item => {
+    const nombre = item.querySelector('.chat-name')?.textContent.toLowerCase() || '';
+    const preview = item.querySelector('.chat-preview')?.textContent.toLowerCase() || '';
+    item.style.display = (nombre.includes(query) || preview.includes(query)) ? 'flex' : 'none';
+  });
+});
