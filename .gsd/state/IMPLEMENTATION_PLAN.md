@@ -156,11 +156,19 @@
 
 ### Immediate (Next 24h)
 
-- [ ] **Deploy dashboard fixes a VPS** — git push → git pull → pm2 restart
-- [ ] Verificar en producción — enviar mensaje, probar MUCHAS GRACIAS
-- [ ] Handle Santa Ana phone number change (tomorrow)
-- [ ] Test number change procedure in DEV environment
-- [ ] Document number change process
+- [x] ~~Deploy dashboard fixes a VPS~~ ✅
+- [x] ~~Entorno testing operativo con celular de forma~~ ✅ 2026-05-12
+  - [x] bot-dolce-dev en puerto 4011 (separado de PRD 3011)
+  - [x] dashboard-humano-testing en puerto 4002
+  - [x] Banner naranja "ENTORNO DE TESTING" visible
+  - [x] Datos separados en data/testing/
+  - [x] Sesión WhatsApp conectada (celular forma)
+- [ ] **Abrir puerto 4002 en firewall** — `sudo ufw allow 4002/tcp` en VPS
+- [ ] **Probar funcionalidad completa en testing** antes de tocar PRD
+  - [ ] Enviar mensaje desde dashboard → ver en WhatsApp
+  - [ ] Recibir mensaje en WhatsApp → ver en dashboard en tiempo real
+  - [ ] Botón MUCHAS GRACIAS → bot se reactiva
+  - [ ] Tab Config → agregar/quitar número admin
 
 ### Backlog
 
