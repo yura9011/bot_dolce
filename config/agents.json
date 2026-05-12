@@ -45,7 +45,7 @@
     {
       "id": "asturias",
       "name": "Dolce Party - Asturias",
-      "enabled": true,
+      "enabled": false,
       "whatsappSession": "asturias-session",
       "ports": {
         "api": 3012,
