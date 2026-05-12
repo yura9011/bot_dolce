@@ -55,6 +55,29 @@
 
 ---
 
+### 🔵 Milestone 3: Dashboard Admin Management (NUEVO)
+**Status**: Planificado  
+**Priority**: Media  
+**Target**: TBD
+
+**Objective**: Gestionar dinámicamente números admin/ignorados desde el dashboard sin editar .env ni reiniciar bot
+
+**Documentation**: [View Full Milestone](.gsd/milestones/dashboard-admin-management/MILESTONE.md)
+
+**Key Goals:**
+- Vista de números admin/ignorados en dashboard
+- Agregar/eliminar números en tiempo real
+- Sincronización automática con bot (sin reiniciar)
+- Migración desde .env a JSON
+- Logs de auditoría
+
+**Phases:**
+1. Backend: API + sincronización con bot
+2. Frontend: Vista de configuración + CRUD
+3. Testing y documentación
+
+---
+
 ### 🔵 Milestone 2: Multi-Tenant Architecture - Phase 2-6 (PENDING)
 **Status**: Ready to Start  
 **Priority**: High  
