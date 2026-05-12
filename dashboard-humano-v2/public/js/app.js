@@ -22,6 +22,7 @@ async function init() {
   
   loadChats();
   setInterval(loadChats, 5000);
+  requestNotificationPermission();
 }
 
 function switchTab(tab) {

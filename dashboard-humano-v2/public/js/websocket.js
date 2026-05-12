@@ -14,4 +14,6 @@ socket.on('new_message', ({ userId }) => {
     loadMessages(userId);
   }
   playNotification();
+  showDesktopNotification('Nuevo mensaje', `Chat: ${userId.split('@')[0]}`);
+  loadChats();
 });
