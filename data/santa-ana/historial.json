@@ -939,6 +939,81 @@
       "timestamp": 1777652942013,
       "role": "bot",
       "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778431567945,
+      "role": "user",
+      "text": "0"
+    },
+    {
+      "timestamp": 1778431568027,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778431568270,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778431588195,
+      "role": "user",
+      "text": "Lucas"
+    },
+    {
+      "timestamp": 1778431588265,
+      "role": "bot",
+      "text": "Encantado de conocerte, Lucas! 😊"
+    },
+    {
+      "timestamp": 1778431588310,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778431598330,
+      "role": "user",
+      "text": "2"
+    },
+    {
+      "timestamp": 1778431598393,
+      "role": "bot",
+      "text": "*Consulta sobre paquetería*\n\nElegí el servicio de envío:\n\n1️⃣ Correo Argentino\n2️⃣ Andreani\n3️⃣ Mercado Libre\n\n0️⃣ Volver al menú principal\n\nRespondé con el número de la opción."
+    },
+    {
+      "timestamp": 1778431610014,
+      "role": "user",
+      "text": "0"
+    },
+    {
+      "timestamp": 1778431610081,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778431613359,
+      "role": "user",
+      "text": "1"
+    },
+    {
+      "timestamp": 1778431613420,
+      "role": "bot",
+      "text": "Perfecto! ¿Qué productos necesitás para tu pedido? También podés consultarme sobre nuestro catálogo de globos y decoración."
+    },
+    {
+      "timestamp": 1778431626304,
+      "role": "user",
+      "text": "Quiero globos con estrellitas"
+    },
+    {
+      "timestamp": 1778431635044,
+      "role": "bot",
+      "text": "¡Hola! ¡Claro que sí, me encanta la idea de globos con estrellitas! ✨ Es una opción preciosa para muchísimas celebraciones.\n\nRevisando nuestro catálogo, en este momento no tengo globos que vengan *ya impresos* directamente con estrellitas.\n\nPero no te preocupes, ¡tenemos algunas opciones geniales para que consigas ese efecto tan lindo! Podrías:\n\n1.  **Personalizar tus globos**: Tenemos los **LOW APLIQUES PARA GLOBOS (Código: 30254)** que son perfectos para decorar globos lisos. Podríamos ver si en stock tenemos apliques con forma de estrellitas o si prefieres stickers para pegarle a tus globos y darle ese toque estelar.\n    *   *Precio y Stock: Consultar disponibilidad.*\n\n2.  **Crear globos con estrellitas por dentro**: Una idea súper original y muy de moda es usar el **CONFETTI MINI PARA GLOBOS X 25 GS (Código: 30006)**. Si lo ponés dentro de globos transparentes (¡podrías combinarlos con los **GLOBOS TUKY PERLADOS 12\"** (Código: 10159) para un toque de color, o si tenemos transparentes lisos!) ¡crearías un efecto precioso de estrellitas flotando por dentro!\n    *   *Precio y Stock del confeti y los globos Tuky: Consultar disponibilidad.*\n\nPara que pueda asesorarte mejor, ¿qué tipo de estrellitas buscabas? ¿Impresas en el globo, pegadas por fuera o que floten por dentro? ¿Y hay algún color o tamaño de globo que tengas en mente para tu evento?"
+    },
+    {
+      "timestamp": 1778431635132,
+      "role": "bot",
+      "text": "\n¿Necesitás algo más? Respondé *0* para volver al menú principal."
     }
   ],
   "238405212491933@lid": [
@@ -1496,6 +1571,121 @@
       "timestamp": 1777292459171,
       "role": "bot",
       "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778372941366,
+      "role": "user",
+      "text": "Hola"
+    },
+    {
+      "timestamp": 1778372941468,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778372941773,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778372947180,
+      "role": "user",
+      "text": "Hola"
+    },
+    {
+      "timestamp": 1778372947242,
+      "role": "bot",
+      "text": "Encantado de conocerte, Hola! 😊"
+    },
+    {
+      "timestamp": 1778372947279,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778372951584,
+      "role": "user",
+      "text": "1"
+    },
+    {
+      "timestamp": 1778372951639,
+      "role": "bot",
+      "text": "Perfecto! ¿Qué productos necesitás para tu pedido? También podés consultarme sobre nuestro catálogo de globos y decoración."
+    },
+    {
+      "timestamp": 1778372962214,
+      "role": "user",
+      "text": "Iddqd"
+    },
+    {
+      "timestamp": 1778372971816,
+      "role": "bot",
+      "text": "¡Hola! ¡Soy Sos Coti, tu asistente virtual exclusivo de la tienda! 🥳\n\n¡Qué interesante tu consulta! \"Iddqd\" no me suena directamente a un producto de cotillón, pero como soy experta en fiestas y diversión, puedo interpretarlo de varias maneras:\n\n1.  **INTERPRETACIÓN:**\n    *   **Referencia Gamer/Videojuegos:** ¡\"Iddqd\" es un famoso código de invencibilidad del clásico videojuego Doom! Es una referencia icónica para muchos gamers y amantes de lo retro.\n    *   **Concepto de \"Invencibilidad\" o \"Poder\":** Podrías estar buscando algo que simbolice ser imparable, el \"boss final\", el \"ganador\" o que te haga sentir \"invencible\" en tu celebración.\n    *   **Humor/Broma Interna:** También podría ser una broma o una referencia que solo un grupo selecto de amigos entendería, buscando algo muy específico y original.\n\n2.  **SUGERENCIAS DE CATEGORÍAS DE PRODUCTOS:**\n    Si mi interpretación va por buen camino, ¡en Coti tenemos un montón de cosas que podrían \"activar el modo invencible\" de tu fiesta! Te sugiero que explores estas categorías:\n    *   **Temática Gamer/Videojuegos:** Platos, vasos, globos con mandos, pixeles o frases de \"Level Up!\".\n    *   **Fiesta de Superhéroes:** Capas, máscaras, decoraciones con escudos, símbolos de poder o fondos de ciudad.\n    *   **Decoración Retro/Vintage (años 80/90):** Elementos que recuerden a esa época dorada de los videojuegos.\n    *   **Cotillón Divertido/Bromas:** Artículos originales y personalizados para celebrar una victoria o simplemente para hacer reír.\n    *   **Globos con Mensajes Especiales:** Quizás un globo personalizado con una frase que haga referencia a \"invencible\" o \"ganador\".\n\n3.  **PREGUNTA PARA CLARIFICAR:**\n    Para poder ayudarte mejor y que encuentres exactamente lo que necesitas, ¿podrías contarme un poquito más?\n    *   ¿Estás planeando una **fiesta temática** con esa inspiración (gamer, retro, superhéroes)?\n    *   ¿Buscas **artículos de broma o de referencia** para un amigo gamer o un evento especial?\n    *   ¿Es una **fiesta de cumpleaños** y el cumpleañero es fanático de los videojuegos clásicos?\n    *   ¿O quizás solo estás buscando algo **único y original** que te haga sentir 'invencible' en tu evento?\n\n¡No te preocupes! En Coti tenemos un **catálogo GIGANTE de cotillón y decoración** para todo tipo de eventos. Estoy segura de que juntos encontraremos algo increíble, ¡aunque no sea directamente un \"Iddqd\"! ¡Te espero! 🎉"
+    },
+    {
+      "timestamp": 1778372971918,
+      "role": "bot",
+      "text": "\n¿Necesitás algo más? Respondé *0* para volver al menú principal."
+    },
+    {
+      "timestamp": 1778429470768,
+      "role": "user",
+      "text": "Hola"
+    },
+    {
+      "timestamp": 1778429470889,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778429471209,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778429475460,
+      "role": "user",
+      "text": "Rodrigo"
+    },
+    {
+      "timestamp": 1778429475526,
+      "role": "bot",
+      "text": "Encantado de conocerte, Rodrigo! 😊"
+    },
+    {
+      "timestamp": 1778429475565,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778429479771,
+      "role": "user",
+      "text": "2"
+    },
+    {
+      "timestamp": 1778429479829,
+      "role": "bot",
+      "text": "*Consulta sobre paquetería*\n\nElegí el servicio de envío:\n\n1️⃣ Correo Argentino\n2️⃣ Andreani\n3️⃣ Mercado Libre\n\n0️⃣ Volver al menú principal\n\nRespondé con el número de la opción."
+    },
+    {
+      "timestamp": 1778429482220,
+      "role": "user",
+      "text": "1"
+    },
+    {
+      "timestamp": 1778429482288,
+      "role": "bot",
+      "text": "*📦 Correo Argentino*\n\n¿Qué necesitás hacer?\n\n1️⃣ Retirar un envío\n2️⃣ Hacer un envío\n\n0️⃣ Volver al menú anterior\n\nRespondé con el número de la opción."
+    },
+    {
+      "timestamp": 1778429484875,
+      "role": "user",
+      "text": "1"
+    },
+    {
+      "timestamp": 1778429486575,
+      "role": "bot",
+      "text": "*📦 Correo Argentino - Retirar envío*\n\nPodés consultar el estado de tu pedido acá:\nhttps://www.correoargentino.com.ar/seguimiento-de-envios\n\n⚠️ *Importante:* Si dice \"Disponible para retiro en la sucursal Dolce Party\", significa que ya está acá.\n\n*Para retirar:*\n• Venir con el *titular* y su *DNI*\n• Si retira un tercero, necesita autorización del titular + fotocopia del DNI del titular\n\n¿Necesitás algo más?\nRespondé *0* para volver al menú principal."
     }
   ],
   "121981466890246@lid": [
@@ -1895,6 +2085,16 @@
       "timestamp": 1776864827969,
       "role": "bot",
       "text": "*📦 Correo Argentino*\n\nPodés consultar el estado de tu pedido acá:\nhttps://www.correoargentino.com.ar/seguimiento-de-envios\n\n⚠️ *Importante:* Si dice \"Disponible para retiro en la sucursal Dolce Party\", significa que ya está acá.\n\n*Para retirar:*\n• Venir con el *titular* y su *DNI*\n• Si retira un tercero, necesita autorización del titular + fotocopia del DNI del titular\n\n¿Necesitás algo más?\nRespondé *0* para volver al menú principal."
+    },
+    {
+      "timestamp": 1778535315769,
+      "role": "user",
+      "text": "Hola Flor"
+    },
+    {
+      "timestamp": 1778535321730,
+      "role": "user",
+      "text": "Hablame cuando te desocupes"
     }
   ],
   "status@broadcast": [
@@ -2109,6 +2309,276 @@
       "timestamp": 1777401524924,
       "role": "bot",
       "text": "*📦 Mercado Libre*\n\nEl seguimiento de tu compra aparece en tu app de Mercado Libre.\n\n*Para retirar:*\n• Solo necesitás venir con el *código QR* de tu compra\n\n¿Necesitás algo más?\nRespondé *0* para volver al menú principal."
+    },
+    {
+      "timestamp": 1778515944261,
+      "role": "user",
+      "text": "ESO?"
+    },
+    {
+      "timestamp": 1778515944396,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778515944491,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778515954608,
+      "role": "user",
+      "text": ""
+    },
+    {
+      "timestamp": 1778515954812,
+      "role": "bot",
+      "text": "Encantado de conocerte, ! 😊"
+    },
+    {
+      "timestamp": 1778515954911,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778516376317,
+      "role": "user",
+      "text": ""
+    },
+    {
+      "timestamp": 1778516376398,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778516376503,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778516399619,
+      "role": "user",
+      "text": "pense que habias querido poner 32 y se te puso un 6"
+    },
+    {
+      "timestamp": 1778516399690,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778516399737,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778516411776,
+      "role": "user",
+      "text": "pero era un 1 que se te puso un 3 jajajaa +"
+    },
+    {
+      "timestamp": 1778516411839,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778516411895,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778516424531,
+      "role": "user",
+      "text": "me cago en la mierda y el boot"
+    },
+    {
+      "timestamp": 1778516424604,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778516424654,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778516442983,
+      "role": "user",
+      "text": "y yo que no entendia nada lo que me decia la cele de que pase plata JSJAJAJAJ re loco todo"
+    },
+    {
+      "timestamp": 1778516443053,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778516443106,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778517561977,
+      "role": "user",
+      "text": "oki"
+    },
+    {
+      "timestamp": 1778517562063,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778517562108,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778521171862,
+      "role": "user",
+      "text": "las odio"
+    },
+    {
+      "timestamp": 1778521171922,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778521172069,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778521184881,
+      "role": "user",
+      "text": "porque siempre que les mando algo vienen al rato y me piden"
+    },
+    {
+      "timestamp": 1778521184952,
+      "role": "bot",
+      "text": "Encantado de conocerte, Porque! 😊"
+    },
+    {
+      "timestamp": 1778521185008,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778521186335,
+      "role": "user",
+      "text": "jajajajaa"
+    },
+    {
+      "timestamp": 1778521186399,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778521186445,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778521209211,
+      "role": "user",
+      "text": "y me termino quedando sin"
+    },
+    {
+      "timestamp": 1778521209289,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778521209334,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778521213724,
+      "role": "user",
+      "text": ""
+    },
+    {
+      "timestamp": 1778521213813,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778521213851,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778524760639,
+      "role": "user",
+      "text": "abrime el any desk"
+    },
+    {
+      "timestamp": 1778524760726,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778524760771,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778527027112,
+      "role": "user",
+      "text": "circe pasta celeste 20521"
+    },
+    {
+      "timestamp": 1778527027227,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778527027487,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778527069602,
+      "role": "user",
+      "text": "rojo 20522\nrosa 20523\nazul 20524\nverde 20525\nnegro 20526\nnaranja 20527\namarillo 20528"
+    },
+    {
+      "timestamp": 1778527069686,
+      "role": "bot",
+      "text": "Encantado de conocerte, Rojo! 😊"
+    },
+    {
+      "timestamp": 1778527069730,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778527434127,
+      "role": "user",
+      "text": "20540 colorante ROJO CIRCE"
+    },
+    {
+      "timestamp": 1778527434209,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778527434268,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778537490793,
+      "role": "user",
+      "text": "Hay que codificar los colorantes"
+    },
+    {
+      "timestamp": 1778537490925,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778537491300,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
     }
   ],
   "129214158209101@lid": [
@@ -2515,6 +2985,101 @@
       "timestamp": 1777555637542,
       "role": "bot",
       "text": "*📦 Mercado Libre*\n\nEl seguimiento de tu compra aparece en tu app de Mercado Libre.\n\n*Para retirar:*\n• Solo necesitás venir con el *código QR* de tu compra\n\n⚠️ *Importante:* Momentáneamente NO estamos habilitados para recibir devoluciones.\n\n¿Necesitás algo más?\nRespondé *0* para volver al menú principal."
+    },
+    {
+      "timestamp": 1778520603638,
+      "role": "user",
+      "text": "Glase real\nDestello\nLedevit\nGuindelas \nPasta para forrar blanca, celeste, azul y rosa"
+    },
+    {
+      "timestamp": 1778520603814,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778520603988,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778527656041,
+      "role": "user",
+      "text": "Gracias"
+    },
+    {
+      "timestamp": 1778527656097,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778527656155,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778527847896,
+      "role": "user",
+      "text": ""
+    },
+    {
+      "timestamp": 1778527848005,
+      "role": "bot",
+      "text": "Encantado de conocerte, ! 😊"
+    },
+    {
+      "timestamp": 1778527848093,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778529978205,
+      "role": "user",
+      "text": "Ahora anda ?"
+    },
+    {
+      "timestamp": 1778529978357,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778529978603,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778530764245,
+      "role": "user",
+      "text": "Hola"
+    },
+    {
+      "timestamp": 1778530764447,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778530764592,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778531072466,
+      "role": "user",
+      "text": "Anda el cod del circe rojo?"
+    },
+    {
+      "timestamp": 1778531072543,
+      "role": "bot",
+      "text": "Encantado de conocerte, Anda! 😊"
+    },
+    {
+      "timestamp": 1778531072590,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778535263904,
+      "role": "user",
+      "text": "Ok"
     }
   ],
   "250886303572152@lid": [
@@ -2791,6 +3356,236 @@
       "timestamp": 1777292954275,
       "role": "bot",
       "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778516036297,
+      "role": "user",
+      "text": "Hola"
+    },
+    {
+      "timestamp": 1778516036388,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778516036536,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778516112834,
+      "role": "user",
+      "text": "Necesito saber de un paquete de correo"
+    },
+    {
+      "timestamp": 1778516112917,
+      "role": "bot",
+      "text": "Encantado de conocerte, Necesito! 😊"
+    },
+    {
+      "timestamp": 1778516112975,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778516134790,
+      "role": "user",
+      "text": "2"
+    },
+    {
+      "timestamp": 1778516134886,
+      "role": "bot",
+      "text": "*Consulta sobre paquetería*\n\nElegí el servicio de envío:\n\n1️⃣ Correo Argentino\n2️⃣ Andreani\n3️⃣ Mercado Libre\n\n0️⃣ Volver al menú principal\n\nRespondé con el número de la opción."
+    },
+    {
+      "timestamp": 1778516141692,
+      "role": "user",
+      "text": "1"
+    },
+    {
+      "timestamp": 1778516141785,
+      "role": "bot",
+      "text": "*📦 Correo Argentino*\n\n¿Qué necesitás hacer?\n\n1️⃣ Retirar un envío\n2️⃣ Hacer un envío\n\n0️⃣ Volver al menú anterior\n\nRespondé con el número de la opción."
+    },
+    {
+      "timestamp": 1778516147132,
+      "role": "user",
+      "text": "1"
+    },
+    {
+      "timestamp": 1778516149150,
+      "role": "bot",
+      "text": "*📦 Correo Argentino - Retirar envío*\n\nPodés consultar el estado de tu pedido acá:\nhttps://www.correoargentino.com.ar/seguimiento-de-envios\n\n⚠️ *Importante:* Si dice \"Disponible para retiro en la sucursal Dolce Party\", significa que ya está acá.\n\n*Para retirar:*\n• Venir con el *titular* y su *DNI*\n• Si retira un tercero, necesita autorización del titular + fotocopia del DNI del titular\n\n¿Necesitás algo más?\nRespondé *0* para volver al menú principal."
+    }
+  ],
+  "231679763456203@lid": [
+    {
+      "timestamp": 1778516005134,
+      "role": "user",
+      "text": "Hola"
+    },
+    {
+      "timestamp": 1778516005281,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778516005371,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    }
+  ],
+  "115732356534299@lid": [
+    {
+      "timestamp": 1778523582435,
+      "role": "user",
+      "text": "Hola alguna novedad de lo mío ?"
+    },
+    {
+      "timestamp": 1778523582572,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778523582621,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778523612010,
+      "role": "user",
+      "text": "Hola alguna novedad de lo mío ?"
+    },
+    {
+      "timestamp": 1778523612047,
+      "role": "bot",
+      "text": "Encantado de conocerte, Hola! 😊"
+    },
+    {
+      "timestamp": 1778523612074,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778523628557,
+      "role": "user",
+      "text": "1"
+    },
+    {
+      "timestamp": 1778523628587,
+      "role": "bot",
+      "text": "Perfecto! ¿Qué productos necesitás para tu pedido? También podés consultarme sobre nuestro catálogo de globos y decoración."
+    },
+    {
+      "timestamp": 1778523640805,
+      "role": "user",
+      "text": "Hola alguna novedad de lo que se me debe ?"
+    },
+    {
+      "timestamp": 1778523645818,
+      "role": "bot",
+      "text": "¡Hola! Soy Sos Coti, tu asistente virtual exclusivo de la tienda de cotillón. 😊\n\nEntiendo tu consulta sobre \"lo que se te debe\". Sin embargo, como asistente virtual, mi función es ayudarte a explorar nuestro catálogo de productos, encontrar artículos para tu fiesta y responder preguntas sobre ellos. No tengo acceso a información sobre cuentas de clientes, pedidos anteriores, saldos pendientes o gestiones administrativas.\n\nPara consultas específicas sobre el estado de tu cuenta, algún pedido o cualquier tema relacionado con lo que mencionas, te recomiendo que te pongas en contacto directamente con nuestro equipo de atención al cliente. Ellos tienen acceso a esa información y podrán asistirte de manera personalizada.\n\nMientras tanto, si buscas inspiración para una fiesta, necesitas información sobre algún producto de cotillón, o quieres explorar algo en nuestro catálogo, ¡aquí estoy para ayudarte! Dime qué necesitas y con gusto te asisto. 🎉"
+    },
+    {
+      "timestamp": 1778523645859,
+      "role": "bot",
+      "text": "\n¿Necesitás algo más? Respondé *0* para volver al menú principal."
+    }
+  ],
+  "235892589465786@lid": [
+    {
+      "timestamp": 1778527721346,
+      "role": "user",
+      "text": "Hola, buenas tardes. Ando buscando globos metalizados con forma de corazón pequeños, son de 12 cm aprox. Tendran?"
+    },
+    {
+      "timestamp": 1778527721441,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778527721488,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778527772701,
+      "role": "user",
+      "text": "Perdón necesitaría comunicarme con la sucursal de Asturias"
+    },
+    {
+      "timestamp": 1778527772761,
+      "role": "bot",
+      "text": "Encantado de conocerte, Perdón! 😊"
+    },
+    {
+      "timestamp": 1778527772805,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    },
+    {
+      "timestamp": 1778528271414,
+      "role": "user",
+      "text": "Muchas gracias"
+    },
+    {
+      "timestamp": 1778528271474,
+      "role": "bot",
+      "text": "Disculpá, no entendí tu respuesta. Por favor, elegí una de las opciones del menú usando el número correspondiente."
+    },
+    {
+      "timestamp": 1778528271515,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
+    }
+  ],
+  "182141023457418@lid": [
+    {
+      "timestamp": 1778537861006,
+      "role": "user",
+      "text": "Hola buenas 👋🏽👋🏽👋🏽\nOk nos vemos mañana"
+    },
+    {
+      "timestamp": 1778537861071,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778537861223,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    }
+  ],
+  "131426485858349@lid": [
+    {
+      "timestamp": 1778544029240,
+      "role": "user",
+      "text": "Hola buenas noche"
+    },
+    {
+      "timestamp": 1778544029462,
+      "role": "bot",
+      "text": "¡Hola! 👋\n\nBienvenido/a a *Dolce Party - Santa Ana*\n\n📍 *Dirección:* Sta. Ana 2637, X5010EEK Córdoba\n📞 *Teléfono:* 0351 855-9145\n\n🕐 *Horario de atención:*\nLunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado\n\n⚠️ *Importante:*\n• No recibimos llamadas ni audios en este momento\n• Por favor, escribí tus consultas por mensaje de texto\n\n¿En qué puedo ayudarte hoy?"
+    },
+    {
+      "timestamp": 1778544029799,
+      "role": "bot",
+      "text": "Para poder ayudarte mejor, ¿podrías indicarme tu nombre? 😊"
+    },
+    {
+      "timestamp": 1778544095206,
+      "role": "user",
+      "text": "Hola de las velas son las misma que le lleve la vez pasada"
+    },
+    {
+      "timestamp": 1778544095272,
+      "role": "bot",
+      "text": "Encantado de conocerte, Hola! 😊"
+    },
+    {
+      "timestamp": 1778544095318,
+      "role": "bot",
+      "text": "Por favor, elegí una opción:\n\n1️⃣ Realizar pedido cotillón\n2️⃣ Entrega y recepción de envíos\n\nRespondé con el número de la opción que necesitás."
     }
   ]
 }

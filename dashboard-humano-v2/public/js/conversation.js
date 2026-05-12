@@ -24,10 +24,27 @@ function renderMessages(messages) {
     });
     
     // Obtener el texto del mensaje (soporta diferentes formatos)
-    const messageText = msg.text || msg.texto || msg.parts?.[0]?.text || '';
+    let messageText = msg.text || msg.texto || msg.parts?.[0]?.text || '';
+    
+    // Procesar formato de WhatsApp
+    // Convertir *texto* a <strong>texto</strong>
+    messageText = messageText.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    
+    // Convertir saltos de línea a <br>
+    messageText = messageText.replace(/\n/g, '<br>');
+    
+    // Determinar la clase según el rol
+    let messageClass = 'message';
+    if (msg.role === 'user') {
+      messageClass += ' message-user';
+    } else if (msg.role === 'human' || msg.role === 'manual') {
+      messageClass += ' message-human';
+    } else {
+      messageClass += ' message-bot';
+    }
     
     return `
-      <div class="message ${msg.role}">
+      <div class="${messageClass}">
         <div class="message-text">${messageText}</div>
         <div class="message-time">${time}</div>
       </div>

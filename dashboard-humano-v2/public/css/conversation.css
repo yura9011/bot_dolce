@@ -52,10 +52,30 @@
 }
 
 .message {
-  max-width: 65%;
-  padding: 10px 14px;
+  max-width: 45%;
+  padding: 8px 12px;
   border-radius: 8px;
   word-wrap: break-word;
+  white-space: pre-wrap; /* Respetar saltos de línea */
+}
+
+.message-user {
+  align-self: flex-start;
+  background: white;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.message-bot {
+  align-self: flex-end;
+  background: #dcf8c6;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.message-human {
+  align-self: flex-end;
+  background: #d1f4ff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  border-left: 3px solid #0084ff;
 }
 
 .message.user {
@@ -74,6 +94,7 @@
   font-size: 14px;
   color: #333;
   margin-bottom: 4px;
+  line-height: 1.4;
 }
 
 .message-time {
