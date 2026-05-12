@@ -19,6 +19,7 @@ const io = socketIo(server);
 // Configuración
 const PORT = process.env.DASHBOARD_HUMANO_PORT || 3001;
 const AGENT_ID = process.env.DASHBOARD_AGENT_ID || 'santa-ana';
+const CONFIG_AGENT_ID = 'santa-ana'; // agente real en agents.json (para lookup de config)
 const IS_TESTING = process.env.NODE_ENV === 'development';
 
 // Paths
@@ -48,7 +49,7 @@ const loginLimiter = rateLimit({
 function leerConfig() {
   try {
     const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
-    const agent = config.agents.find(a => a.id === AGENT_ID);
+    const agent = config.agents.find(a => a.id === CONFIG_AGENT_ID);
     return agent;
   } catch (error) {
     console.error('Error leyendo config:', error);
