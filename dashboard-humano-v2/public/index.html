@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/main.css?v=3">
   <link rel="stylesheet" href="/css/chat-list.css?v=3">
   <link rel="stylesheet" href="/css/conversation.css?v=3">
-  <link rel="stylesheet" href="/css/config.css?v=1">
+  <link rel="stylesheet" href="/css/config.css?v=2">
 </head>
 <body>
   <div class="dashboard">
@@ -16,6 +16,7 @@
         ⚠️ ENTORNO DE TESTING — Los datos NO son reales
       </div>
       <div class="header-left">
+        <button id="sidebarToggle" class="hamburger-btn" aria-label="Menú">☰</button>
         <h1>🎈 Dolce Party - Santa Ana</h1>
       </div>
       <div class="header-right">
@@ -30,6 +31,7 @@
           <div class="tabs">
             <button id="tabChats" class="tab active">📱 Chats (<span id="chatCount">0</span>)</button>
             <button id="tabConfig" class="tab">⚙️ Config</button>
+            <button id="tabStats" class="tab">📊 Stats</button>
           </div>
           <input type="text" id="searchInput" placeholder="🔍 Buscar...">
         </div>
@@ -39,7 +41,11 @@
         <div id="configContainer" class="config-container" style="display: none;">
           <p class="no-chats">Cargando configuración...</p>
         </div>
+        <div id="statsContainer" class="stats-container" style="display: none;">
+          <p class="no-chats">Cargando estadísticas...</p>
+        </div>
       </aside>
+      <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
       
       <main class="conversation-area">
         <div class="no-chat-selected">
@@ -65,6 +71,7 @@
           <div id="adminNumbersList" class="admin-numbers-list"></div>
           <button id="addNumberBtn" class="btn-add-number">➕ Agregar Número</button>
         </div>
+        <div id="statsPanel" class="stats-panel" style="display: none;"></div>
       </main>
     </div>
   </div>
@@ -78,6 +85,7 @@
   <script src="/js/conversation.js"></script>
   <script src="/js/websocket.js"></script>
   <script src="/js/config.js"></script>
+  <script src="/js/stats.js"></script>
   <script src="/js/notifications.js"></script>
 </body>
 </html>

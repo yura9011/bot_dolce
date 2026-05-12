@@ -44,11 +44,12 @@ function selectChat(userId) {
   currentUserId = userId;
   document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
   document.querySelector(`[data-user-id="${userId}"]`)?.classList.add('active');
-  
+
   document.querySelector('.no-chat-selected').style.display = 'none';
   document.getElementById('conversationContainer').style.display = 'flex';
-  
+
   loadMessages(userId);
+  document.dispatchEvent(new CustomEvent('chatSelected', { detail: { userId } }));
 }
 
 // Búsqueda de chats en el sidebar
