@@ -199,38 +199,19 @@ OpenRouter - Ling 2.6-flash
 OpenRouter - Gemma 4
 ```
 
-## Agregar Nuevo Local
+## Agregar Nuevo Cliente
 
-1. Editar `config/agents.json`:
-```json
-{
-  "id": "nuevo-local",
-  "name": "Dolce Party - Nuevo Local",
-  "enabled": true,
-  "ports": { "api": 3013 },
-  "paths": {
-    "data": "data/nuevo-local",
-    "logs": "logs/nuevo-local",
-    "catalog": "catalogs/catalogo-nuevo-local.js"
-  }
-}
-```
-
-2. Crear directorios:
 ```bash
-mkdir data/nuevo-local
-mkdir logs/nuevo-local
+npm run add-client
 ```
 
-3. Copiar y editar catálogo:
-```bash
-cp catalogs/catalogo-santa-ana.js catalogs/catalogo-nuevo-local.js
-```
+Sigue las instrucciones interactivas. El cliente queda deshabilitado hasta que tengas el número de WhatsApp listo.
 
-4. Iniciar agente:
-```bash
-node orchestrator.js start nuevo-local
-```
+Para activarlo:
+1. Editar `config/agents.json` → poner `"enabled": true`
+2. `git push` → `git pull` en VPS → `pm2 restart bot-dolce-prd`
+3. Escanear QR: `pm2 logs bot-dolce-prd`
+4. Abrir dashboard en `http://VPS_IP:{dashboard_port}`
 
 ## Desarrollo
 
