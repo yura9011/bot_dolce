@@ -6,7 +6,7 @@ socket.on('connect', () => {
 });
 
 socket.on('chats_updated', (chats) => {
-  renderChats(chats);
+  if (currentTab === 'chats') renderChats(chats);
 });
 
 socket.on('new_message', ({ userId }) => {

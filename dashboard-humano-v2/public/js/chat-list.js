@@ -1,6 +1,8 @@
 function renderChats(chats) {
   const container = document.getElementById('chatListContainer');
-  document.getElementById('chatCount').textContent = chats.length;
+  const chatCount = document.getElementById('chatCount');
+  if (!container) return;
+  if (chatCount) chatCount.textContent = chats.length;
   
   if (chats.length === 0) {
     container.innerHTML = '<p class="no-chats">No hay chats activos</p>';
