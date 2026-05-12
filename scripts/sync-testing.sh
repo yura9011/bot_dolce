@@ -21,6 +21,7 @@ cd "$TESTING_DIR"
 echo -e "${YELLOW}📦 Guardando archivos runtime...${NC}"
 cp config/admin-numbers.json /tmp/admin-numbers.backup.json 2>/dev/null || true
 cp config/phone-map.json /tmp/phone-map.backup.json 2>/dev/null || true
+cp config/agents.override.json /tmp/agents-override.backup.json 2>/dev/null || true
 
 # 2. Resetear al estado del repo (descarta cambios locales)
 echo -e "${YELLOW}🔄 Reseteando al estado del repositorio...${NC}"
@@ -32,6 +33,7 @@ git clean -fd --exclude=data/ --exclude=logs/ --exclude=.wwebjs_auth_testing/ --
 echo -e "${YELLOW}📂 Restaurando archivos runtime...${NC}"
 cp /tmp/admin-numbers.backup.json config/admin-numbers.json 2>/dev/null || true
 cp /tmp/phone-map.backup.json config/phone-map.json 2>/dev/null || true
+cp /tmp/agents-override.backup.json config/agents.override.json 2>/dev/null || true
 
 # 4. Instalar dependencias si cambiaron
 echo -e "${YELLOW}📦 Verificando dependencias...${NC}"

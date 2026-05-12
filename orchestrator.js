@@ -14,7 +14,23 @@ class BotOrchestrator {
     if (!fs.existsSync(configPath)) {
       throw new Error("Archivo config/agents.json no encontrado");
     }
-    return JSON.parse(fs.readFileSync(configPath, "utf8"));
+    const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+
+    // Aplicar overrides de puertos si existe agents.override.json (para entornos de testing)
+    const overridePath = path.join(__dirname, "config", "agents.override.json");
+    if (fs.existsSync(overridePath)) {
+      const override = JSON.parse(fs.readFileSync(overridePath, "utf8"));
+      if (override.portOverrides) {
+        config.agents.forEach(agent => {
+          if (override.portOverrides[agent.id]) {
+            agent.ports = { ...agent.ports, ...override.portOverrides[agent.id] };
+            console.log(`⚙️  Override de puertos para ${agent.id}: API=${agent.ports.api}, Dashboard=${agent.ports.dashboard}`);
+          }
+        });
+      }
+    }
+
+    return config;
   }
 
   async startAgent(agentId) {
