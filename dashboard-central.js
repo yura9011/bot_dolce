@@ -19,8 +19,30 @@ const io = socketIo(server, {
 });
 
 const PORT = process.env.DASHBOARD_CENTRAL_PORT || 3000;
+const DASHBOARD_USER = process.env.DASHBOARD_CENTRAL_USER || 'admin';
+const DASHBOARD_PASS = process.env.DASHBOARD_CENTRAL_PASS || 'admin123';
 
 app.use(express.json());
+
+// Middleware de autenticación básica HTTP
+app.use((req, res, next) => {
+  if (req.path.match(/\.(css|js|png|ico|wav)$/)) return next();
+  if (req.path.startsWith('/socket.io')) return next();
+
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Basic ')) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Dashboard Central"');
+    return res.status(401).send('Autenticación requerida');
+  }
+
+  const [user, pass] = Buffer.from(auth.slice(6), 'base64').toString().split(':');
+  if (user !== DASHBOARD_USER || pass !== DASHBOARD_PASS) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Dashboard Central"');
+    return res.status(401).send('Credenciales incorrectas');
+  }
+  next();
+});
+
 app.use(express.static('public-central'));
 
 // ─── RUTAS DEL PANEL HUMANO ──────────────────────────────

@@ -118,8 +118,13 @@ async function createAgentCard(agent) {
                 statusClass = 'running';
                 statusText = 'Corriendo';
                 
-                const statsResponse = await fetch(`/api/agents/${agent.id}/stats`);
+                const [statsResponse, pausedResponse] = await Promise.all([
+                    fetch(`/api/agents/${agent.id}/stats`),
+                    fetch(`/api/agents/${agent.id}/paused`)
+                ]);
                 const stats = await statsResponse.json();
+                const pausedData = await pausedResponse.json();
+                const pausedCount = Array.isArray(pausedData) ? pausedData.length : Object.keys(pausedData).length;
                 
                 const today = new Date().toISOString().split('T')[0];
                 const todayStats = stats.mensajes?.[today] || { recibidos: 0, enviados: 0 };
@@ -135,6 +140,11 @@ async function createAgentCard(agent) {
                         <p><strong>Telefono:</strong> ${agent.info.telefono}</p>
                         <p><strong>Horario:</strong> ${agent.info.horario}</p>
                     </div>
+                    ${pausedCount > 0 ? `
+                    <div class="pending-alert">
+                        🔴 ${pausedCount} chat${pausedCount > 1 ? 's' : ''} esperando atención humana
+                    </div>
+                    ` : ''}
                     <div class="stats-section">
                         <h3>Estadisticas de Hoy</h3>
                         <div class="stats-grid-mini">
@@ -152,7 +162,7 @@ async function createAgentCard(agent) {
                         <button onclick="window.open('/agente/${agent.id}', '_blank')" class="btn btn-primary btn-small">
                             Ver Detalles
                         </button>
-                        <button onclick="window.open('/human-panel/${agent.id}', '_blank')" class="btn btn-warning btn-small">
+                        <button onclick="window.open('http://${window.location.hostname}:${agent.ports.dashboard}', '_blank')" class="btn btn-warning btn-small">
                             🧑‍💼 Panel Humano
                         </button>
                     </div>
@@ -182,7 +192,14 @@ async function createAgentCard(agent) {
         card.innerHTML = `
             <div class="agent-header">
                 <h2>${agent.name}</h2>
-                <span class="status ${statusClass}">${statusText}</span>
+                <span class="status ${statusClass}">⏸️ Pendiente activación</span>
+            </div>
+            <div class="agent-info">
+                <p><strong>Dirección:</strong> ${agent.info?.direccion || 'No configurado'}</p>
+                <p><strong>Teléfono:</strong> ${agent.info?.telefono || 'No configurado'}</p>
+            </div>
+            <div class="agent-note">
+                <p>⚠️ Este agente está pendiente de activación. Configurar número de WhatsApp para habilitarlo.</p>
             </div>
         `;
     }

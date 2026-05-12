@@ -941,9 +941,29 @@ body {
 }
 
 .empty-state {
-    text-align: center;
-    color: #6c757d;
-    padding: 40px 20px;
+  text-align: center;
+  color: #6c757d;
+  padding: 40px 20px;
+}
+
+.pending-alert {
+  background: #ffebee;
+  color: #c62828;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.agent-note {
+  background: #fff8e1;
+  color: #856404;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 10px;
 }
 
 /* ─── RESPONSIVE ────────────────────────────────────────── */
