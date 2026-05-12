@@ -28,6 +28,7 @@ const DATA_PATH = path.join(__dirname, `../data/${AGENT_ID}`);
 const HISTORIAL_PATH = path.join(DATA_PATH, 'historial.json');
 const PAUSAS_PATH = path.join(DATA_PATH, 'pausas.json');
 const ADMIN_NUMBERS_PATH = path.join(__dirname, '../config/admin-numbers.json');
+const PHONE_MAP_PATH = path.join(__dirname, '../config/phone-map.json');
 
 // Middleware
 app.use(cors());
@@ -416,6 +417,22 @@ setInterval(() => {
 
 app.get('/api/env', (req, res) => {
   res.json({ isTesting: IS_TESTING, agentId: AGENT_ID });
+});
+
+// ============================================
+// ENDPOINT PHONE MAP
+// ============================================
+
+app.get('/api/phone-map', authenticateToken, (req, res) => {
+  try {
+    if (fs.existsSync(PHONE_MAP_PATH)) {
+      res.json(JSON.parse(fs.readFileSync(PHONE_MAP_PATH, 'utf8')));
+    } else {
+      res.json({});
+    }
+  } catch(e) {
+    res.json({});
+  }
 });
 
 // ============================================

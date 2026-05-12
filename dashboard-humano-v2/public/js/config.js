@@ -17,45 +17,55 @@ async function loadAdminNumbers() {
 function renderAdminNumbers() {
   const container = document.getElementById('adminNumbersList');
   if (!container) return;
-  // Leer rol del usuario actual — puede venir de currentUser o del elemento del DOM
-  const isAdmin = currentUser?.role === 'admin' || 
-                  document.getElementById('userName')?.dataset?.role === 'admin';
 
-  if (adminNumbers.length === 0) {
-    container.innerHTML = '<p class="no-chats">No hay números configurados</p>';
-    const addBtn = document.getElementById('addNumberBtn');
-    if (addBtn) addBtn.style.display = isAdmin ? 'block' : 'none';
-    return;
-  }
+  // Obtener mapa de IDs para mostrar números legibles
+  let phoneMap = {};
+  fetch('/api/phone-map', { credentials: 'include' })
+    .then(r => r.ok ? r.json() : {})
+    .then(m => { phoneMap = m; render(); })
+    .catch(() => render());
+  
+  function render() {
+    const isAdmin = currentUser?.role === 'admin' || 
+                    document.getElementById('userName')?.dataset?.role === 'admin';
 
-  container.innerHTML = adminNumbers.map(item => {
-    const badgeClass = item.rol === 'admin' ? 'badge-admin' : 'badge-ignorado';
-    const badgeText = item.rol === 'admin' ? 'Admin' : 'Ignorado';
-    return `
-      <div class="admin-number-item" data-id="${item.id}">
-        <div class="admin-number-info">
-          <div class="admin-number-name">${item.nombre}</div>
-          <div class="admin-number-id">📱 ${item.id}</div>
-          <div class="admin-number-role">
-            <span class="role-badge ${badgeClass}">${badgeText}</span>
-            <span class="admin-number-date">Agregado: ${new Date(item.fechaAgregado).toLocaleDateString('es-AR')}</span>
+    if (adminNumbers.length === 0) {
+      container.innerHTML = '<p class="no-chats">No hay números configurados</p>';
+      const addBtn = document.getElementById('addNumberBtn');
+      if (addBtn) addBtn.style.display = isAdmin ? 'block' : 'none';
+      return;
+    }
+
+    container.innerHTML = adminNumbers.map(item => {
+      const badgeClass = item.rol === 'admin' ? 'badge-admin' : 'badge-ignorado';
+      const badgeText = item.rol === 'admin' ? 'Admin' : 'Ignorado';
+      const displayPhone = phoneMap[item.id] ? `+${phoneMap[item.id]}` : item.id;
+      return `
+        <div class="admin-number-item" data-id="${item.id}">
+          <div class="admin-number-info">
+            <div class="admin-number-name">${item.nombre}</div>
+            <div class="admin-number-id">📱 ${displayPhone}</div>
+            <div class="admin-number-role">
+              <span class="role-badge ${badgeClass}">${badgeText}</span>
+              <span class="admin-number-date">Agregado: ${new Date(item.fechaAgregado).toLocaleDateString('es-AR')}</span>
+            </div>
+          </div>
+          <div class="admin-number-actions">
+            ${isAdmin ? `
+              <button class="btn-role-toggle" onclick="toggleRole('${item.id}')" title="Cambiar rol">🔄</button>
+              <button class="btn-delete" onclick="deleteNumber('${item.id}')" title="Eliminar">❌</button>
+            ` : ''}
           </div>
         </div>
-        <div class="admin-number-actions">
-          ${isAdmin ? `
-            <button class="btn-role-toggle" onclick="toggleRole('${item.id}')" title="Cambiar rol">🔄</button>
-            <button class="btn-delete" onclick="deleteNumber('${item.id}')" title="Eliminar">❌</button>
-          ` : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
+      `;
+    }).join('');
 
-  if (isAdmin) {
-    document.getElementById('addNumberBtn').onclick = showAddModal;
-    document.getElementById('addNumberBtn').style.display = 'block';
-  } else {
-    document.getElementById('addNumberBtn').style.display = 'none';
+    if (isAdmin) {
+      document.getElementById('addNumberBtn').onclick = showAddModal;
+      document.getElementById('addNumberBtn').style.display = 'block';
+    } else {
+      document.getElementById('addNumberBtn').style.display = 'none';
+    }
   }
 }
 
