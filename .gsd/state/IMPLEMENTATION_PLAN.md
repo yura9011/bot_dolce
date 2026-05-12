@@ -132,6 +132,12 @@
   - [x] Verificar en producción — http://2.24.89.243:3001 OK
 - [x] **Dashboard Admin Management - Backend+Frontend** ✅ COMPLETADO 2026-05-11
 - [x] **Dashboard Admin Management - Deploy a Producción** ✅ COMPLETADO 2026-05-12
+- [x] **Fix envío de mensajes + WebSocket tiempo real** ✅ COMPLETADO 2026-05-12
+  - [x] server.js: message/finish escriben directo a historial.json y pausas.json
+  - [x] agent-manager.js: notificarDashboard() via HTTP local
+  - [x] Endpoint interno /api/internal/new-message
+  - [x] Limpieza debug logs + BOT_API_URL
+  - [x] Template multi-tenant actualizada
 - [ ] Phase 2: Dashboard Maestro
 - [ ] Phase 3: Automation Scripts (Completar)
 - [ ] Phase 4: Client & Human Dashboards
@@ -141,7 +147,7 @@
 ### Immediate (Next 24h)
 
 - [ ] **Deploy dashboard fixes a VPS** — git push → git pull → pm2 restart
-- [ ] Verificar en producción — abrir F12, revisar console.logs de loadMessages
+- [ ] Verificar en producción — enviar mensaje, probar MUCHAS GRACIAS
 - [ ] Handle Santa Ana phone number change (tomorrow)
 - [ ] Test number change procedure in DEV environment
 - [ ] Document number change process

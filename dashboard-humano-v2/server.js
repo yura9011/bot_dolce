@@ -19,7 +19,6 @@ const io = socketIo(server);
 // Configuración
 const PORT = process.env.DASHBOARD_HUMANO_PORT || 3001;
 const AGENT_ID = 'santa-ana';
-const BOT_API_URL = 'http://localhost:3011';
 
 // Paths
 const CONFIG_PATH = path.join(__dirname, '../config/agents.json');
@@ -230,7 +229,7 @@ app.get('/api/chats/:userId/messages', authenticateToken, (req, res) => {
   res.json(mensajes);
 });
 
-app.post('/api/chats/:userId/message', authenticateToken, async (req, res) => {
+app.post('/api/chats/:userId/message', authenticateToken, (req, res) => {
   const { userId } = req.params;
   const { message } = req.body;
 
@@ -239,47 +238,47 @@ app.post('/api/chats/:userId/message', authenticateToken, async (req, res) => {
   }
 
   try {
-    // Enviar mensaje al bot API
-    const response = await fetch(`${BOT_API_URL}/send-message`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: userId,
-        message: message
-      })
+    // Guardar en historial directamente
+    const historial = leerHistorial();
+    if (!historial[userId]) historial[userId] = [];
+    historial[userId].push({
+      role: 'human',
+      text: message,
+      timestamp: Date.now()
     });
-
-    if (!response.ok) {
-      throw new Error('Error enviando mensaje al bot');
-    }
+    fs.writeFileSync(HISTORIAL_PATH, JSON.stringify(historial, null, 2));
 
     // Emitir evento de Socket.IO
     io.emit('message_sent', { userId, message, timestamp: Date.now() });
 
     res.json({ success: true });
   } catch (error) {
-    console.error('Error enviando mensaje:', error);
-    res.status(500).json({ error: 'Error enviando mensaje' });
+    console.error('Error guardando mensaje:', error);
+    res.status(500).json({ error: 'Error guardando mensaje' });
   }
 });
 
-app.post('/api/chats/:userId/finish', authenticateToken, async (req, res) => {
+app.post('/api/chats/:userId/finish', authenticateToken, (req, res) => {
   const { userId } = req.params;
 
   try {
-    // Enviar "MUCHAS GRACIAS" para reactivar el bot
-    const response = await fetch(`${BOT_API_URL}/send-message`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: userId,
-        message: 'MUCHAS GRACIAS'
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('Error finalizando conversación');
+    // Reactivar bot escribiendo en pausas.json
+    const pausas = leerPausas();
+    if (pausas[userId]) {
+      pausas[userId].pausado = false;
+      pausas[userId].fechaReactivacion = Date.now();
     }
+    fs.writeFileSync(PAUSAS_PATH, JSON.stringify(pausas, null, 2));
+
+    // Guardar "MUCHAS GRACIAS" en historial
+    const historial = leerHistorial();
+    if (!historial[userId]) historial[userId] = [];
+    historial[userId].push({
+      role: 'human',
+      text: 'MUCHAS GRACIAS',
+      timestamp: Date.now()
+    });
+    fs.writeFileSync(HISTORIAL_PATH, JSON.stringify(historial, null, 2));
 
     // Emitir evento
     io.emit('bot_resumed', { userId });
@@ -380,6 +379,16 @@ app.delete('/api/admin-numbers/:id', authenticateToken, requireAdminRole, (req, 
   } else {
     res.status(500).json({ error: 'Error guardando los datos' });
   }
+});
+
+// ============================================
+// ENDPOINT INTERNO (notificaciones desde el bot)
+// ============================================
+
+app.post('/api/internal/new-message', (req, res) => {
+  const { userId } = req.body;
+  io.emit('new_message', { userId });
+  res.json({ ok: true });
 });
 
 // ============================================
