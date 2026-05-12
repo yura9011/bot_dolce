@@ -55,10 +55,10 @@
 
 ---
 
-### 🔵 Milestone 3: Dashboard Admin Management (NUEVO)
-**Status**: Planificado  
+### 🔵 Milestone 3: Dashboard Admin Management (EN PROGRESO)
+**Status**: Backend + Frontend completos, pendiente deploy  
 **Priority**: Media  
-**Target**: TBD
+**Target**: 2026-05-11
 
 **Objective**: Gestionar dinámicamente números admin/ignorados desde el dashboard sin editar .env ni reiniciar bot
 
@@ -130,6 +130,8 @@
   - [x] Subir cambios al VPS (git pull)
   - [x] Reiniciar PM2
   - [x] Verificar en producción — http://2.24.89.243:3001 OK
+- [x] **Dashboard Admin Management - Backend+Frontend** ✅ COMPLETADO 2026-05-11
+- [ ] **Dashboard Admin Management - Deploy a Producción** (PRÓXIMO)
 - [ ] Phase 2: Dashboard Maestro
 - [ ] Phase 3: Automation Scripts (Completar)
 - [ ] Phase 4: Client & Human Dashboards
@@ -159,6 +161,14 @@
   - git pull + PM2 restart en VPS
   - Login y CSS verificados en http://2.24.89.243:3001
   - Mensajes renderizados correctamente con ancho 65%
+- ✅ **Dashboard Admin Management - Fase 1 Backend Completa**
+  - CRUD API endpoints en server.js (GET, POST, PUT, DELETE)
+  - config/admin-numbers.json con datos migrados
+  - admin-commands.js ahora lee desde JSON con file watcher y fallback a .env
+  - agent-manager.js reconoce roles "admin" e "ignorado"
+  - Script de migración: scripts/migrate-admin-numbers.js
+  - Frontend: vista configuración con tabs, lista, modal agregar
+  - API endpoints verificados localmente
 - ✅ Completed dual environment setup on VPS
 - ✅ Fixed firewall configuration for dashboard access
 - ✅ Configured separate `.env` files for PRD and DEV
@@ -300,6 +310,6 @@ The multi-tenant implementation will be considered successful when:
 
 ---
 
-**Last Updated**: 2026-05-10  
+**Last Updated**: 2026-05-11
 **Status**: Planning phase complete, ready for approval  
 **Next Milestone Review**: TBD

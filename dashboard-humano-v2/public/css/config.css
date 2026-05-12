@@ -1,0 +1,280 @@
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 10px;
+  background: #f0f2f5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: rgba(7, 94, 84, 0.1);
+}
+
+.tab.active {
+  background: #075e54;
+  color: white;
+}
+
+.config-container {
+  padding: 15px;
+}
+
+.config-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.config-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.config-header h2 {
+  font-size: 20px;
+  color: #075e54;
+  margin-bottom: 5px;
+}
+
+.config-subtitle {
+  color: #666;
+  font-size: 14px;
+}
+
+.admin-numbers-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-number-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s;
+}
+
+.admin-number-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.admin-number-info {
+  flex: 1;
+}
+
+.admin-number-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.admin-number-id {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.admin-number-role {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.role-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-admin {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-ignorado {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.admin-number-date {
+  font-size: 11px;
+  color: #999;
+}
+
+.admin-number-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-role-toggle, .btn-delete {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-role-toggle {
+  background: #e8f4fd;
+}
+
+.btn-role-toggle:hover {
+  background: #cce5ff;
+}
+
+.btn-delete {
+  background: #fde8e8;
+}
+
+.btn-delete:hover {
+  background: #fcc;
+}
+
+.btn-add-number {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: #075e54;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-add-number:hover {
+  background: #054d44;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  width: 420px;
+  max-width: 90vw;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+}
+
+.modal-content h3 {
+  font-size: 18px;
+  color: #075e54;
+  margin-bottom: 20px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #075e54;
+  box-shadow: 0 0 0 2px rgba(7,94,84,0.15);
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #999;
+}
+
+select.form-input {
+  cursor: pointer;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  background: #f0f2f5;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+}
+
+.btn-cancel:hover {
+  background: #e0e2e5;
+}
+
+.btn-confirm {
+  padding: 10px 20px;
+  background: #075e54;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn-confirm:hover {
+  background: #054d44;
+}

@@ -26,6 +26,7 @@ const CONFIG_PATH = path.join(__dirname, '../config/agents.json');
 const DATA_PATH = path.join(__dirname, '../data/santa-ana');
 const HISTORIAL_PATH = path.join(DATA_PATH, 'historial.json');
 const PAUSAS_PATH = path.join(DATA_PATH, 'pausas.json');
+const ADMIN_NUMBERS_PATH = path.join(__dirname, '../config/admin-numbers.json');
 
 // Middleware
 app.use(cors());
@@ -110,6 +111,31 @@ function obtenerChats() {
   chats.sort((a, b) => b.timestamp - a.timestamp);
 
   return chats;
+}
+
+// ============================================
+// FUNCIONES ADMIN NUMBERS
+// ============================================
+
+function leerAdminNumbers() {
+  try {
+    if (fs.existsSync(ADMIN_NUMBERS_PATH)) {
+      return JSON.parse(fs.readFileSync(ADMIN_NUMBERS_PATH, 'utf8'));
+    }
+  } catch (error) {
+    console.error('Error leyendo admin-numbers:', error);
+  }
+  return { admins: [] };
+}
+
+function guardarAdminNumbers(data) {
+  try {
+    fs.writeFileSync(ADMIN_NUMBERS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (error) {
+    console.error('Error guardando admin-numbers:', error);
+    return false;
+  }
 }
 
 // ============================================
@@ -262,6 +288,97 @@ app.post('/api/chats/:userId/finish', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Error finalizando conversación:', error);
     res.status(500).json({ error: 'Error finalizando conversación' });
+  }
+});
+
+// ============================================
+// RUTAS ADMIN NUMBERS (CRUD) - Solo admins
+// ============================================
+
+function requireAdminRole(req, res, next) {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Solo administradores pueden gestionar números' });
+  }
+  next();
+}
+
+app.get('/api/admin-numbers', authenticateToken, (req, res) => {
+  const data = leerAdminNumbers();
+  res.json(data.admins);
+});
+
+app.post('/api/admin-numbers', authenticateToken, requireAdminRole, (req, res) => {
+  const { id, nombre, rol } = req.body;
+
+  if (!id || !/^\d+$/.test(id)) {
+    return res.status(400).json({ error: 'Número inválido. Solo dígitos.' });
+  }
+
+  if (rol && !['admin', 'ignorado'].includes(rol)) {
+    return res.status(400).json({ error: 'Rol inválido. Use admin o ignorado.' });
+  }
+
+  const data = leerAdminNumbers();
+
+  if (data.admins.some(a => a.id === id)) {
+    return res.status(409).json({ error: 'El número ya existe' });
+  }
+
+  data.admins.push({
+    id,
+    nombre: nombre || 'Sin nombre',
+    rol: rol || 'ignorado',
+    agregadoPor: req.user.username,
+    fechaAgregado: new Date().toISOString()
+  });
+
+  if (guardarAdminNumbers(data)) {
+    res.json({ success: true, message: 'Número agregado correctamente' });
+  } else {
+    res.status(500).json({ error: 'Error guardando los datos' });
+  }
+});
+
+app.put('/api/admin-numbers/:id', authenticateToken, requireAdminRole, (req, res) => {
+  const { id } = req.params;
+  const { nombre, rol } = req.body;
+
+  if (rol && !['admin', 'ignorado'].includes(rol)) {
+    return res.status(400).json({ error: 'Rol inválido. Use admin o ignorado.' });
+  }
+
+  const data = leerAdminNumbers();
+  const index = data.admins.findIndex(a => a.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Número no encontrado' });
+  }
+
+  if (nombre) data.admins[index].nombre = nombre;
+  if (rol) data.admins[index].rol = rol;
+
+  if (guardarAdminNumbers(data)) {
+    res.json({ success: true, message: 'Número actualizado correctamente' });
+  } else {
+    res.status(500).json({ error: 'Error guardando los datos' });
+  }
+});
+
+app.delete('/api/admin-numbers/:id', authenticateToken, requireAdminRole, (req, res) => {
+  const { id } = req.params;
+  const data = leerAdminNumbers();
+  const index = data.admins.findIndex(a => a.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: 'Número no encontrado' });
+  }
+
+  data.admins.splice(index, 1);
+
+  if (guardarAdminNumbers(data)) {
+    res.json({ success: true, message: 'Número eliminado correctamente' });
+  } else {
+    res.status(500).json({ error: 'Error guardando los datos' });
   }
 });
 
