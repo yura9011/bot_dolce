@@ -1,26 +1,28 @@
 let notificationsEnabled = true;
 let audioContext = null;
 
-// Inicializar AudioContext en el primer click (requerido por navegadores)
-document.addEventListener('click', () => {
+// Inicializar AudioContext en el primer gesto del usuario
+function initAudio() {
   if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    try {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e) {}
   }
-}, { once: true });
+}
+
+// Activar en cualquier interacción
+document.addEventListener('click', initAudio, { once: false });
+document.addEventListener('keydown', initAudio, { once: false });
 
 function playNotification() {
-  if (!notificationsEnabled) return;
+  if (!notificationsEnabled || !audioContext) return;
   
   try {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    
-    // Reanudar si está suspendido
+    // Resumir contexto si está suspendido (política del navegador)
     if (audioContext.state === 'suspended') {
       audioContext.resume();
     }
-    
+
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
     
@@ -35,9 +37,7 @@ function playNotification() {
     
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.3);
-  } catch(e) {
-    // silencioso si no hay soporte
-  }
+  } catch(e) {}
 }
 
 function requestNotificationPermission() {
