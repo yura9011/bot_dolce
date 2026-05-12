@@ -5,6 +5,16 @@ async function init() {
   const isAuth = await checkAuth();
   if (!isAuth) return;
   
+  // Detectar entorno
+  try {
+    const envRes = await fetch('/api/env');
+    const env = await envRes.json();
+    if (env.isTesting) {
+      document.querySelector('.dashboard').classList.add('is-testing');
+      document.getElementById('testingBanner').style.display = 'block';
+    }
+  } catch(e) {}
+  
   document.getElementById('logoutBtn').addEventListener('click', logout);
   
   document.getElementById('tabChats').addEventListener('click', () => switchTab('chats'));

@@ -18,11 +18,12 @@ const io = socketIo(server);
 
 // Configuración
 const PORT = process.env.DASHBOARD_HUMANO_PORT || 3001;
-const AGENT_ID = 'santa-ana';
+const AGENT_ID = process.env.DASHBOARD_AGENT_ID || 'santa-ana';
+const IS_TESTING = process.env.NODE_ENV === 'development';
 
 // Paths
 const CONFIG_PATH = path.join(__dirname, '../config/agents.json');
-const DATA_PATH = path.join(__dirname, '../data/santa-ana');
+const DATA_PATH = path.join(__dirname, `../data/${AGENT_ID}`);
 const HISTORIAL_PATH = path.join(DATA_PATH, 'historial.json');
 const PAUSAS_PATH = path.join(DATA_PATH, 'pausas.json');
 const ADMIN_NUMBERS_PATH = path.join(__dirname, '../config/admin-numbers.json');
@@ -415,6 +416,14 @@ setInterval(() => {
 }, 3000);
 
 // ============================================
+// ENDPOINT DE ENTORNO
+// ============================================
+
+app.get('/api/env', (req, res) => {
+  res.json({ isTesting: IS_TESTING, agentId: AGENT_ID });
+});
+
+// ============================================
 // SERVIR ARCHIVOS ESTÁTICOS (DESPUÉS DE RUTAS API)
 // ============================================
 app.use(express.static('public'));
@@ -426,4 +435,5 @@ app.use(express.static('public'));
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Dashboard Humano corriendo en http://0.0.0.0:${PORT}`);
   console.log(`📊 Agente: ${AGENT_ID}`);
+  if (IS_TESTING) console.log('⚠️  MODO TESTING ACTIVO');
 });

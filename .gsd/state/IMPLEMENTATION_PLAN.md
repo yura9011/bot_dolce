@@ -8,7 +8,7 @@
 
 **Project**: exp010-whatsappbot
 **Phase**: Production + Planning Multi-Tenant Architecture
-**Last Updated**: 2026-05-10
+**Last Updated**: 2026-05-12
 
 ---
 
@@ -138,6 +138,16 @@
   - [x] Endpoint interno /api/internal/new-message
   - [x] Limpieza debug logs + BOT_API_URL
   - [x] Template multi-tenant actualizada
+- [x] **Dashboard fixes — renderizado, CSS, config.js bug** ✅ COMPLETADO 2026-05-12
+  - [x] Debug logging en loadMessages (conversation.js)
+  - [x] Fix renderAdminNumbers() escribía en container incorrecto (config.js)
+  - [x] Chat preview multi-formato en obtenerChats() (server.js)
+  - [x] Patrón de formato inconsistente documentado en .gsd/memory/patterns/
+- [x] **Testing environment visual differentiation** ✅ COMPLETADO 2026-05-12
+  - [x] AGENT_ID / DATA_PATH configurables por env
+  - [x] Banner naranja + header negro + sufijo [TEST]
+  - [x] Endpoint /api/env para detección frontend
+  - [x] Datos separados data/testing/ vs data/santa-ana/
 - [ ] Phase 2: Dashboard Maestro
 - [ ] Phase 3: Automation Scripts (Completar)
 - [ ] Phase 4: Client & Human Dashboards
@@ -199,8 +209,27 @@
   - Usuario `forma` / `forma2026` agregado
   - Listo para deploy a producción
 
+### Recent Changes (2026-05-12)
+- ✅ **Dashboard fixes — renderizado, CSS, config.js bug Completado**
+  - conversation.js: debug logging + error handling
+  - config.js: fix renderAdminNumbers() escribía en adminNumbersList
+  - server.js: chat preview multi-formato (text || texto || parts[0].text)
+  - Patrón de formato inconsistente documentado en .gsd/memory/patterns/
+- ✅ **Fix envío de mensajes + WebSocket tiempo real Completado**
+  - server.js: message/finish endpoints escriben directo a historial.json y pausas.json
+  - agent-manager.js: notificarDashboard() via HTTP local al dashboard
+  - Endpoint interno /api/internal/new-message + Socket.IO broadcast
+  - Limpieza variable BOT_API_URL huérfana + debug logs
+  - Template multi-tenant actualizada
+- ✅ **Testing environment visual differentiation Completado**
+  - AGENT_ID / DATA_PATH dinámicos por env var
+  - Banner naranja + header negro + sufijo [TEST] en testing
+  - Endpoint /api/env para detección frontend
+  - Datos separados: testing usa data/testing/, prod usa data/santa-ana/
+  - Deploy: DASHBOARD_HUMANO_PORT=4002 DASHBOARD_AGENT_ID=testing NODE_ENV=development
+
 ### Next Steps
-1. **Immediate**: Comenzar Dashboard Admin Management (milestone planificado)
+1. **Immediate**: Deploy a VPS y verificar en producción
 2. **Short-term**: Review and approve multi-tenant milestone
 3. **Medium-term**: Begin implementation of multi-tenant architecture
 4. **Long-term**: Scale to multiple clients
@@ -324,5 +353,5 @@ The multi-tenant implementation will be considered successful when:
 ---
 
 **Last Updated**: 2026-05-12  
-**Status**: Dashboard Admin Management deployed to production  
+**Status**: Testing environment deployed + Dashboard fixes completados  
 **Next Milestone Review**: TBD
