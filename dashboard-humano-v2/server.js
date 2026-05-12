@@ -231,7 +231,7 @@ app.get('/api/chats/:userId/messages', authenticateToken, (req, res) => {
   res.json(mensajes);
 });
 
-app.post('/api/chats/:userId/message', authenticateToken, (req, res) => {
+app.post('/api/chats/:userId/message', authenticateToken, async (req, res) => {
   const { userId } = req.params;
   const { message } = req.body;
 
@@ -240,55 +240,49 @@ app.post('/api/chats/:userId/message', authenticateToken, (req, res) => {
   }
 
   try {
-    // Guardar en historial directamente
-    const historial = leerHistorial();
-    if (!historial[userId]) historial[userId] = [];
-    historial[userId].push({
-      role: 'human',
-      text: message,
-      timestamp: Date.now()
+    // Enviar via bot API (que tiene el cliente WhatsApp)
+    const botPort = process.env.BOT_API_PORT || 3011;
+    const response = await fetch(`http://localhost:${botPort}/message/sendMessage/${AGENT_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatId: userId, message })
     });
-    fs.writeFileSync(HISTORIAL_PATH, JSON.stringify(historial, null, 2));
 
-    // Emitir evento de Socket.IO
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Bot API error: ${err}`);
+    }
+
     io.emit('message_sent', { userId, message, timestamp: Date.now() });
-
     res.json({ success: true });
   } catch (error) {
-    console.error('Error guardando mensaje:', error);
-    res.status(500).json({ error: 'Error guardando mensaje' });
+    console.error('Error enviando mensaje:', error.message);
+    res.status(500).json({ error: 'Error enviando mensaje: ' + error.message });
   }
 });
 
-app.post('/api/chats/:userId/finish', authenticateToken, (req, res) => {
+app.post('/api/chats/:userId/finish', authenticateToken, async (req, res) => {
   const { userId } = req.params;
 
   try {
-    // Reactivar bot escribiendo en pausas.json
-    const pausas = leerPausas();
-    if (pausas[userId]) {
-      pausas[userId].pausado = false;
-      pausas[userId].fechaReactivacion = Date.now();
-    }
-    fs.writeFileSync(PAUSAS_PATH, JSON.stringify(pausas, null, 2));
-
-    // Guardar "MUCHAS GRACIAS" en historial
-    const historial = leerHistorial();
-    if (!historial[userId]) historial[userId] = [];
-    historial[userId].push({
-      role: 'human',
-      text: 'MUCHAS GRACIAS',
-      timestamp: Date.now()
+    // Enviar "MUCHAS GRACIAS" via bot API
+    const botPort = process.env.BOT_API_PORT || 3011;
+    const response = await fetch(`http://localhost:${botPort}/message/sendMessage/${AGENT_ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatId: userId, message: 'MUCHAS GRACIAS' })
     });
-    fs.writeFileSync(HISTORIAL_PATH, JSON.stringify(historial, null, 2));
 
-    // Emitir evento
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Bot API error: ${err}`);
+    }
+
     io.emit('bot_resumed', { userId });
-
     res.json({ success: true });
   } catch (error) {
-    console.error('Error finalizando conversación:', error);
-    res.status(500).json({ error: 'Error finalizando conversación' });
+    console.error('Error finalizando conversación:', error.message);
+    res.status(500).json({ error: 'Error finalizando conversación: ' + error.message });
   }
 });
 
