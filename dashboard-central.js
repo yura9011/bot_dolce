@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const socketIo = require('socket.io');
 const fetch = require('node-fetch');
+const { execSync } = require('child_process');
 
 // ─── RUTAS MODULARES ──────────────────────────────────────
 const humanPanelRoutes = require('./routes/human-panel');
@@ -490,6 +491,77 @@ setInterval(async () => {
     console.error('Error en actualización WebSocket:', error.message);
   }
 }, UPDATE_INTERVAL);
+
+// ─── ENDPOINTS DE SISTEMA: BACKUP Y LOGS ──────────────────────────────────
+
+// GET /api/system/backup-status
+app.get('/api/system/backup-status', (req, res) => {
+  try {
+    const backupDir = '/home/forma/backups';
+    const prodDir = path.join(__dirname);
+
+    let lastBackup = null;
+    let backupSize = null;
+    if (fs.existsSync(backupDir)) {
+      const files = fs.readdirSync(backupDir)
+        .filter(f => f.endsWith('.tar.gz'))
+        .sort()
+        .reverse();
+      if (files.length > 0) {
+        lastBackup = files[0].replace('.tar.gz', '');
+        const stat = fs.statSync(path.join(backupDir, files[0]));
+        backupSize = (stat.size / 1024 / 1024).toFixed(2) + ' MB';
+      }
+    }
+
+    const config = loadAgentsConfig();
+    const logSizes = {};
+    for (const agent of config.agents) {
+      const logDir = path.join(prodDir, agent.paths.logs || `logs/${agent.id}`);
+      if (fs.existsSync(logDir)) {
+        let totalSize = 0;
+        fs.readdirSync(logDir).forEach(f => {
+          try { totalSize += fs.statSync(path.join(logDir, f)).size; } catch(e) {}
+        });
+        logSizes[agent.id] = (totalSize / 1024 / 1024).toFixed(2) + ' MB';
+      } else {
+        logSizes[agent.id] = '0 MB';
+      }
+    }
+
+    res.json({ lastBackup, backupSize, logSizes });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/system/backup
+app.post('/api/system/backup', (req, res) => {
+  try {
+    const scriptPath = path.join(__dirname, 'scripts/backup.sh');
+    if (!fs.existsSync(scriptPath)) {
+      return res.status(404).json({ error: 'Script de backup no encontrado' });
+    }
+    execSync(`bash ${scriptPath}`, { timeout: 60000 });
+    res.json({ success: true, message: 'Backup completado' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error ejecutando backup: ' + error.message });
+  }
+});
+
+// POST /api/system/rotate-logs
+app.post('/api/system/rotate-logs', (req, res) => {
+  try {
+    const scriptPath = path.join(__dirname, 'scripts/rotate-logs.sh');
+    if (!fs.existsSync(scriptPath)) {
+      return res.status(404).json({ error: 'Script de rotación no encontrado' });
+    }
+    execSync(`bash ${scriptPath}`, { timeout: 30000 });
+    res.json({ success: true, message: 'Logs rotados' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error rotando logs: ' + error.message });
+  }
+});
 
 server.listen(PORT, () => {
   console.log(`\n🎈 ===== DASHBOARD CENTRALIZADO =====`);

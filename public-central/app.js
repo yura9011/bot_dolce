@@ -544,4 +544,71 @@ window.onclick = function(event) {
     }
 }
 
+// ─── SISTEMA: BACKUP Y LOGS ───────────────────────────────────────────────────
+
+async function loadSystemStatus() {
+  try {
+    const r = await fetch('/api/system/backup-status');
+    const data = await r.json();
+
+    document.getElementById('lastBackup').textContent = data.lastBackup || 'Nunca';
+    document.getElementById('backupSize').textContent = data.backupSize || '--';
+
+    const logContainer = document.getElementById('logSizes');
+    if (data.logSizes) {
+      logContainer.innerHTML = Object.entries(data.logSizes)
+        .map(([id, size]) => `<p>${id}: <strong>${size}</strong></p>`)
+        .join('');
+    }
+  } catch(e) {
+    console.error('Error cargando estado del sistema:', e);
+  }
+}
+
+async function runBackup() {
+  const btn = document.getElementById('backupBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Ejecutando...';
+  try {
+    const r = await fetch('/api/system/backup', { method: 'POST' });
+    const data = await r.json();
+    if (data.success) {
+      alert('✅ ' + data.message);
+      loadSystemStatus();
+    } else {
+      alert('❌ Error: ' + data.error);
+    }
+  } catch(e) {
+    alert('❌ Error de conexión');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📦 Backup ahora';
+  }
+}
+
+async function rotateLogs() {
+  const btn = document.getElementById('rotateBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Rotando...';
+  try {
+    const r = await fetch('/api/system/rotate-logs', { method: 'POST' });
+    const data = await r.json();
+    if (data.success) {
+      alert('✅ ' + data.message);
+      loadSystemStatus();
+    } else {
+      alert('❌ Error: ' + data.error);
+    }
+  } catch(e) {
+    alert('❌ Error de conexión');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🔄 Rotar logs ahora';
+  }
+}
+
+// Cargar al inicio y cada 60 segundos
+setTimeout(loadSystemStatus, 1000);
+setInterval(loadSystemStatus, 60000);
+
 console.log('Dashboard centralizado script cargado');

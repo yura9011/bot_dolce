@@ -28,6 +28,28 @@
 
     <!-- Agents Grid -->
     <div id="agents-grid" class="agents-grid"></div>
+
+    <!-- System Status Section -->
+    <div class="system-section">
+      <h2>🛠️ Sistema</h2>
+      <div class="system-cards">
+        <div class="system-card">
+          <h3>💾 Backups</h3>
+          <div id="backupInfo">
+            <p>Último backup: <strong id="lastBackup">cargando...</strong></p>
+            <p>Tamaño: <strong id="backupSize">--</strong></p>
+            <p class="system-note">⏰ Automático: todos los días a las 3:00 AM</p>
+          </div>
+          <button class="btn btn-primary btn-small" onclick="runBackup()" id="backupBtn">📦 Backup ahora</button>
+        </div>
+        <div class="system-card">
+          <h3>📄 Logs</h3>
+          <div id="logSizes">cargando...</div>
+          <p class="system-note">⏰ Rotación automática: todos los días a las 2:00 AM (máx 10MB)</p>
+          <button class="btn btn-warning btn-small" onclick="rotateLogs()" id="rotateBtn">🔄 Rotar logs ahora</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Modal for Agent Details -->

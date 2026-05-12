@@ -1068,6 +1068,50 @@ body {
     }
 }
 
+/* ─── SYSTEM SECTION (BACKUP/LOGS) ───────────────────────── */
+
+.system-section {
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.system-section h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.system-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.system-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.system-card h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+.system-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 6px 0;
+}
+
+.system-note {
+  font-size: 12px !important;
+  color: #999 !important;
+  margin-top: 10px !important;
+}
+
 @media (max-width: 480px) {
     .stats-grid {
         grid-template-columns: 1fr;
