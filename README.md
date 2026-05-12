@@ -1,5 +1,7 @@
 # Bot de WhatsApp Multi-Agente - Dolce Party
 
+> **🤖 PARA AGENTES DE IA**: Antes de hacer cualquier cambio, leé [`HANDOFF.md`](./HANDOFF.md) y después `.gsd/state/IMPLEMENTATION_PLAN.md`. No empieces a codificar sin contexto.
+
 Sistema de atención automatizada por WhatsApp para múltiples locales de cotillón, con gestión centralizada y dashboard en tiempo real.
 
 ## Características

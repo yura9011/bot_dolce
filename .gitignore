@@ -10,6 +10,7 @@ TODO.md
 # Archivos de documentación personal en raíz (no publicar)
 /*.md
 !README.md
+!HANDOFF.md
 
 # Phase work directories (user-specific)
 .planning/
