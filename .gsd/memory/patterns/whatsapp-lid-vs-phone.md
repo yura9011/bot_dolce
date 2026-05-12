@@ -1,6 +1,7 @@
 # Pattern: WhatsApp @lid vs número de teléfono
 
 > **First Observed**: 2026-05-12  
+> **Last Updated**: 2026-05-12  
 > **Confidence**: High  
 > **Occurrences**: 1 (confirmado en testing)
 
@@ -16,28 +17,50 @@ El bot recibe mensajes con el formato `@lid` internamente. Al comparar contra la
 
 ---
 
-## Impacto
+## Context
 
-- Sistema de ignorados/admins no funciona si se agrega el número de teléfono
-- Hay que agregar el ID `@lid` para que el bot lo reconozca
-- El `@lid` no es predecible — hay que obtenerlo de los logs del bot
+**When this pattern appears**:
+- Al recibir mensajes de WhatsApp en el bot
+- Al comparar el remitente contra admin-numbers
+- Al mostrar IDs en el dashboard
 
----
-
-## Cómo obtener el @lid de un número
-
-1. Que el número mande un mensaje al bot
-2. Ver los logs: `pm2 logs bot-dolce-dev --lines 20`
-3. Buscar: `📩 [XXXXXXXXX@lid]` — ese es el ID real
+**Conditions**:
+- Clientes nuevos (WhatsApp asigna @lid automáticamente)
+- Números que nunca antes habían escrito al bot
 
 ---
 
-## Fix Pendiente
+## Solución Implementada
 
-El dashboard debería mostrar el ID real (`@lid`) que usa el bot, no solo el número de teléfono. Cuando alguien manda un mensaje, el bot podría registrar el mapeo `phone → lid` para que el dashboard lo use al agregar números.
+El bot guarda automáticamente el mapeo `@lid → teléfono` en `config/phone-map.json` usando `message.getContact()`. `esAdmin()` y `getRolAdmin()` resuelven en ambos sentidos.
+
+**Archivos involucrados**:
+- `config/phone-map.json` — almacén persistente
+- `lib/agent-manager.js` — captura del mapeo al recibir mensaje
+- `lib/admin-commands.js` — `resolverNumero()` para búsqueda bidireccional
+
+---
+
+## How to Apply
+
+- Al agregar un número a admin-numbers: usar el número de teléfono (formato `5491158647529`)
+- El bot resuelve automáticamente si el mensaje llega como @lid
+- Si no hay mapeo (nuevo número), funciona igual con match exacto
+
+---
+
+## Why This Matters
+
+Sin la resolución, agregar números como admin es imposible porque el @lid no es predecible. Con el mapa, el usuario puede seguir agregando números de teléfono como siempre y el bot los resuelve.
+
+---
+
+## Confidence Level
+
+**High**: Observado y corregido en producción.
 
 ---
 
 ## Tags
 
-`whatsapp`, `admin-numbers`, `lid`, `phone-id`
+`pattern`, `whatsapp`, `admin-numbers`, `lid`, `phone-id`, `id-resolution`
