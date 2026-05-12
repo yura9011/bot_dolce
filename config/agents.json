@@ -20,7 +20,27 @@
         "horario": "Lunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado",
         "direccion": "Sta. Ana 2637, X5010EEK Córdoba"
       },
-      "adminNumbers": ["5491158647529", "5493513782559"]
+      "adminNumbers": ["5491158647529", "5493513782559"],
+      "dashboardUsers": [
+        {
+          "username": "admin",
+          "password": "$2b$10$DD7OGqlJlDinBTTofXkH.eC6BRra9Sk8JB6cowtOCvvJYjh3gtOeW",
+          "role": "admin",
+          "name": "Administrador"
+        },
+        {
+          "username": "maria",
+          "password": "$2b$10$uI4nSRBRg9rTqgcvC0jN4u3aLTDWf/rERGqs40oEeQ3rPqLoriG1y",
+          "role": "employee",
+          "name": "María González"
+        },
+        {
+          "username": "forma",
+          "password": "$2b$10$SDQ2uAULwoI1kMSJ5bzCyeHseqlNeDM3y8raV.0rN4hI0MArHAFZO",
+          "role": "admin",
+          "name": "Forma"
+        }
+      ]
     },
     {
       "id": "local-2",
