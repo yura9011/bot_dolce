@@ -26,7 +26,16 @@ cd dashboard-humano-v2 && npm install --silent && cd ..
 
 # 3. Reiniciar servicios
 echo -e "${YELLOW}🔄 Reiniciando servicios...${NC}"
-pm2 restart bot-dolce-prd
+
+# Matar procesos de Chromium/Puppeteer huérfanos antes de reiniciar el bot
+# (evita el error "browser is already running")
+pm2 stop bot-dolce-prd 2>/dev/null || true
+sleep 2
+pkill -f "santa-ana-session" 2>/dev/null || true
+pkill -f "asturias-session" 2>/dev/null || true
+sleep 2
+pm2 start bot-dolce-prd
+
 pm2 restart dashboard-humano-santa-ana
 pm2 restart dashboard-prd
 
