@@ -1,0 +1,17 @@
+const socket = io();
+
+socket.on('connect', () => {
+  console.log('WebSocket conectado');
+  socket.emit('join_dashboard', { agentId: 'santa-ana' });
+});
+
+socket.on('chats_updated', (chats) => {
+  renderChats(chats);
+});
+
+socket.on('new_message', ({ userId }) => {
+  if (userId === currentUserId) {
+    loadMessages(userId);
+  }
+  playNotification();
+});

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Dashboard Humano</title>
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <div class="logo">
+        <h1>�� Dolce Party</h1>
+        <p>Dashboard Humano</p>
+      </div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <input type="text" id="username" placeholder="Usuario" required autocomplete="username">
+        </div>
+        
+        <div class="form-group">
+          <input type="password" id="password" placeholder="Contraseña" required autocomplete="current-password">
+        </div>
+        
+        <div class="form-group checkbox">
+          <label>
+            <input type="checkbox" id="remember"> Recordarme
+          </label>
+        </div>
+        
+        <button type="submit" class="btn-login">Iniciar Sesión</button>
+        
+        <div id="error-message" class="error-message" style="display: none;"></div>
+      </form>
+    </div>
+  </div>
+  
+  <script src="/js/login.js"></script>
+</body>
+</html>
