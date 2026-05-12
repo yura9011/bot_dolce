@@ -98,7 +98,7 @@ function obtenerChats() {
     chats.push({
       userId,
       nombre: userId.split('@')[0],
-      ultimoMensaje: ultimoMensaje.texto?.substring(0, 50) || '',
+      ultimoMensaje: ultimoMensaje.text?.substring(0, 50) || '',
       timestamp: ultimoMensaje.timestamp || Date.now(),
       estado,
       mensajes: mensajes.length,

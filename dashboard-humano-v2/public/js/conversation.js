@@ -1,8 +1,7 @@
 async function loadMessages(userId) {
   try {
-    const token = getToken();
     const response = await fetch(`/api/chats/${userId}/messages`, {
-      headers: { 'Authorization': `Bearer ${token}` }
+      credentials: 'include'
     });
     
     if (response.ok) {
@@ -24,9 +23,12 @@ function renderMessages(messages) {
       minute: '2-digit' 
     });
     
+    // Obtener el texto del mensaje (soporta diferentes formatos)
+    const messageText = msg.text || msg.texto || msg.parts?.[0]?.text || '';
+    
     return `
       <div class="message ${msg.role}">
-        <div class="message-text">${msg.texto || msg.parts?.[0]?.text || ''}</div>
+        <div class="message-text">${messageText}</div>
         <div class="message-time">${time}</div>
       </div>
     `;
@@ -52,13 +54,12 @@ async function sendMessage() {
   if (!message) return;
   
   try {
-    const token = getToken();
     const response = await fetch(`/api/chats/${currentUserId}/message`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
+      credentials: 'include',
       body: JSON.stringify({ message })
     });
     
@@ -77,10 +78,9 @@ document.getElementById('finishBtn')?.addEventListener('click', async () => {
   if (!confirm('¿Finalizar conversación y reactivar bot?')) return;
   
   try {
-    const token = getToken();
     const response = await fetch(`/api/chats/${currentUserId}/finish`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` }
+      credentials: 'include'
     });
     
     if (response.ok) {
