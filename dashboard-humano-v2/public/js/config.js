@@ -17,7 +17,9 @@ async function loadAdminNumbers() {
 function renderAdminNumbers() {
   const container = document.getElementById('adminNumbersList');
   if (!container) return;
-  const isAdmin = currentUser?.role === 'admin';
+  // Leer rol del usuario actual — puede venir de currentUser o del elemento del DOM
+  const isAdmin = currentUser?.role === 'admin' || 
+                  document.getElementById('userName')?.dataset?.role === 'admin';
 
   if (adminNumbers.length === 0) {
     container.innerHTML = '<p class="no-chats">No hay números configurados</p>';

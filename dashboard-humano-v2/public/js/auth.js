@@ -19,7 +19,10 @@ async function checkAuth() {
     if (data.valid && data.user) {
       currentUser = data.user;
       const userNameEl = document.getElementById('userName');
-      if (userNameEl) userNameEl.textContent = data.user.name || data.user.username;
+      if (userNameEl) {
+        userNameEl.textContent = data.user.name || data.user.username;
+        userNameEl.dataset.role = data.user.role; // guardar rol en DOM
+      }
     }
     return data.valid;
   } catch (error) {
