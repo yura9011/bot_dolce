@@ -1,12 +1,24 @@
 let notificationsEnabled = true;
 let audioContext = null;
 
+// Inicializar AudioContext en el primer click (requerido por navegadores)
+document.addEventListener('click', () => {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}, { once: true });
+
 function playNotification() {
   if (!notificationsEnabled) return;
   
   try {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
+    // Reanudar si está suspendido
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
     }
     
     const oscillator = audioContext.createOscillator();
