@@ -1,0 +1,199 @@
+/* 
+   Layout & Structure - Dashboard Redesign
+   Dependencia: design-tokens.css, components.css
+*/
+
+/* --- GRID PRINCIPAL --- */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--gray-50);
+    overflow: hidden;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--gray-50);
+}
+
+/* --- HEADER --- */
+.header {
+    background-color: var(--primary-500);
+    color: var(--gray-50);
+    padding: 0 var(--spacing-4);
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-md);
+    z-index: 100;
+    flex-shrink: 0;
+    transition: var(--transition-normal);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+.header-left h1 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    letter-spacing: -0.025em;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+}
+
+.header-right span#userName {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--primary-100);
+}
+
+.btn-logout {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.btn-logout:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+/* --- SIDEBAR (Chat List) --- */
+.chat-list {
+    background-color: #fff;
+    border-right: 1px solid var(--gray-200);
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+    transition: var(--transition-normal);
+}
+
+.chat-list-header {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--gray-100);
+    background-color: var(--gray-50);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+.chat-list-items {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #fff;
+}
+
+/* --- MAIN CONTENT AREA --- */
+.conversation-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+
+/* Mobile (< 768px) */
+@media (max-width: 767px) {
+    .hamburger-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 24px;
+        cursor: pointer;
+        border-radius: var(--radius-md);
+    }
+
+    .chat-list {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 85%;
+        max-width: 320px;
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+
+    .chat-list.open {
+        transform: translateX(0);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(15, 23, 42, 0.5);
+        backdrop-filter: blur(2px);
+        display: none;
+        z-index: 40;
+    }
+
+    .sidebar-backdrop.open {
+        display: block;
+    }
+
+    .header-left h1 {
+        font-size: var(--text-base);
+    }
+
+    .header-right span#userName {
+        display: none;
+    }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .hamburger-btn { display: none; }
+    .chat-list { width: 300px; }
+}
+
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+    .hamburger-btn { display: none; }
+    .chat-list { width: 380px; }
+}
+
+/* --- TESTING BANNER --- */
+.testing-banner {
+    background-color: var(--warning);
+    color: var(--gray-900);
+    font-weight: var(--font-bold);
+    text-align: center;
+    padding: var(--spacing-1) 0;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 110;
+}
+
+.dashboard.is-testing .header {
+    background-color: var(--gray-900);
+    border-bottom: 2px solid var(--warning);
+}

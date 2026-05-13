@@ -72,8 +72,8 @@
 **Phases:**
 1. ✅ Design System Foundation
 2. ✅ Base Components
-3. ⬜ Layout & Structure
-4. ⬜ Specific Views
+3. ✅ Layout & Structure
+4. ✅ Specific Views
 5. ⬜ Polishing
 6. ⬜ Testing
 
@@ -92,7 +92,17 @@
   - [x] Crear components.css con botones, inputs, badges, etc.
   - [x] Implementar estados hover/focus/active
   - [x] Integrar en index.html y login.html
-- [ ] Phase 3: Layout & Structure (Shell)
+- [x] **Dashboard Redesign - Phase 3: Layout & Structure (Shell)** ✅ COMPLETADO 2026-05-12
+  - [x] Crear layout.css con grid principal y responsive breakpoints
+  - [x] Rediseñar Header (Violeta, logout estilizado)
+  - [x] Mejorar Tabs (Horizontal, indicador activo, hover)
+  - [x] Responsive funcional (Sidebar overlay en mobile)
+- [x] **Dashboard Redesign - Phase 4: Specific Views** ✅ COMPLETADO 2026-05-12
+  - [x] Rediseño de Lista de Chats (Avatares, previews, badges)
+  - [x] Rediseño de Conversación (Burbujas estilizadas por rol, input violeta)
+  - [x] Rediseño de Configuración (Cards para números, botones circulares)
+  - [x] Rediseño de Estadísticas (KPI cards con colores semánticos)
+- [ ] Phase 5: Polishing (Animaciones y detalles)
 - [x] ~~Setup dual environment (PRD + DEV)~~
 ... (rest of the tasks) ...
 
