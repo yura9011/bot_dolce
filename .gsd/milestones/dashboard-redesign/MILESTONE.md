@@ -17,7 +17,7 @@ Rediseñar completamente el Dashboard Humano v2 con un sistema de diseño cohere
 Non-negotiable deliverables for this milestone:
 
 - [x] Sistema de diseño base (Design Tokens)
-- [ ] Componentes base rediseñados (Botones, Inputs, Cards)
+- [x] Componentes base rediseñados (Botones, Inputs, Cards)
 - [ ] Layout estructural moderno y responsive
 - [ ] Vistas de Chats y Conversación actualizadas
 - [ ] Vista de Configuración y Estadísticas unificadas
@@ -35,7 +35,7 @@ If time permits:
 | Phase | Name | Status | Objective |
 |-------|------|--------|-----------|
 | 1 | Design System Foundation | ✅ Complete | Definir tokens y documentación base |
-| 2 | Base Components | ⬜ Not Started | Rediseñar átomos y moléculas de UI |
+| 2 | Base Components | ✅ Complete | Rediseñar átomos y moléculas de UI |
 | 3 | Layout & Structure | ⬜ Not Started | Implementar el shell y navegación |
 | 4 | Specific Views | ⬜ Not Started | Aplicar diseño a cada sección |
 | 5 | Polishing | ⬜ Not Started | Animaciones e interacciones |
@@ -73,4 +73,5 @@ Key technical decisions for this milestone:
 |------|-------|-------|
 | 2026-05-12 | Milestone started | Definición inicial y planificación |
 | 2026-05-12 | Phase 1 completed | Design tokens creados e integrados |
+| 2026-05-12 | Phase 2 completed | Base components (Atoms) creados en components.css |
 

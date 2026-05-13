@@ -71,7 +71,7 @@
 
 **Phases:**
 1. ✅ Design System Foundation
-2. ⬜ Base Components
+2. ✅ Base Components
 3. ⬜ Layout & Structure
 4. ⬜ Specific Views
 5. ⬜ Polishing
@@ -88,7 +88,11 @@
   - [x] Crear design-tokens.css con variables
   - [x] Documentar DESIGN_SYSTEM.md
   - [x] Integrar tokens en index.html y login.html
-- [ ] Phase 2: Base Components (Atoms)
+- [x] **Dashboard Redesign - Phase 2: Base Components (Atoms)** ✅ COMPLETADO 2026-05-12
+  - [x] Crear components.css con botones, inputs, badges, etc.
+  - [x] Implementar estados hover/focus/active
+  - [x] Integrar en index.html y login.html
+- [ ] Phase 3: Layout & Structure (Shell)
 - [x] ~~Setup dual environment (PRD + DEV)~~
 ... (rest of the tasks) ...
 
