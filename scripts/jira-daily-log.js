@@ -16,7 +16,12 @@ const path = require('path');
 // ── Config ──────────────────────────────────────────────────────────────────
 const JIRA_HOST = 'formadigital.atlassian.net';
 const JIRA_EMAIL = 'forma.digital.ar@gmail.com';
-const JIRA_TOKEN = process.env.JIRA_TOKEN || 'ATATT3xFfGF09yjALnpRPc_PNnT2gk1uIuKtgg_Y4yGhxLk7qW7e9-L0JcjI3xkrooAtSZOmiEa2lX9SKb8Hrae708jd512RrISjiMb0hns_w0zQeEir1ALCr2FdCt0rdW6Qu-mlDdlKaimkMWtMJ6gQVQGmjlVeZP4vO7oKKN2xbvNymyqcbsA=013E34A8';
+const JIRA_TOKEN = process.env.JIRA_TOKEN;
+
+if (!JIRA_TOKEN) {
+  console.error('❌ JIRA_TOKEN no configurado. Exporta la variable de entorno.');
+  process.exit(1);
+}
 const JIRA_PROJECT_KEY = 'SCRUM';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
