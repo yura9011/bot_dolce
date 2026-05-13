@@ -23,6 +23,7 @@
 
 .chat-item:hover {
     background-color: var(--gray-50);
+    transform: translateX(4px);
 }
 
 .chat-item.active {
@@ -44,6 +45,7 @@
     height: 60%;
     background-color: var(--error);
     border-radius: var(--radius-full);
+    animation: pulse 2s infinite;
 }
 
 /* --- CHAT AVATAR --- */

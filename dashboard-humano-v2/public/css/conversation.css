@@ -58,6 +58,7 @@
     flex-direction: column;
     gap: var(--spacing-4);
     background-color: var(--gray-50);
+    scroll-behavior: smooth;
     /* Fondo sutil con patrón si se desea */
 }
 
@@ -69,6 +70,7 @@
     box-shadow: var(--shadow-sm);
     line-height: var(--line-height-normal);
     font-size: var(--text-sm);
+    animation: slideUp 0.3s ease-out;
 }
 
 /* --- VARIANTES DE BURBUJAS --- */
