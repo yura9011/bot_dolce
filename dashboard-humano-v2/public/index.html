@@ -34,9 +34,9 @@
       <aside class="chat-list">
         <div class="chat-list-header">
           <div class="tabs">
-            <button id="tabChats" class="tab active">📱 Chats (<span id="chatCount">0</span>)</button>
-            <button id="tabConfig" class="tab">⚙️ Config</button>
-            <button id="tabStats" class="tab">📊 Stats</button>
+            <button id="tabChats" class="tab active" aria-label="Ver Chats">📱 Chats (<span id="chatCount">0</span>)</button>
+            <button id="tabConfig" class="tab" aria-label="Configuración">⚙️ Config</button>
+            <button id="tabStats" class="tab" aria-label="Estadísticas">📊 Stats</button>
           </div>
           <input type="text" id="searchInput" placeholder="🔍 Buscar...">
         </div>
@@ -64,8 +64,8 @@
           <div id="messagesContainer" class="messages-container"></div>
           <div class="input-container">
             <textarea id="messageInput" placeholder="Escribe tu mensaje..." rows="1"></textarea>
-            <button id="sendBtn" class="btn-send">Enviar</button>
-            <button id="finishBtn" class="btn-finish">✅ MUCHAS GRACIAS</button>
+            <button id="sendBtn" class="btn-send" aria-label="Enviar mensaje">Enviar</button>
+            <button id="finishBtn" class="btn-finish" aria-label="Finalizar conversación">✅ MUCHAS GRACIAS</button>
           </div>
         </div>
         <div id="configPanel" class="config-panel" style="display: none;">
