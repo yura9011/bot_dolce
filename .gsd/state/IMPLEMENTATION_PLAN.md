@@ -54,31 +54,44 @@
 - **Production**: ✅ Unaffected (bot_dolce still running)
 
 ---
+### 🔵 Milestone 4: Dashboard Redesign (EN PROGRESO)
+**Status**: Fase 1 (Design Tokens) completa  
+**Priority**: Alta  
+**Target**: 2026-05-15
 
-### 🔵 Milestone 3: Dashboard Admin Management (EN PROGRESO)
-**Status**: Backend + Frontend completos, pendiente deploy  
-**Priority**: Media  
-**Target**: 2026-05-11
+**Objective**: Rediseño visual completo del Dashboard Humano v2 para profesionalizar la interfaz.
 
-**Objective**: Gestionar dinámicamente números admin/ignorados desde el dashboard sin editar .env ni reiniciar bot
-
-**Documentation**: [View Full Milestone](.gsd/milestones/dashboard-admin-management/MILESTONE.md)
+**Documentation**: [View Full Milestone](.gsd/milestones/dashboard-redesign/MILESTONE.md)
 
 **Key Goals:**
-- Vista de números admin/ignorados en dashboard
-- Agregar/eliminar números en tiempo real
-- Sincronización automática con bot (sin reiniciar)
-- Migración desde .env a JSON
-- Logs de auditoría
+- Sistema de diseño base (Tokens)
+- Componentes unificados (Botones, Inputs)
+- Layout responsive moderno
+- Vistas actualizadas (Chats, Conversación)
 
 **Phases:**
-1. Backend: API + sincronización con bot
-2. Frontend: Vista de configuración + CRUD
-3. Testing y documentación
+1. ✅ Design System Foundation
+2. ⬜ Base Components
+3. ⬜ Layout & Structure
+4. ⬜ Specific Views
+5. ⬜ Polishing
+6. ⬜ Testing
 
 ---
 
-### 🔵 Milestone 2: Multi-Tenant Architecture - Phase 2-6 (PENDING)
+## Current Tasks
+
+### Active
+
+- [x] **Dashboard Redesign - Phase 1: Design System Foundation** ✅ COMPLETADO 2026-05-12
+  - [x] Definir paleta Cálido Moderno (Violeta/Ámbar)
+  - [x] Crear design-tokens.css con variables
+  - [x] Documentar DESIGN_SYSTEM.md
+  - [x] Integrar tokens en index.html y login.html
+- [ ] Phase 2: Base Components (Atoms)
+- [x] ~~Setup dual environment (PRD + DEV)~~
+... (rest of the tasks) ...
+
 **Status**: Ready to Start  
 **Priority**: High  
 **Target**: TBD
