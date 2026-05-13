@@ -74,7 +74,7 @@ router.post('/:id/send-human-message', async (req, res) => {
         const chatId = userId.includes('@') ? userId : `${userId}@c.us`;
         const sessionId = agent.whatsappSession || agent.id;
         
-        const response = await fetch(`http://localhost:${agent.ports.api}/message/sendMessage/${sessionId}`, {
+        const response = await fetch(`http://127.0.0.1:${agent.ports.api}/message/sendMessage/${sessionId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -104,7 +104,7 @@ router.post('/:id/resolve-handoff/:userId', async (req, res) => {
 
         const fetch = require('node-fetch');
         const dashboardPort = agent.ports.dashboard || (agent.ports.api - 10);
-        const response = await fetch(`http://localhost:${dashboardPort}/api/resume/${req.params.userId}`, {
+        const response = await fetch(`http://127.0.0.1:${dashboardPort}/api/resume/${req.params.userId}`, {
             method: 'POST'
         });
 
@@ -134,7 +134,7 @@ router.post('/:id/fetch-messages', async (req, res) => {
 
         const sessionId = agent.whatsappSession || agent.id;
         const fetch = require('node-fetch');
-        const response = await fetch(`http://localhost:${agent.ports.api}/chat/fetchMessages/${sessionId}`, {
+        const response = await fetch(`http://127.0.0.1:${agent.ports.api}/chat/fetchMessages/${sessionId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

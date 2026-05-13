@@ -243,7 +243,7 @@ app.post('/api/chats/:userId/message', authenticateToken, async (req, res) => {
   try {
     // Enviar via bot API (que tiene el cliente WhatsApp)
     const botPort = process.env.BOT_API_PORT || 3011;
-    const response = await fetch(`http://localhost:${botPort}/message/sendMessage/${AGENT_ID}`, {
+    const response = await fetch(`http://127.0.0.1:${botPort}/message/sendMessage/${AGENT_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chatId: userId, message })
@@ -268,7 +268,7 @@ app.post('/api/chats/:userId/finish', authenticateToken, async (req, res) => {
   try {
     // Enviar "MUCHAS GRACIAS" via bot API
     const botPort = process.env.BOT_API_PORT || 3011;
-    const response = await fetch(`http://localhost:${botPort}/message/sendMessage/${AGENT_ID}`, {
+    const response = await fetch(`http://127.0.0.1:${botPort}/message/sendMessage/${AGENT_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chatId: userId, message: 'MUCHAS GRACIAS' })
