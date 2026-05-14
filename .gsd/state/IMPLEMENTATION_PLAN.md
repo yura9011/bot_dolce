@@ -118,10 +118,11 @@ Fase 5: Testing (Local → Testing → Producción)
   - body vacío → ignorar sin procesar (no gasta tokens)
   - Commits: <pending>
 
-- [ ] **3.2 Manejo de emojis en menú**
-  - Detectar mensajes sin texto (solo emojis) en estados de menú
-  - Responder pidiendo opción numérica
-  - Dependency: Ninguna
+- [x] **3.2 Manejo de emojis en menú** ✅ 2026-05-14
+  - Detecta mensajes sin caracteres alfanuméricos en estados de menú
+  - Responde: "Por favor, elegí una opción del menú usando el número correspondiente"
+  - No interfiere con estado PEDIDO (allí sí se permite texto libre)
+  - Commits: <pending>
 
 ### 🟢 Fase 4: Onboarding Asturias (Prioridad Alta)
 
