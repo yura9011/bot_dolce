@@ -96,10 +96,11 @@ Fase 5: Testing (Local → Testing → Producción)
 
 ### 🟡 Fase 2: Multi-Agent Runtime (Prioridad Alta)
 
-- [ ] **2.1 Orchestrator auto-levanta dashboard por agente**
-  - Spawn proceso dashboard-humano-v2 con `AGENT_ID`, `DASHBOARD_HUMANO_PORT`, `BOT_API_PORT`
+- [x] **2.1 Orchestrator auto-levanta dashboard por agente** ✅ 2026-05-14
+  - Spawn proceso dashboard-humano-v2 con env vars correctas por agente
   - Graceful shutdown: mata dashboard al detener agente
-  - Dependency: 1.3, 1.4
+  - Comando `list` muestra estado de dashboard
+  - Commits: <pending>
 
 - [ ] **2.2 Verificar aislamiento de sesiones WhatsApp**
   - Probar `LocalAuth` con clientId separados en mismo dataPath

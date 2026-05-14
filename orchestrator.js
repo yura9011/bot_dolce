@@ -1,11 +1,13 @@
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
+const { spawn } = require("child_process");
 const AgentManager = require("./lib/agent-manager");
 
 class BotOrchestrator {
   constructor() {
     this.agents = new Map();
+    this.dashboards = new Map();
     this.config = this.loadConfig();
   }
 
@@ -57,6 +59,8 @@ class BotOrchestrator {
     
     this.agents.set(agentId, agent);
     console.log(`✅ Agente ${agentId} iniciado correctamente`);
+
+    this.startDashboard(agentConfig);
   }
 
   async stopAgent(agentId) {
@@ -68,6 +72,9 @@ class BotOrchestrator {
     }
 
     console.log(`🛑 Deteniendo agente: ${agentId}`);
+
+    this.stopDashboard(agentId);
+
     await agent.stop();
     this.agents.delete(agentId);
     console.log(`✅ Agente ${agentId} detenido`);
@@ -96,7 +103,60 @@ class BotOrchestrator {
       await this.stopAgent(agentId);
     }
     
+    for (const [agentId, child] of this.dashboards) {
+      console.log(`🛑 Deteniendo dashboard ${agentId}...`);
+      child.kill('SIGTERM');
+    }
+    this.dashboards.clear();
+    
     console.log("\n✅ Todos los agentes detenidos");
+  }
+
+  startDashboard(agentConfig) {
+    const dashboardPort = agentConfig.ports.dashboard;
+    const botApiPort = agentConfig.ports.api;
+    const agentId = agentConfig.id;
+
+    if (this.dashboards.has(agentId)) {
+      console.log(`⚠️ Dashboard de ${agentId} ya está corriendo en puerto ${dashboardPort}`);
+      return;
+    }
+
+    const env = {
+      ...process.env,
+      DASHBOARD_HUMANO_PORT: String(dashboardPort),
+      DASHBOARD_AGENT_ID: agentId,
+      NODE_ENV: process.env.NODE_ENV || 'production'
+    };
+
+    const dashboardPath = path.join(__dirname, "dashboard-humano-v2", "server.js");
+    const child = spawn("node", [dashboardPath], {
+      env,
+      stdio: "inherit",
+      detached: false
+    });
+
+    child.on("error", (error) => {
+      console.error(`❌ Error iniciando dashboard de ${agentId}: ${error.message}`);
+      this.dashboards.delete(agentId);
+    });
+
+    child.on("exit", (code) => {
+      console.log(`🛑 Dashboard de ${agentId} finalizado (código: ${code})`);
+      this.dashboards.delete(agentId);
+    });
+
+    this.dashboards.set(agentId, child);
+    console.log(`📊 Dashboard de ${agentId} iniciado en puerto ${dashboardPort}`);
+  }
+
+  stopDashboard(agentId) {
+    const child = this.dashboards.get(agentId);
+    if (child) {
+      console.log(`🛑 Deteniendo dashboard de ${agentId}...`);
+      child.kill('SIGTERM');
+      this.dashboards.delete(agentId);
+    }
   }
 
   listAgents() {
@@ -106,8 +166,10 @@ class BotOrchestrator {
       const isRunning = this.agents.has(agentConfig.id);
       const status = isRunning ? "🟢 Corriendo" : (agentConfig.enabled ? "⚪ Detenido" : "🔴 Deshabilitado");
       
+      const dashboardStatus = this.dashboards.has(agentConfig.id) ? "📊 Dashboard activo" : "📭 Sin dashboard";
       console.log(`${status} ${agentConfig.id} - ${agentConfig.name}`);
-      console.log(`   API: http://localhost:${agentConfig.ports.api}`);
+      console.log(`   API: http://localhost:${agentConfig.ports.api} | ${dashboardStatus}`);
+      console.log(`   Dashboard: http://localhost:${agentConfig.ports.dashboard}`);
       console.log(`   Data: ${agentConfig.paths.data}`);
       console.log("");
     }
