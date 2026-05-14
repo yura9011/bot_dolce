@@ -84,15 +84,15 @@ Fase 5: Testing (Local → Testing → Producción)
   - Fallback chain: per-agent file → .env → agents.json
   - Commits: `d443156`
 
-- [ ] **1.3 Convertir notificarDashboard() en método de instancia**
-  - Mover función global a `AgentManager.notificarDashboard(chatId)`
-  - Usar `this.config.ports.dashboard` en vez de `DASHBOARD_HUMANO_PORT` global
-  - Dependency: Ninguna
+- [x] **1.3 Convertir notificarDashboard() en método de instancia** ✅ 2026-05-14
+  - Movida función global a método `AgentManager.notificarDashboard(chatId)`
+  - Usa `this.config.ports.dashboard` en vez de env var global
+  - Commits: `09ada5e`
 
-- [ ] **1.4 BOT_API_PORT dinámico por agente**
-  - `dashboard-humano-v2/server.js`: leer puerto API del agente desde config
-  - Reemplazar `process.env.BOT_API_PORT || 3011` por configuración recibida
-  - Dependency: 1.1
+- [x] **1.4 BOT_API_PORT dinámico por agente** ✅ 2026-05-14
+  - `dashboard-humano-v2/server.js`: agregado `getBotApiPort()` que lee desde agents.json
+  - Reemplazados hardcodes de 3011 en ambos endpoints (message/finish)
+  - Commits: <pending>
 
 ### 🟡 Fase 2: Multi-Agent Runtime (Prioridad Alta)
 

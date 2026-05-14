@@ -58,6 +58,14 @@ function leerConfig() {
   }
 }
 
+function getBotApiPort() {
+  const agent = leerConfig();
+  if (agent && agent.ports && agent.ports.api) {
+    return agent.ports.api;
+  }
+  return 3011;
+}
+
 function leerHistorial() {
   try {
     if (fs.existsSync(HISTORIAL_PATH)) {
@@ -242,7 +250,7 @@ app.post('/api/chats/:userId/message', authenticateToken, async (req, res) => {
 
   try {
     // Enviar via bot API (que tiene el cliente WhatsApp)
-    const botPort = process.env.BOT_API_PORT || 3011;
+    const botPort = getBotApiPort();
     const response = await fetch(`http://127.0.0.1:${botPort}/message/sendMessage/${AGENT_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -267,7 +275,7 @@ app.post('/api/chats/:userId/finish', authenticateToken, async (req, res) => {
 
   try {
     // Enviar "MUCHAS GRACIAS" via bot API
-    const botPort = process.env.BOT_API_PORT || 3011;
+    const botPort = getBotApiPort();
     const response = await fetch(`http://127.0.0.1:${botPort}/message/sendMessage/${AGENT_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
