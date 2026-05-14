@@ -1,18 +1,6 @@
 # Bot de WhatsApp Multi-Agente - Dolce Party
 
-> **🤖 PARA AGENTES DE IA**: Antes de hacer cualquier cambio, leé [`HANDOFF.md`](./HANDOFF.md) y después `.gsd/state/IMPLEMENTATION_PLAN.md`. No empieces a codificar sin contexto.
-
-Sistema de atención automatizada por WhatsApp para múltiples locales de cotillón, con gestión centralizada y dashboard en tiempo real.
-
-## Características
-
-- **Multi-Agente**: Gestiona múltiples locales desde un solo sistema
-- **Dashboard Centralizado**: Monitoreo en tiempo real con WebSocket
-- **IA Conversacional**: Integración con Gemini y OpenRouter como fallback
-- **RAG (Retrieval-Augmented Generation)**: Búsqueda inteligente en catálogo de productos
-- **Anti-Hijacking**: Sistema de seguridad contra intentos de manipulación
-- **Control Manual**: Sistema de pausas y handoff a operadores humanos
-- **Estadísticas**: Métricas detalladas por agente y en tiempo real
+Sistema de atencion automatizada por WhatsApp para multiples locales de cotillon, con gestion centralizada y dashboard en tiempo real.
 
 ## Requisitos
 
@@ -20,38 +8,29 @@ Sistema de atención automatizada por WhatsApp para múltiples locales de cotill
 - WhatsApp Business Account
 - API Keys: Gemini y/o OpenRouter
 
-## Instalación
+## Instalacion
 
 ```bash
-# Clonar repositorio
 git clone https://github.com/yura9011/bot_dolce.git
 cd bot_dolce
-
-# Instalar dependencias
 npm install
-
-# Configurar variables de entorno
 cp .env.example .env
-# Editar .env con tus API keys
 ```
 
-## Configuración
+Editar `.env` con las API keys correspondientes.
 
-### 1. Variables de Entorno (.env)
+## Configuracion
 
-```env
-# API Keys
+### Variables de Entorno (.env)
+
+```
 GEMINI_API_KEY=tu_api_key_aqui
 OPENROUTER_API_KEY=tu_api_key_aqui
-
-# Números Admin (separados por coma)
 ADMIN_NUMBERS=5491158647529,5493513782559
-
-# Puertos (opcional)
 DASHBOARD_CENTRAL_PORT=3000
 ```
 
-### 2. Configurar Agentes (config/agents.json)
+### Agentes (config/agents.json)
 
 ```json
 {
@@ -64,7 +43,7 @@ DASHBOARD_CENTRAL_PORT=3000
       "info": {
         "nombre": "Dolce Party - Santa Ana",
         "telefono": "0351 855-9145",
-        "direccion": "Sta. Ana 2637, Córdoba"
+        "direccion": "Sta. Ana 2637, Cordoba"
       }
     }
   ]
@@ -76,16 +55,9 @@ DASHBOARD_CENTRAL_PORT=3000
 ### Iniciar Sistema Multi-Agente
 
 ```bash
-# Listar agentes configurados
 node orchestrator.js list
-
-# Iniciar un agente específico
 node orchestrator.js start santa-ana
-
-# Iniciar todos los agentes habilitados
 node orchestrator.js start
-
-# Detener un agente
 node orchestrator.js stop santa-ana
 ```
 
@@ -100,12 +72,12 @@ Abrir en navegador: http://localhost:3000
 ### Scripts Disponibles
 
 ```bash
-# Usando scripts .bat (Windows)
+# Windows (.bat)
 scripts/list-agents.bat
 scripts/start-agent.bat santa-ana
 scripts/start-dashboard-central.bat
 
-# Usando npm
+# npm
 npm run orchestrator:list
 npm run orchestrator:start
 npm run dashboard:central
@@ -115,87 +87,89 @@ npm run dashboard:central
 
 ```
 orchestrator.js
-├── Agent Manager (santa-ana) - Puerto 3011
-│   ├── WhatsApp Client
-│   ├── API REST
-│   ├── Catálogo de Productos
-│   ├── Estadísticas (data/santa-ana/)
-│   └── Logs (logs/santa-ana/)
-│
-└── Agent Manager (local-2) - Puerto 3012
-    └── (Deshabilitado por defecto)
++-- Agent Manager (santa-ana) - Puerto 3011
+|   +-- WhatsApp Client
+|   +-- API REST
+|   +-- Catalogo de Productos
+|   +-- Estadisticas (data/santa-ana/)
+|   +-- Logs (logs/santa-ana/)
+|
++-- Agent Manager (asturias) - Puerto 3012
+    +-- (misma estructura)
 
 dashboard-central.js - Puerto 3000
-└── Interfaz unificada con WebSocket
++-- Interfaz unificada con WebSocket
 ```
+
+Cada agente levanta automaticamente su propio dashboard humano en el puerto configurado (`ports.dashboard`).
 
 ## Estructura del Proyecto
 
 ```
 bot_dolce/
-├── config/
-│   └── agents.json           # Configuración de agentes
-├── lib/
-│   ├── agent-manager.js      # Clase para gestionar cada agente
-│   ├── llm.js                # Integración con Gemini/OpenRouter
-│   ├── statistics.js         # Sistema de estadísticas
-│   ├── security.js           # Anti-hijacking
-│   └── ...
-├── catalogs/
-│   └── catalogo-santa-ana.js # Catálogo de productos por agente
-├── data/
-│   └── santa-ana/            # Datos por agente
-├── logs/
-│   └── santa-ana/            # Logs por agente
-├── public-central/           # Frontend del dashboard
-├── scripts/                  # Scripts de gestión (.bat)
-├── orchestrator.js           # Orquestador de agentes
-├── dashboard-central.js      # Dashboard centralizado
-└── bot.js                    # Bot monolítico (legacy)
++-- config/
+|   +-- agents.json           # Configuracion de agentes
++-- lib/
+|   +-- agent-manager.js      # Clase para gestionar cada agente
+|   +-- llm.js                # Integracion con Gemini/OpenRouter
+|   +-- statistics.js         # Sistema de estadisticas
+|   +-- security.js           # Anti-hijacking
+|   +-- admin-commands.js     # Comandos administrativos
+|   +-- control-manual.js     # Sistema de pausas
++-- catalogs/
+|   +-- catalogo-santa-ana.js # Catalogo de productos por agente
++-- data/
+|   +-- santa-ana/            # Datos por agente
+|   +-- asturias/
++-- logs/
+|   +-- santa-ana/            # Logs por agente
+|   +-- asturias/
++-- public-central/           # Frontend del dashboard central
++-- dashboard-humano-v2/      # Dashboard humano (Express + Socket.IO)
++-- scripts/                  # Scripts de gestion
++-- orchestrator.js           # Orquestador de agentes
++-- dashboard-central.js      # Dashboard centralizado
++-- bot.js                    # Bot monolitico (legacy)
 ```
 
 ## Dashboard Centralizado
 
-El dashboard proporciona:
-
-- Vista de todos los agentes (estado, estadísticas)
+- Vista de todos los agentes (estado, estadisticas)
 - Conversaciones en tiempo real
 - Logs del sistema y seguridad
 - Control de pausas (global y por usuario)
-- Estadísticas detalladas
-- Actualizaciones automáticas vía WebSocket
+- Estadisticas detalladas
+- Actualizaciones automaticas via WebSocket
 
 ## Comandos Administrativos (WhatsApp)
 
-Los números configurados como admin pueden usar:
+Los numeros configurados como admin pueden usar:
 
 ```
 PAUSAR BOT GLOBAL          - Pausa el bot completamente
 REANUDAR BOT GLOBAL        - Reactiva el bot
 ESTADO BOT                 - Ver estado actual
-PAUSAR [número]            - Pausar usuario específico
-REANUDAR [número]          - Reanudar usuario específico
+PAUSAR [numero]            - Pausar usuario especifico
+REANUDAR [numero]          - Reanudar usuario especifico
 LISTAR PAUSADOS            - Ver usuarios pausados
 ```
 
-## Flujos de Conversación
+## Flujos de Conversacion
 
-1. **Bienvenida**: Captura nombre del usuario
-2. **Menú Principal**:
-   - Realizar pedido cotillón
-   - Entrega y recepción de envíos
-3. **Pedidos**: Búsqueda inteligente en catálogo con IA
-4. **Paquetería**: Info sobre Correo Argentino, Andreani, Mercado Libre
+1. Bienvenida: captura nombre del usuario
+2. Menu Principal: realizar pedido / entrega y recepcion de envios
+3. Pedidos: busqueda inteligente en catalogo con IA (RAG)
+4. Paqueteria: informacion sobre Correo Argentino, Andreani, Mercado Libre
 
 ## Sistema de Fallback LLM
 
 ```
 Gemini 2.5-flash (principal)
-    ↓ (si falla)
+    + (si falla)
 Gemini 1.5-flash
-    ↓ (si falla, 3 reintentos)
+    + (si falla, 3 reintentos)
 OpenRouter - Ling 2.6-flash
-    ↓ (si falla)
+    + (si falla)
 OpenRouter - Gemma 4
 ```
 
@@ -205,62 +179,37 @@ OpenRouter - Gemma 4
 npm run add-client
 ```
 
-Sigue las instrucciones interactivas. El cliente queda deshabilitado hasta que tengas el número de WhatsApp listo.
+Sigue las instrucciones interactivas. El cliente queda deshabilitado hasta activarlo manualmente.
 
-Para activarlo:
-1. Editar `config/agents.json` → poner `"enabled": true`
-2. `git push` → `git pull` en VPS → `pm2 restart bot-dolce-prd`
+Para activar:
+1. Editar `config/agents.json` -> `"enabled": true`
+2. `git push` -> `git pull` en VPS -> `pm2 restart bot-dolce-prd`
 3. Escanear QR: `pm2 logs bot-dolce-prd`
 4. Abrir dashboard en `http://VPS_IP:{dashboard_port}`
 
-## Desarrollo
-
-### Bot Monolítico (Legacy)
-
-El bot original sigue disponible para desarrollo:
-
-```bash
-# Iniciar bot monolítico
-npm start
-
-# Iniciar dashboard original
-npm run dashboard
-```
-
-### Testing
-
-```bash
-# Probar conexión WebSocket
-node test-websocket.js
-
-# Ver logs en tiempo real
-Get-Content logs/santa-ana/bot.log -Wait -Tail 10
-```
-
-## Documentación
-
-- `docs/arquitectura/` - Documentación técnica
-- `docs/guias/` - Guías de uso
-- `docs/implementaciones/` - Detalles de implementación
-- `docs/README-MULTI-AGENTE.md` - Guía completa del sistema multi-agente
-
 ## Troubleshooting
 
-### QR Code no aparece
-```bash
-# Limpiar sesión de WhatsApp
+### QR no aparece
+```
 scripts/limpiar-sesion.bat
 node orchestrator.js start santa-ana
 ```
 
-### Dashboard vacío
-- Verificar que el agente esté corriendo: `node orchestrator.js list`
-- Verificar consola del navegador (F12) para errores
-- Verificar que el puerto 3011 esté disponible
+### Dashboard vacio
+- Verificar agente activo: `node orchestrator.js list`
+- Verificar consola del navegador (F12)
+- Verificar que el puerto del agente este disponible
 
-### API key inválida
-- El sistema usa OpenRouter automáticamente como fallback
-- Verificar que `OPENROUTER_API_KEY` esté configurada en `.env`
+### API key invalida
+- El sistema usa OpenRouter como fallback automatico
+- Verificar `OPENROUTER_API_KEY` en `.env`
+
+## Documentacion
+
+- `docs/arquitectura/` - Documentacion tecnica
+- `docs/guias/` - Guias de uso
+- `docs/implementaciones/` - Detalles de implementacion
+- `docs/README-MULTI-AGENTE.md` - Guia del sistema multi-agente
 
 ## Licencia
 
@@ -269,4 +218,4 @@ Privado - Dolce Party
 ## Contacto
 
 - GitHub: https://github.com/yura9011/bot_dolce
-- Desarrollado para: Dolce Party - Cotillón
+- Desarrollado para: Dolce Party - Cotillon
