@@ -78,10 +78,11 @@ Fase 5: Testing (Local → Testing → Producción)
   - Cada AgentManager crea su propia instancia con sus propios admins
   - Commits: `9aed38d`
 
-- [ ] **1.2 Mover admin-numbers.json a data/{agentId}/**
-  - Migrar `config/admin-numbers.json` → `data/santa-ana/admin-numbers.json` y `data/asturias/...`
-  - Dashboard humano: CRUD apunta al archivo correcto según AGENT_ID
-  - Dependency: 1.1
+- [x] **1.2 Mover admin-numbers.json a data/{agentId}/** ✅ 2026-05-14
+  - Migrado `config/admin-numbers.json` → `data/santa-ana/admin-numbers.json` y `data/asturias/admin-numbers.json`
+  - Dashboard humano: CRUD ahora apunta a `DATA_PATH/admin-numbers.json`
+  - Fallback chain: per-agent file → .env → agents.json
+  - Commits: `d443156`
 
 - [ ] **1.3 Convertir notificarDashboard() en método de instancia**
   - Mover función global a `AgentManager.notificarDashboard(chatId)`
