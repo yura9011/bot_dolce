@@ -109,13 +109,14 @@ Fase 5: Testing (Local → Testing → Producción)
 
 ### 🟡 Fase 3: UX & Media (Prioridad Media)
 
-- [ ] **3.1 Respuesta explícita por tipo de media**
-  - image → "No puedo procesar imágenes, escribime por texto"
-  - video → "No recibo videos, escribime tu consulta"
-  - document → "No recibo documentos"
+- [x] **3.1 Respuesta explícita por tipo de media** ✅ 2026-05-14
+  - image → "No puedo procesar imágenes..."
+  - video → "No recibo videos..."
+  - document → "No recibo documentos..."
   - sticker → ignorar silenciosamente
-  - location → "No proceso ubicaciones"
-  - Dependency: Ninguna
+  - location → "No procesamos ubicaciones (da la dirección)"
+  - body vacío → ignorar sin procesar (no gasta tokens)
+  - Commits: <pending>
 
 - [ ] **3.2 Manejo de emojis en menú**
   - Detectar mensajes sin texto (solo emojis) en estados de menú
