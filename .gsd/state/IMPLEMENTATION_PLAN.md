@@ -92,7 +92,7 @@ Fase 5: Testing (Local → Testing → Producción)
 - [x] **1.4 BOT_API_PORT dinámico por agente** ✅ 2026-05-14
   - `dashboard-humano-v2/server.js`: agregado `getBotApiPort()` que lee desde agents.json
   - Reemplazados hardcodes de 3011 en ambos endpoints (message/finish)
-  - Commits: <pending>
+  - Commits: `ac9c8d5`
 
 ### 🟡 Fase 2: Multi-Agent Runtime (Prioridad Alta)
 
@@ -100,7 +100,7 @@ Fase 5: Testing (Local → Testing → Producción)
   - Spawn proceso dashboard-humano-v2 con env vars correctas por agente
   - Graceful shutdown: mata dashboard al detener agente
   - Comando `list` muestra estado de dashboard
-  - Commits: <pending>
+  - Commits: `0140953`
 
 - [x] **2.2 Verificar aislamiento de sesiones WhatsApp** (movido a Fase 5.1 — testing local)
 
@@ -113,13 +113,13 @@ Fase 5: Testing (Local → Testing → Producción)
   - sticker → ignorar silenciosamente
   - location → "No procesamos ubicaciones (da la dirección)"
   - body vacío → ignorar sin procesar (no gasta tokens)
-  - Commits: <pending>
+  - Commits: `35ef746`
 
 - [x] **3.2 Manejo de emojis en menú** ✅ 2026-05-14
   - Detecta mensajes sin caracteres alfanuméricos en estados de menú
   - Responde: "Por favor, elegí una opción del menú usando el número correspondiente"
   - No interfiere con estado PEDIDO (allí sí se permite texto libre)
-  - Commits: <pending>
+  - Commits: `3a2bf3a`
 
 ### 🟢 Fase 4: Onboarding Asturias (Prioridad Alta)
 
@@ -127,7 +127,7 @@ Fase 5: Testing (Local → Testing → Producción)
 - [x] **4.2 Crear data/asturias/** con historial.json, pausas.json, admin-numbers.json ✅ 2026-05-14
 - [x] **4.3 Configurar números admin de Asturias** (mismos que Santa Ana por defecto) ✅ 2026-05-14
 - [ ] **4.4 Escanear QR de Asturias** (sesión WhatsApp) — pendiente para testing
-- [ ] Commits: <pending>
+- Commits: `bd76763`
 
 ### 🟢 Fase 5: Testing Pipeline (Prioridad Alta)
 
