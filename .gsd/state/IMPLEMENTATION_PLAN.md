@@ -76,7 +76,7 @@ Fase 5: Testing (Local → Testing → Producción)
   - Convertido singleton a `createAdminCommands(agentConfig, controlManager)`
   - Fix: imports rotos reemplazados por métodos del controlManager recibido
   - Cada AgentManager crea su propia instancia con sus propios admins
-  - Commits: `feat(admin-commands): factory pattern`
+  - Commits: `9aed38d`
 
 - [ ] **1.2 Mover admin-numbers.json a data/{agentId}/**
   - Migrar `config/admin-numbers.json` → `data/santa-ana/admin-numbers.json` y `data/asturias/...`

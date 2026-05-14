@@ -27,7 +27,7 @@ const CONFIG_PATH = path.join(__dirname, '../config/agents.json');
 const DATA_PATH = path.join(__dirname, `../data/${AGENT_ID}`);
 const HISTORIAL_PATH = path.join(DATA_PATH, 'historial.json');
 const PAUSAS_PATH = path.join(DATA_PATH, 'pausas.json');
-const ADMIN_NUMBERS_PATH = path.join(__dirname, '../config/admin-numbers.json');
+const ADMIN_NUMBERS_PATH = path.join(DATA_PATH, 'admin-numbers.json');
 const PHONE_MAP_PATH = path.join(__dirname, '../config/phone-map.json');
 
 // Middleware
