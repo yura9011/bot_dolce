@@ -102,10 +102,7 @@ Fase 5: Testing (Local → Testing → Producción)
   - Comando `list` muestra estado de dashboard
   - Commits: <pending>
 
-- [ ] **2.2 Verificar aislamiento de sesiones WhatsApp**
-  - Probar `LocalAuth` con clientId separados en mismo dataPath
-  - `node orchestrator.js start` con ambos enabled → 2 QR distintos
-  - Dependency: Ninguna
+- [x] **2.2 Verificar aislamiento de sesiones WhatsApp** (movido a Fase 5.1 — testing local)
 
 ### 🟡 Fase 3: UX & Media (Prioridad Media)
 
@@ -135,15 +132,17 @@ Fase 5: Testing (Local → Testing → Producción)
 ### 🟢 Fase 5: Testing Pipeline (Prioridad Alta)
 
 - [ ] **5.1 Probar ambos agentes localmente**
-  - Windows: node orchestrator.js start (los dos)
-  - Verificar: respuestas, dashboards, comandos admin
+  - `node orchestrator.js start` con ambos enabled
+  - Verificar: 2 QR distintos, 2 dashboards, comandos admin aislados
+  - Probar media handling (imagen, video, emoji)
 - [ ] **5.2 Deploy a testing (VPS)**
   - git push → pull en bot_testing
-  - Iniciar con agents.override.json para puertos de testing
+  - Configurar agents.override.json para puertos testing
 - [ ] **5.3 Probar funcionalidad completa en testing**
   - Enviar mensajes desde WhatsApp real
   - Verificar notificaciones en tiempo real
-  - Probar comandos admin
+  - Escanear QR de Asturias
+  - Probar comandos admin por agente
 - [ ] **5.4 Deploy a producción**
   - git push → pull en bot_dolce
   - PM2 restart
