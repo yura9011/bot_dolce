@@ -20,8 +20,29 @@ Sesión de interrogación GSD (/interrógame). Se entrevistó al usuario sobre e
 - Dashboard se levanta automáticamente por agente vía orchestrator
 - Pipeline: Local → Testing (VPS) → Producción (VPS)
 
+### Lo Completado
+1. **Fase 1.1** ✅ `admin-commands.js` → factory pattern (fix imports rotos)
+2. **Fase 1.2** ✅ `admin-numbers.json` → por agente en `data/{agentId}/`
+3. **Fase 1.3** ✅ `notificarDashboard()` → método de instancia
+4. **Fase 1.4** ✅ `BOT_API_PORT` → dinámico desde agents.json
+5. **Fase 2.1** ✅ Orchestrator auto-levanta dashboard por agente
+6. **Fase 3.1** ✅ Respuestas explícitas para imágenes, video, documento, sticker, location
+7. **Fase 3.2** ✅ Manejo de emojis en estados de menú
+8. **Fase 4.1-4.3** ✅ Asturias habilitado, admin numbers configurados
+
+### Commits (9 total)
+- `9aed38d` factory pattern admin-commands
+- `d443156` admin-numbers per-agent
+- `09ada5e` notificarDashboard instance method
+- `ac9c8d5` BOT_API_PORT dinámico
+- `0140953` orchestrator auto-dashboard
+- `35ef746` media handling explícito
+- `3a2bf3a` emoji handling en menú
+- `bd76763` onboarding Asturias
+- Various docs updates
+
 ### Próximo Paso
-Ejecutar Fase 1.1: Refactor admin-commands.js
+Fase 5: Testing pipeline (Local → Testing VPS → Producción VPS)
 - **`lib/agent-manager.js`**: Extract `_createClient()`, add retry logic on Chrome orphan conflict, add `_setupSignalHandlers()` with SIGTERM/SIGINT graceful shutdown, add `killOrphanChrome()` helper
 - **`dashboard-humano-v2/server.js`**: `localhost` → `127.0.0.1` (IPv4 explícito) en llamadas HTTP internas al bot API
 - **`routes/human-panel.js`**: `localhost` → `127.0.0.1` (IPv4 explícito) en llamadas HTTP internas
