@@ -45,7 +45,7 @@
     {
       "id": "asturias",
       "name": "Dolce Party - Asturias",
-      "enabled": false,
+      "enabled": true,
       "whatsappSession": "asturias-session",
       "ports": {
         "api": 3012,
@@ -62,7 +62,7 @@
         "horario": "Lunes a Sábado: 9:00 a 20:00hs | Domingo: Cerrado",
         "direccion": "Av. Asturias 1234, Córdoba"
       },
-      "adminNumbers": [],
+      "adminNumbers": ["5491158647529", "5493513782559"],
       "dashboardUsers": [
         {
           "username": "admin",

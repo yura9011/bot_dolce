@@ -126,11 +126,11 @@ Fase 5: Testing (Local → Testing → Producción)
 
 ### 🟢 Fase 4: Onboarding Asturias (Prioridad Alta)
 
-- [ ] **4.1 Habilitar asturias en agents.json** (`enabled: true`)
-- [ ] **4.2 Crear data/asturias/** con historial.json, pausas.json, admin-numbers.json
-- [ ] **4.3 Configurar números admin de Asturias**
-- [ ] **4.4 Escanear QR de Asturias** (sesión WhatsApp)
-- [ ] Dependency: Fases 1-3 completadas
+- [x] **4.1 Habilitar asturias en agents.json** (`enabled: true`) ✅ 2026-05-14
+- [x] **4.2 Crear data/asturias/** con historial.json, pausas.json, admin-numbers.json ✅ 2026-05-14
+- [x] **4.3 Configurar números admin de Asturias** (mismos que Santa Ana por defecto) ✅ 2026-05-14
+- [ ] **4.4 Escanear QR de Asturias** (sesión WhatsApp) — pendiente para testing
+- [ ] Commits: <pending>
 
 ### 🟢 Fase 5: Testing Pipeline (Prioridad Alta)
 
