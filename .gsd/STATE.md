@@ -1,10 +1,27 @@
 # Project State
 
-> Last updated: 13/05/2026
+> Last updated: 14/05/2026
 
 ## Last Session Summary
 
-Performance bugs: fix 2 bugs causing 55% CPU en producción.
+Sesión de interrogación GSD (/interrógame). Se entrevistó al usuario sobre el plan de estabilización multi-agente.
+
+### Problemas Detectados
+- **`lib/admin-commands.js`**: Singleton global compartido + imports rotos de `control-manual.js`
+- **`lib/agent-manager.js:903`**: `notificarDashboard()` función global ignora puerto por agente
+- **`dashboard-humano-v2/server.js:245`**: `BOT_API_PORT` hardcodeado a 3011
+- **Media handling**: imágenes, videos, docs ignorados en silencio
+- **Emojis**: no manejados en flujo de menú
+
+### Decisiones Tomadas
+- `admin-commands.js` → factory pattern (`createAdminCommands`)
+- `admin-numbers.json` → por agente en `data/{agentId}/`
+- `notificarDashboard()` → método de instancia en AgentManager
+- Dashboard se levanta automáticamente por agente vía orchestrator
+- Pipeline: Local → Testing (VPS) → Producción (VPS)
+
+### Próximo Paso
+Ejecutar Fase 1.1: Refactor admin-commands.js
 - **`lib/agent-manager.js`**: Extract `_createClient()`, add retry logic on Chrome orphan conflict, add `_setupSignalHandlers()` with SIGTERM/SIGINT graceful shutdown, add `killOrphanChrome()` helper
 - **`dashboard-humano-v2/server.js`**: `localhost` → `127.0.0.1` (IPv4 explícito) en llamadas HTTP internas al bot API
 - **`routes/human-panel.js`**: `localhost` → `127.0.0.1` (IPv4 explícito) en llamadas HTTP internas

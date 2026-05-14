@@ -7,12 +7,145 @@
 ## Current Status
 
 **Project**: exp010-whatsappbot
-**Phase**: Production + Planning Multi-Tenant Architecture
-**Last Updated**: 2026-05-12
+**Phase**: Estabilización Multi-Agente (pre-onboarding Asturias)
+**Last Updated**: 2026-05-14
 
 ---
 
-## 🎯 Active Milestones
+## 🚨 Milestone Activo: Estabilización Multi-Agente
+
+**Objetivo**: Garantizar que el sistema soporte 2 agentes (Santa Ana + Asturias) en paralelo sin errores.
+**Pipeline**: Local → Testing (VPS) → Producción (VPS)
+**Deadline**: Semana siguiente (onboarding Asturias)
+
+### Problemas Detectados (Sesión /interrógame 2026-05-14)
+
+| # | Problema | Archivo | Severidad |
+|---|----------|---------|-----------|
+| 1 | `admin-commands.js` importa funciones que no existen de `control-manual.js` | `lib/admin-commands.js:7-14` | 🔴 ALTO (comandos admin rotos) |
+| 2 | `adminNumbers` singleton global compartido entre agentes | `lib/admin-commands.js` | 🔴 ALTO |
+| 3 | `notificarDashboard()` usa env var global, ignora puerto por agente | `lib/agent-manager.js:903` | 🔴 ALTO |
+| 4 | Dashboard server no se levanta automáticamente por agente | `orchestrator.js` | 🔴 ALTO |
+| 5 | Media (imágenes, videos, docs, stickers) ignorados en silencio | `lib/agent-manager.js:244` | 🟡 MEDIO |
+| 6 | Emojis en menú no manejados (usuario escribe 😊, bot no entiende) | `lib/agent-manager.js` | 🟡 MEDIO |
+| 7 | `agents.json` inconsistencia: `enabled: false` en Asturias | `config/agents.json` | 🟢 BAJO |
+| 8 | Catálogo Asturias apunta al mismo archivo que Santa Ana | `config/agents.json` | 🟢 BAJO (aceptado) |
+
+---
+
+## 📋 Plan de Estabilización
+
+```
+Fase 1: Foundation (cambios estructurales)
+├── 1.1 Refactor admin-commands.js → factory pattern
+├── 1.2 Mover admin-numbers.json a data/{agentId}/
+├── 1.3 Convertir notificarDashboard() en método de instancia
+└── 1.4 Arreglar BOT_API_PORT por agente en dashboard server
+
+Fase 2: Multi-Agent Runtime
+├── 2.1 Orchestrator: auto-levantar dashboard por agente
+├── 2.2 Verificar aislamiento de sesiones WhatsApp (LocalAuth)
+├── 2.3 Dashboard server: leer CONFIG_AGENT_ID de agents.json
+└── 2.4 Probar 2 agentes en paralelo localmente
+
+Fase 3: UX & Media
+├── 3.1 Respuesta explícita por tipo de media no soportada
+├── 3.2 Manejo de emojis en flujo de menú
+└── 3.3 Validación de body vacío antes de procesar
+
+Fase 4: Onboarding Asturias
+├── 4.1 Habilitar asturias en agents.json
+├── 4.2 Crear data/asturias/ con archivos iniciales
+├── 4.3 Configurar números admin de Asturias
+└── 4.4 Escanear QR de Asturias (sesión WhatsApp)
+
+Fase 5: Testing (Local → Testing → Producción)
+├── 5.1 Probar ambos agentes localmente
+├── 5.2 Deploy a entorno testing en VPS
+├── 5.3 Probar funcionalidad completa en testing
+└── 5.4 Deploy a producción
+```
+
+---
+
+## Current Tasks
+
+### 🔴 Fase 1: Foundation (Prioridad Alta)
+
+- [x] **1.1 Refactor admin-commands.js → factory pattern** ✅ 2026-05-14
+  - Convertido singleton a `createAdminCommands(agentConfig, controlManager)`
+  - Fix: imports rotos reemplazados por métodos del controlManager recibido
+  - Cada AgentManager crea su propia instancia con sus propios admins
+  - Commits: `feat(admin-commands): factory pattern`
+
+- [ ] **1.2 Mover admin-numbers.json a data/{agentId}/**
+  - Migrar `config/admin-numbers.json` → `data/santa-ana/admin-numbers.json` y `data/asturias/...`
+  - Dashboard humano: CRUD apunta al archivo correcto según AGENT_ID
+  - Dependency: 1.1
+
+- [ ] **1.3 Convertir notificarDashboard() en método de instancia**
+  - Mover función global a `AgentManager.notificarDashboard(chatId)`
+  - Usar `this.config.ports.dashboard` en vez de `DASHBOARD_HUMANO_PORT` global
+  - Dependency: Ninguna
+
+- [ ] **1.4 BOT_API_PORT dinámico por agente**
+  - `dashboard-humano-v2/server.js`: leer puerto API del agente desde config
+  - Reemplazar `process.env.BOT_API_PORT || 3011` por configuración recibida
+  - Dependency: 1.1
+
+### 🟡 Fase 2: Multi-Agent Runtime (Prioridad Alta)
+
+- [ ] **2.1 Orchestrator auto-levanta dashboard por agente**
+  - Spawn proceso dashboard-humano-v2 con `AGENT_ID`, `DASHBOARD_HUMANO_PORT`, `BOT_API_PORT`
+  - Graceful shutdown: mata dashboard al detener agente
+  - Dependency: 1.3, 1.4
+
+- [ ] **2.2 Verificar aislamiento de sesiones WhatsApp**
+  - Probar `LocalAuth` con clientId separados en mismo dataPath
+  - `node orchestrator.js start` con ambos enabled → 2 QR distintos
+  - Dependency: Ninguna
+
+### 🟡 Fase 3: UX & Media (Prioridad Media)
+
+- [ ] **3.1 Respuesta explícita por tipo de media**
+  - image → "No puedo procesar imágenes, escribime por texto"
+  - video → "No recibo videos, escribime tu consulta"
+  - document → "No recibo documentos"
+  - sticker → ignorar silenciosamente
+  - location → "No proceso ubicaciones"
+  - Dependency: Ninguna
+
+- [ ] **3.2 Manejo de emojis en menú**
+  - Detectar mensajes sin texto (solo emojis) en estados de menú
+  - Responder pidiendo opción numérica
+  - Dependency: Ninguna
+
+### 🟢 Fase 4: Onboarding Asturias (Prioridad Alta)
+
+- [ ] **4.1 Habilitar asturias en agents.json** (`enabled: true`)
+- [ ] **4.2 Crear data/asturias/** con historial.json, pausas.json, admin-numbers.json
+- [ ] **4.3 Configurar números admin de Asturias**
+- [ ] **4.4 Escanear QR de Asturias** (sesión WhatsApp)
+- [ ] Dependency: Fases 1-3 completadas
+
+### 🟢 Fase 5: Testing Pipeline (Prioridad Alta)
+
+- [ ] **5.1 Probar ambos agentes localmente**
+  - Windows: node orchestrator.js start (los dos)
+  - Verificar: respuestas, dashboards, comandos admin
+- [ ] **5.2 Deploy a testing (VPS)**
+  - git push → pull en bot_testing
+  - Iniciar con agents.override.json para puertos de testing
+- [ ] **5.3 Probar funcionalidad completa en testing**
+  - Enviar mensajes desde WhatsApp real
+  - Verificar notificaciones en tiempo real
+  - Probar comandos admin
+- [ ] **5.4 Deploy a producción**
+  - git push → pull en bot_dolce
+  - PM2 restart
+  - Dependency: 5.3 ✅
+
+---
 
 ### ✅ Milestone 1: Dual Environment Setup (COMPLETED)
 **Status**: Production Ready  
@@ -69,139 +202,6 @@
 
 ---
 
-
-## Current Tasks
-
-### Active
-
-- [x] **Dashboard Redesign - Phase 1: Design System Foundation** ✅ COMPLETADO 2026-05-12
-  - [x] Definir paleta Cálido Moderno (Violeta/Ámbar)
-  - [x] Crear design-tokens.css con variables
-  - [x] Documentar DESIGN_SYSTEM.md
-  - [x] Integrar tokens en index.html y login.html
-- [x] **Dashboard Redesign - Phase 2: Base Components (Atoms)** ✅ COMPLETADO 2026-05-12
-  - [x] Crear components.css con botones, inputs, badges, etc.
-  - [x] Implementar estados hover/focus/active
-  - [x] Integrar en index.html y login.html
-- [x] **Dashboard Redesign - Phase 3: Layout & Structure (Shell)** ✅ COMPLETADO 2026-05-12
-  - [x] Crear layout.css con grid principal y responsive breakpoints
-  - [x] Rediseñar Header (Violeta, logout estilizado)
-  - [x] Mejorar Tabs (Horizontal, indicador activo, hover)
-  - [x] Responsive funcional (Sidebar overlay en mobile)
-- [x] **Dashboard Redesign - Phase 4: Specific Views** ✅ COMPLETADO 2026-05-12
-  - [x] Rediseño de Lista de Chats (Avatares, previews, badges)
-  - [x] Rediseño de Conversación (Burbujas estilizadas por rol, input violeta)
-  - [x] Rediseño de Configuración (Cards para números, botones circulares)
-  - [x] Rediseño de Estadísticas (KPI cards con colores semánticos)
-- [x] **Dashboard Redesign - Phase 5: Polishing** ✅ COMPLETADO 2026-05-12
-  - [x] Crear animations.css con keyframes (fade, slide, pulse, shimmer)
-  - [x] Micro-interacciones en botones y cards
-  - [x] Animaciones en mensajes, modales y toasts
-  - [x] Soporte para prefers-reduced-motion
-- [ ] Phase 6: Testing (Validación final)
-- [x] ~~Setup dual environment (PRD + DEV)~~
-... (rest of the tasks) ...
-
-**Status**: Ready to Start  
-**Priority**: High  
-**Target**: TBD
-
-**Objective**: Transform single-client bot into scalable multi-tenant platform
-
-**Documentation**: [View Full Milestone](.gsd/milestones/multi-tenant-architecture/MILESTONE.md)
-
-**Key Goals:**
-- Support multiple clients from single codebase
-- Automated client onboarding (< 5 minutes)
-- Centralized management dashboard
-- Isolated data per client
-- Automated port management
-- Easy scaling to 100+ clients
-
-**Phases:**
-1. Core Refactoring (Foundation)
-2. Port Management System
-3. Client Management Scripts
-4. Unified Dashboard
-5. Migration & Testing
-6. Documentation & Onboarding
-
----
-
-## Current Tasks
-
-### Active
-
-- [x] ~~Setup dual environment (PRD + DEV)~~
-- [x] ~~Configure separate ports and sessions~~
-- [x] ~~Fix dashboard accessibility~~
-- [x] ~~Plan multi-tenant architecture~~
-- [x] ~~Phase 1: Foundation & Core Refactoring~~
-  - [x] Create directory structure
-  - [x] Extract bot template
-  - [x] Configuration system with JSON Schema
-  - [x] Port management system
-  - [x] Deployment automation scripts
-- [x] ~~Phase 3 (Partial): add-client.sh script~~ (Adelantado)
-- [x] **Dashboard Humano WhatsApp Style - Login Fix** ✅ COMPLETADO
-  - [x] Identificar causa raíz (conflicto de puertos)
-  - [x] Configurar usuarios en config/agents.json
-  - [x] Generar hashes bcrypt para contraseñas
-  - [x] Verificar login funciona localmente
-  - [x] Usuario `forma` / `forma2026` agregado
-- [x] **Dashboard Humano - Deploy a Producción** ✅ COMPLETADO 2026-05-11
-  - [x] Subir cambios al VPS (git pull)
-  - [x] Reiniciar PM2
-  - [x] Verificar en producción — http://2.24.89.243:3001 OK
-- [x] **Dashboard Admin Management - Backend+Frontend** ✅ COMPLETADO 2026-05-11
-- [x] **Dashboard Admin Management - Deploy a Producción** ✅ COMPLETADO 2026-05-12
-- [x] **Fix envío de mensajes + WebSocket tiempo real** ✅ COMPLETADO 2026-05-12
-  - [x] server.js: message/finish escriben directo a historial.json y pausas.json
-  - [x] agent-manager.js: notificarDashboard() via HTTP local
-  - [x] Endpoint interno /api/internal/new-message
-  - [x] Limpieza debug logs + BOT_API_URL
-  - [x] Template multi-tenant actualizada
-- [x] **Dashboard fixes — renderizado, CSS, config.js bug** ✅ COMPLETADO 2026-05-12
-  - [x] Debug logging en loadMessages (conversation.js)
-  - [x] Fix renderAdminNumbers() escribía en container incorrecto (config.js)
-  - [x] Chat preview multi-formato en obtenerChats() (server.js)
-  - [x] Patrón de formato inconsistente documentado en .gsd/memory/patterns/
-- [x] **Testing environment visual differentiation** ✅ COMPLETADO 2026-05-12
-  - [x] AGENT_ID / DATA_PATH configurables por env
-  - [x] Banner naranja + header negro + sufijo [TEST]
-  - [x] Endpoint /api/env para detección frontend
-  - [x] Datos separados data/testing/ vs data/santa-ana/
-- [ ] Phase 2: Dashboard Maestro
-- [ ] Phase 3: Automation Scripts (Completar)
-- [ ] Phase 4: Client & Human Dashboards
-- [ ] Phase 5: Migration
-- [ ] Phase 6: Documentation & Polish
-
-### Immediate (Next 24h)
-
-- [x] ~~Deploy dashboard fixes a VPS~~ ✅
-- [x] ~~Entorno testing operativo con celular de forma~~ ✅ 2026-05-12
-  - [x] bot-dolce-dev en puerto 4011 (separado de PRD 3011)
-  - [x] dashboard-humano-testing en puerto 4002
-  - [x] Banner naranja "ENTORNO DE TESTING" visible
-  - [x] Datos separados en data/testing/
-  - [x] Sesión WhatsApp conectada (celular forma)
-- [ ] **Abrir puerto 4002 en firewall** — `sudo ufw allow 4002/tcp` en VPS
-- [ ] **Probar funcionalidad completa en testing** antes de tocar PRD
-  - [ ] Enviar mensaje desde dashboard → ver en WhatsApp
-  - [ ] Recibir mensaje en WhatsApp → ver en dashboard en tiempo real
-  - [ ] Botón MUCHAS GRACIAS → bot se reactiva
-  - [ ] Tab Config → agregar/quitar número admin
-
-### Backlog
-
-- [ ] Begin Phase 1: Core Refactoring
-- [ ] Create client configuration schema
-- [ ] Implement port management system
-- [ ] Build client management scripts
-- [ ] Refactor dashboard for multi-client view
-
----
 
 ## Notes
 
@@ -383,6 +383,6 @@ The multi-tenant implementation will be considered successful when:
 
 ---
 
-**Last Updated**: 2026-05-12  
-**Status**: Testing environment deployed + Dashboard fixes completados  
-**Next Milestone Review**: TBD
+**Last Updated**: 2026-05-14  
+**Status**: Milestone Estabilización Multi-Agente activo — 9 tareas priorizadas  
+**Next Milestone Review**: Antes de onboarding Asturias
