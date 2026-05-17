@@ -79,6 +79,7 @@
   - Progreso 2026-05-17: endpoint/UI backup-now agregados con auditoría; ejecución real deshabilitada por default y requiere `DASHBOARD_MAESTRO_BACKUP_SCRIPT` explícito para testing.
   - Pendiente: crear script de backup específico para testing antes de habilitar backup-now. No usar `scripts/backup.sh` actual tal cual porque está hardcodeado a `/home/forma/bot_dolce`.
   - Progreso 2026-05-17: creado `scripts/backup-testing.sh` para `bot_testing`, con guardrail que rechaza rutas que contengan `/bot_dolce`; queda sin habilitar hasta autorización explícita.
+  - Progreso 2026-05-17: backup-now habilitado y validado en `bot_testing`; creó `/home/forma/backups-testing/bot_testing-20260517-183114.tar.gz` incluyendo `data/`, `logs/`, `config/agents.json`, `config/agents.override.json` y `.wwebjs_auth/`; auditoría registró `success`.
 
 - [x] **2.6 Alerts MVP**
   - Alertas visibles en dashboard
