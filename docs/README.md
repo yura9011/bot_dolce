@@ -46,12 +46,19 @@ Especificaciones técnicas y planes de desarrollo.
 ### 📦 `archive/` - Documentación Histórica
 Documentación histórica, borradores y archivos de trabajo que ya no son relevantes para el desarrollo actual pero se mantienen por referencia.
 
+Subcarpetas recientes:
+
+- `root-notes-2026-05-17/` - notas antiguas que estaban en la raíz del repo.
+- `temp-2026-05-17/` - contenido movido desde `docs/temp/`.
+- `artifacts-2026-05-17/` - artefactos no activos, como backups corruptos.
+
 ## 🔍 Cómo Navegar la Documentación
 
 ### **Para Desarrolladores Nuevos:**
 1. Empezar con el `README.md` principal del proyecto
-2. Revisar `implementaciones/` para entender qué está funcionando
-3. Consultar `analisis/` para entender decisiones técnicas
+2. Leer `HANDOFF.md` y `AGENTS.md`
+3. Revisar `.gsd/state/IMPLEMENTATION_PLAN.md` para el plan activo
+4. Revisar `implementaciones/` para entender qué está funcionando
 
 ### **Para Debugging:**
 1. Revisar `analisis/ANALISIS-SISTEMA-ESTADISTICAS.md` para problemas de estadísticas
@@ -59,8 +66,8 @@ Documentación histórica, borradores y archivos de trabajo que ya no son releva
 3. Revisar `archive/` para contexto histórico de problemas
 
 ### **Para Nuevas Features:**
-1. Revisar `specs/` para especificaciones existentes
-2. Consultar `milestones/` para entender la evolución del sistema
+1. Revisar `.gsd/milestones/` para milestones activos
+2. Revisar `specs/` para especificaciones históricas o complementarias
 3. Crear nueva documentación en la carpeta apropiada
 
 ## 📈 Estado Actual del Sistema

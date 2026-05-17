@@ -7,8 +7,88 @@
 ## Current Status
 
 **Project**: exp010-whatsappbot
-**Phase**: Estabilización Multi-Agente (pre-onboarding Asturias)
-**Last Updated**: 2026-05-14
+**Phase**: Multi-Tenant Fase 2 - Dashboard Maestro MVP
+**Last Updated**: 2026-05-17
+
+---
+
+## 🚨 Milestone Activo: Dashboard Maestro MVP
+
+**Objetivo**: Crear un Dashboard Maestro interno para monitorear y controlar agentes/clientes sin tocar producción actual.
+
+**Estrategia**:
+- Nueva app en `multi-tenant/dashboard-maestro/`.
+- Probar primero en entorno testing VPS.
+- Mantener `bot_dolce` producción estable hasta aprobación explícita.
+- No migrar a SQLite durante este MVP.
+
+**Documentos vigentes**:
+- `.gsd/milestones/multi-tenant-architecture/README.md`
+- `.gsd/milestones/multi-tenant-architecture/CURRENT_DECISIONS.md`
+- `.gsd/milestones/multi-tenant-architecture/DASHBOARD_MAESTRO_MVP.md`
+- `.gsd/milestones/multi-tenant-architecture/PHASE_2_PLAN.md`
+- `AGENTS.md`
+
+### Tareas Actuales
+
+- [ ] **2.1 App Skeleton**
+  - Crear `multi-tenant/dashboard-maestro/` como app Express + Socket.IO independiente
+  - Puerto configurable
+  - Acceso interno autenticado
+  - No reemplazar `dashboard-central.js`
+
+- [ ] **2.2 Agent Registry Adapter**
+  - Leer agentes existentes sin mutar configuración
+  - Mostrar cliente/agente, puertos API/dashboard y enabled/disabled
+  - Preparar compatibilidad futura con `/clients/...`
+
+- [ ] **2.3 Health Collection**
+  - Detectar API bot up/down
+  - Detectar dashboard humano up/down
+  - Registrar último check exitoso y errores
+
+- [ ] **2.4 PM2 Control Layer**
+  - Normalizar nombres PM2 en testing
+  - Start/stop/restart por capa segura
+  - Auditar acciones y mostrar feedback visible
+
+- [ ] **2.5 Backup Now**
+  - Crear backup timestamped en testing
+  - Incluir runtime data y `.wwebjs_auth/`
+  - No implementar restore desde UI
+
+- [ ] **2.6 Alerts MVP**
+  - Alertas visibles en dashboard
+  - Bot down, dashboard down, WhatsApp disconnected si disponible
+  - Handoff > 10 minutos
+  - Mute por mantenimiento por agente
+
+- [ ] **2.7 Metrics & Cost Visibility**
+  - Mensajes recibidos/enviados
+  - Bot vs humano
+  - Handoffs
+  - IA calls y costo estimado si hay datos
+
+- [ ] **2.8 Testing Checklist**
+  - Maestro ve agentes testing
+  - PM2 actions funcionan en testing
+  - Backup now funciona
+  - Alertas renderizan
+  - Auditoría registra acciones
+  - Producción Santa Ana no fue tocada
+
+### Fuera de Alcance del MVP
+
+- Migración SQLite
+- Dashboard cliente multi-agente
+- Onboarding completo por formulario web
+- Restore desde UI
+- Reemplazar producción
+- Responsive mobile-first
+
+---
+
+## Milestone Anterior: Estabilización Multi-Agente
 
 ---
 

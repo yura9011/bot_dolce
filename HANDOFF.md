@@ -3,6 +3,8 @@
 > **Proyecto**: Bot WhatsApp multi-agente para cotillón (Dolce Party)
 > **Framework**: GSD (`.gsd/`) — No inventes tu propio plan, seguí el que existe.
 
+> **También obligatorio**: leer `AGENTS.md`. Contiene las reglas operativas vigentes para agentes de código.
+
 ---
 
 ## 📋 REGLAS OBLIGATORIAS
@@ -10,6 +12,10 @@
 ### 1. LEÉ `IMPLEMENTATION_PLAN.md` AHORA
 - `.gsd/state/IMPLEMENTATION_PLAN.md` → Única fuente de verdad sobre qué hay que hacer
 - No empieces a codificar sin leer esto primero
+
+### 1b. LEÉ `AGENTS.md`
+- `AGENTS.md` → Reglas para pensar, editar, verificar y proteger runtime data
+- Si contradice documentación archivada, `AGENTS.md` y los documentos GSD vigentes ganan
 
 ### 2. PLAN BEFORE YOU BUILD
 - No toques código sin un plan

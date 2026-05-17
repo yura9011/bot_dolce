@@ -1,6 +1,39 @@
 # Project State
 
-> Last updated: 14/05/2026
+> Last updated: 17/05/2026
+
+## Last Session Summary
+
+Sesión `/interrógame` sobre la evolución multi-tenant y el Dashboard Maestro.
+
+### Decisiones Tomadas
+- Multi-tenant significa multi-cliente: `Cliente -> Agente/Local -> WhatsApp session + data + dashboard humano`.
+- El Dashboard Maestro se construye como app nueva en `multi-tenant/dashboard-maestro/`.
+- El Dashboard Maestro reemplazará eventualmente a `dashboard-central.js`, pero solo después de pruebas y aprobación.
+- Producción actual (`bot_dolce` en VPS) queda estable; no migrar durante el MVP.
+- Testing VPS (`bot_testing`) es el laboratorio para Dashboard Maestro.
+- Santa Ana producción atiende clientes reales; sus datos runtime son intocables sin backup explícito.
+- Asturias puede onboardearse con el sistema multi-agente actual si hace falta esta semana.
+- JSON se mantiene por ahora; SQLite queda postergado para una fase posterior.
+- Futuro recomendado: SQLite por agente/local y base compartida solo para monitoreo.
+- Dashboard Maestro es interno para owner/socio; clientes no acceden al Maestro.
+- Cliente/empleado accede por agente/local. Dashboard cliente multi-agente queda diferido.
+- Backups diarios en VPS con retención default de 30 días; incluir `.wwebjs_auth/`.
+- Restore desde UI queda fuera del MVP; restauración manual por SSH.
+- Alertas: dashboard primero, Telegram como primer canal externo, email y WhatsApp después.
+- Refresh del Maestro: cada 5 minutos + botón "actualizar ahora".
+- Acciones críticas: confirmación simple + auditoría + feedback visible.
+
+### Documentación Actualizada
+- `AGENTS.md`: reglas operativas para agentes de código.
+- `.gsd/milestones/multi-tenant-architecture/README.md`: índice vigente del milestone.
+- `.gsd/milestones/multi-tenant-architecture/CURRENT_DECISIONS.md`: decisiones actuales.
+- `.gsd/milestones/multi-tenant-architecture/DASHBOARD_MAESTRO_MVP.md`: alcance MVP.
+- `.gsd/milestones/multi-tenant-architecture/PHASE_2_PLAN.md`: plan de implementación.
+- Documentos viejos de planificación multi-tenant archivados en `.gsd/milestones/multi-tenant-architecture/archive/2026-05-10-planning/`.
+
+### Próximo Paso
+Implementar Dashboard Maestro MVP como app nueva, empezando por skeleton + lectura de agentes + health collection en testing.
 
 ## Last Session Summary
 
@@ -156,7 +189,7 @@ Agente "asturias" agregado al sistema multi-tenant.
 
 ## Next Steps
 
-1. **Multi-Tenant Fase 2** — Dashboard Maestro
+1. **Multi-Tenant Fase 2** — Dashboard Maestro MVP como app nueva en `multi-tenant/dashboard-maestro/`
 
 ## Known Issues
 

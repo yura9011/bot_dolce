@@ -1,8 +1,8 @@
 # 🏗️ Multi-Tenant WhatsApp Bot Platform
 
-**Versión**: 1.0 (Fase 1 Completa)  
-**Fecha**: 2026-05-10  
-**Estado**: ✅ Listo para deployment en VPS
+**Versión**: 1.1 (Fase 2 Planificada)  
+**Fecha**: 2026-05-17  
+**Estado**: Fase 1 local completa; Fase 2 Dashboard Maestro planificada
 
 ---
 
@@ -83,10 +83,19 @@ node scripts/validate-config.js config/client-example.json
 - Sistema de configuración
 - Gestión de puertos automática
 
-### ⏳ Fase 2: Dashboard Maestro (PENDIENTE)
+### 🎯 Fase 2: Dashboard Maestro (SIGUIENTE)
 - Dashboard centralizado
-- Monitoreo en tiempo real
-- Sistema de notificaciones
+- Monitoreo interno owner/socio
+- Control PM2 con auditoría
+- Backups manuales desde dashboard
+- Alertas visibles y Telegram como primer canal externo
+
+Ver el plan vigente en:
+
+- `../.gsd/milestones/multi-tenant-architecture/README.md`
+- `../.gsd/milestones/multi-tenant-architecture/CURRENT_DECISIONS.md`
+- `../.gsd/milestones/multi-tenant-architecture/DASHBOARD_MAESTRO_MVP.md`
+- `../.gsd/milestones/multi-tenant-architecture/PHASE_2_PLAN.md`
 
 ### ⏳ Fase 3: Scripts de Automatización (PENDIENTE)
 - `add-client.sh` - Agregar cliente
@@ -133,19 +142,20 @@ alias mt-cd='cd /home/forma/multi-tenant'
 | Template | ✅ Completo | 100% |
 | Configuración | ✅ Completo | 100% |
 | Port Manager | ✅ Completo | 100% |
-| Dashboard Maestro | ⏳ Pendiente | 0% |
+| Dashboard Maestro | 🎯 Planificado | 0% |
 | Scripts Automatización | ⏳ Pendiente | 0% |
 
 **Fase 1**: ✅ 100% Completa  
-**Proyecto Total**: 🔄 16% Completo (1 de 6 fases)
+**Proyecto Total**: 🔄 Fase 2 lista para comenzar
 
 ---
 
 ## 🚨 Importante
 
-- ⚠️ NO tocar `/home/forma/bot_dolce` (producción)
-- ⚠️ NO tocar `/home/forma/bot_testing` (testing)
+- ⚠️ NO tocar `/home/forma/bot_dolce` (producción) durante el MVP
+- ⚠️ Usar `/home/forma/bot_testing` como entorno de prueba
 - ⚠️ Siempre hacer backup antes de cambios importantes
+- ⚠️ No migrar JSON a SQLite durante Dashboard Maestro MVP
 
 ---
 
@@ -158,5 +168,5 @@ Para problemas o preguntas:
 
 ---
 
-**Última actualización**: 2026-05-10  
-**Versión**: 1.0 - Fase 1
+**Última actualización**: 2026-05-17  
+**Versión**: 1.1 - Fase 2 planificada

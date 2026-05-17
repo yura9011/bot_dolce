@@ -11,6 +11,7 @@ TODO.md
 /*.md
 !README.md
 !HANDOFF.md
+!AGENTS.md
 
 # Phase work directories (user-specific)
 .planning/
@@ -74,3 +75,5 @@ __pycache__/
 # Memory system indexes (generated, not source)
 .gsd/memory/.index/*.db
 .gsd/memory/.index/*.json
+.gsd/archive/**/memory/.index/*.db
+.gsd/archive/**/memory/.index/*.json
