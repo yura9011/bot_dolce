@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Maestro</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Operaciones internas</p>
+      <h1>Dashboard Maestro</h1>
+    </div>
+    <button id="refreshButton" type="button">Actualizar ahora</button>
+  </header>
+
+  <main>
+    <section class="status-grid" aria-label="Resumen general">
+      <article class="status-panel">
+        <span class="status-dot pending"></span>
+        <div>
+          <h2>Semáforo general</h2>
+          <p id="globalStatus">Pendiente de medición.</p>
+        </div>
+      </article>
+      <article class="status-panel">
+        <h2>Alertas críticas</h2>
+        <p>Sin alertas activas.</p>
+      </article>
+      <article class="status-panel">
+        <h2>Acciones</h2>
+        <p>Sin acciones disponibles.</p>
+      </article>
+    </section>
+
+    <section class="agents-section">
+      <div class="section-header">
+        <div>
+          <h2>Agentes configurados</h2>
+          <p id="lastRefresh">Esperando datos...</p>
+        </div>
+        <div class="counter" id="agentCounter">0 agentes</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Enabled</th>
+              <th>Bot API</th>
+              <th>Dashboard humano</th>
+              <th>API</th>
+              <th>Dashboard</th>
+              <th>Paths</th>
+            </tr>
+          </thead>
+          <tbody id="agentsBody">
+            <tr>
+              <td colspan="8">Cargando agentes...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

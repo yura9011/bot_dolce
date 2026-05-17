@@ -36,16 +36,19 @@
   - Puerto configurable
   - Acceso interno autenticado
   - No reemplazar `dashboard-central.js`
+  - Progreso 2026-05-17: skeleton local creado con Express + Socket.IO, puerto `DASHBOARD_MAESTRO_PORT`, UI estática, endpoint `/health` y README. Auth interna queda pendiente para completar la aceptación completa del task.
 
 - [ ] **2.2 Agent Registry Adapter**
   - Leer agentes existentes sin mutar configuración
   - Mostrar cliente/agente, puertos API/dashboard y enabled/disabled
   - Preparar compatibilidad futura con `/clients/...`
+  - Progreso 2026-05-17: adapter read-only creado para `config/agents.json`; UI lista id, nombre, enabled, puertos y paths.
 
 - [ ] **2.3 Health Collection**
   - Detectar API bot up/down
   - Detectar dashboard humano up/down
   - Registrar último check exitoso y errores
+  - Progreso 2026-05-17: collector HTTP read-only agregado para bot API `/status` y dashboard humano `/`; el payload muestra estado, errores, timestamp de check y semáforo general. Falta validar contra agentes corriendo en testing.
 
 - [ ] **2.4 PM2 Control Layer**
   - Normalizar nombres PM2 en testing
