@@ -95,3 +95,7 @@ Las métricas IA/costo quedan como `Sin datos` hasta instrumentar tokens, llamad
 ## Seguridad
 
 Las acciones PM2 y backup-now están deshabilitadas por defecto. Para testing, habilitarlas explícitamente con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true`, `DASHBOARD_MAESTRO_PM2_ENV=testing`, `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true` y un `DASHBOARD_MAESTRO_BACKUP_SCRIPT` de testing. Antes de usarlo fuera de local/testing, definir `DASHBOARD_MAESTRO_USER` y `DASHBOARD_MAESTRO_PASS` con credenciales no default.
+
+## Verificación
+
+Usar [TESTING_CHECKLIST.md](./TESTING_CHECKLIST.md) antes de probar en VPS testing o habilitar acciones reales.

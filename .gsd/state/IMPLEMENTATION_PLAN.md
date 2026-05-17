@@ -89,6 +89,7 @@
   - Alertas renderizan
   - Auditoría registra acciones
   - Producción Santa Ana no fue tocada
+  - Progreso 2026-05-17: checklist local/testing creado en `multi-tenant/dashboard-maestro/TESTING_CHECKLIST.md`; validación real de PM2/backup queda pendiente para VPS testing autorizado.
 
 ### Fuera de Alcance del MVP
 
