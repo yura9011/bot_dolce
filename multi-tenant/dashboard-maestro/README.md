@@ -57,6 +57,8 @@ Credenciales default para local:
 - `GET /health`: estado del Dashboard Maestro.
 - `GET /api/agents`: lectura normalizada de `config/agents.json` con checks HTTP read-only.
 
+Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `lastError`. El último check exitoso se mantiene en memoria mientras el proceso del Maestro esté corriendo.
+
 ## Variables
 
 - `DASHBOARD_MAESTRO_PORT`: puerto HTTP. Default `3050`.

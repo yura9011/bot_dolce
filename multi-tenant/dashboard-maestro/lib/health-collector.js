@@ -1,4 +1,6 @@
 const DEFAULT_TIMEOUT_MS = parseInt(process.env.DASHBOARD_MAESTRO_HEALTH_TIMEOUT_MS, 10) || 2500;
+const lastSuccessfulChecks = new Map();
+const lastErrors = new Map();
 
 async function checkHttp(url, options = {}) {
   const timeoutMs = options.timeoutMs || DEFAULT_TIMEOUT_MS;
@@ -12,22 +14,37 @@ async function checkHttp(url, options = {}) {
       signal: controller.signal
     });
 
+    const checkedAt = new Date().toISOString();
+    const error = response.ok ? null : `HTTP ${response.status}`;
+
+    if (response.ok) {
+      lastSuccessfulChecks.set(url, checkedAt);
+      lastErrors.delete(url);
+    } else {
+      lastErrors.set(url, error);
+    }
+
     return {
       status: response.ok ? 'up' : 'degraded',
       httpStatus: response.status,
       responseTimeMs: Date.now() - startedAt,
-      checkedAt: new Date().toISOString(),
-      lastSuccessfulCheck: response.ok ? new Date().toISOString() : null,
-      error: response.ok ? null : `HTTP ${response.status}`
+      checkedAt,
+      lastSuccessfulCheck: lastSuccessfulChecks.get(url) || null,
+      error,
+      lastError: lastErrors.get(url) || null
     };
   } catch (error) {
+    const message = error.name === 'AbortError' ? `Timeout after ${timeoutMs}ms` : error.message;
+    lastErrors.set(url, message);
+
     return {
       status: 'down',
       httpStatus: null,
       responseTimeMs: Date.now() - startedAt,
       checkedAt: new Date().toISOString(),
-      lastSuccessfulCheck: null,
-      error: error.name === 'AbortError' ? `Timeout after ${timeoutMs}ms` : error.message
+      lastSuccessfulCheck: lastSuccessfulChecks.get(url) || null,
+      error: message,
+      lastError: lastErrors.get(url) || null
     };
   } finally {
     clearTimeout(timeout);
@@ -68,7 +85,8 @@ function missingPortHealth(kind) {
     responseTimeMs: null,
     checkedAt: new Date().toISOString(),
     lastSuccessfulCheck: null,
-    error: `Missing ${kind} port`
+    error: `Missing ${kind} port`,
+    lastError: `Missing ${kind} port`
   };
 }
 
@@ -79,5 +97,6 @@ function summarizeHealth(checks) {
 }
 
 module.exports = {
+  checkHttp,
   collectAgentsHealth
 };
