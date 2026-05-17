@@ -13,6 +13,7 @@ App interna para monitorear agentes existentes sin reemplazar `dashboard-central
 - Tabla de agentes con id, nombre, enabled, puertos y paths.
 - Health collection read-only para bot API y dashboard humano, visible en la tabla.
 - Alertas visibles derivadas de health para bot API y dashboard humano caídos.
+- Métricas read-only desde `estadisticas.json`: mensajes recibidos/enviados y handoffs.
 - Botón "Actualizar ahora".
 - Semáforo general, auditoría en memoria, controles PM2 y backup-now server-side deshabilitados por defecto.
 
@@ -67,6 +68,8 @@ Credenciales default para local:
 Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `lastError`. El último check exitoso se mantiene en memoria mientras el proceso del Maestro esté corriendo.
 
 Las alertas actuales son derivadas del health collection. Telegram, mute de mantenimiento y handoff > 10 minutos quedan para etapas posteriores.
+
+Las métricas IA/costo quedan como `Sin datos` hasta instrumentar tokens, llamadas y precios.
 
 ## Variables
 

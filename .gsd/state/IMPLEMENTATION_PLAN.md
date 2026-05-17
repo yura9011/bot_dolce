@@ -78,6 +78,7 @@
   - Bot vs humano
   - Handoffs
   - IA calls y costo estimado si hay datos
+  - Progreso 2026-05-17: métricas read-only desde `estadisticas.json` para mensajes recibidos/enviados y handoffs; IA/costo queda explícitamente `Sin datos` hasta instrumentación.
 
 - [ ] **2.8 Testing Checklist**
   - Maestro ve agentes testing

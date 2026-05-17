@@ -7,6 +7,7 @@ const { listAuditEvents, recordAuditEvent } = require('./lib/audit-log');
 const { buildAlerts } = require('./lib/alerts');
 const { getBackupConfig, runBackupNow } = require('./lib/backup-control');
 const { collectAgentsHealth } = require('./lib/health-collector');
+const { collectAgentsMetrics } = require('./lib/metrics-collector');
 const { getPm2Config, resolveProcessName, runPm2Action, validateActionInput } = require('./lib/pm2-control');
 
 const app = express();
@@ -50,12 +51,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 async function getRegistryPayload() {
   const registry = readAgents();
-  const agents = await collectAgentsHealth(registry.agents);
+  const agentsWithMetrics = collectAgentsMetrics(registry.agents);
+  const agents = await collectAgentsHealth(agentsWithMetrics);
 
   return {
     ...registry,
     agents,
     alerts: buildAlerts(agents),
+    metrics: summarizeMetrics(agents),
     health: {
       overall: summarizeOverallHealth(agents),
       checkedAt: new Date().toISOString()
@@ -67,6 +70,26 @@ function summarizeOverallHealth(agents) {
   if (agents.some(agent => agent.health?.overall === 'critical')) return 'critical';
   if (agents.some(agent => agent.health?.overall === 'warning')) return 'warning';
   return 'ok';
+}
+
+function summarizeMetrics(agents) {
+  return agents.reduce((acc, agent) => {
+    acc.today.received += agent.metrics?.today?.received || 0;
+    acc.today.sent += agent.metrics?.today?.sent || 0;
+    acc.today.handoffs += agent.metrics?.today?.handoffs || 0;
+    acc.week.received += agent.metrics?.week?.received || 0;
+    acc.week.sent += agent.metrics?.week?.sent || 0;
+    acc.week.handoffs += agent.metrics?.week?.handoffs || 0;
+    return acc;
+  }, {
+    today: { received: 0, sent: 0, handoffs: 0 },
+    week: { received: 0, sent: 0, handoffs: 0 },
+    ai: {
+      calls: null,
+      estimatedCost: null,
+      note: 'Sin instrumentación de tokens/costo'
+    }
+  });
 }
 
 function getAuthUser(req) {

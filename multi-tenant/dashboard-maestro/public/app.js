@@ -8,6 +8,10 @@ const actionsStatus = document.getElementById('actionsStatus');
 const auditList = document.getElementById('auditList');
 const backupNowButton = document.getElementById('backupNowButton');
 const alertsList = document.getElementById('alertsList');
+const metricTodayReceived = document.getElementById('metricTodayReceived');
+const metricTodaySent = document.getElementById('metricTodaySent');
+const metricTodayHandoffs = document.getElementById('metricTodayHandoffs');
+const metricAiCost = document.getElementById('metricAiCost');
 
 let actionsConfig = {
   enabled: false,
@@ -23,10 +27,11 @@ function renderAgents(payload) {
   lastRefresh.textContent = `Última actualización: ${new Date(payload.loadedAt).toLocaleString()} · Fuente: ${payload.source}`;
   renderGlobalStatus(payload.health);
   renderAlerts(payload.alerts);
+  renderMetricsSummary(payload.metrics);
   renderActionsStatus();
 
   if (agents.length === 0) {
-    agentsBody.innerHTML = '<tr><td colspan="10">No hay agentes configurados.</td></tr>';
+    agentsBody.innerHTML = '<tr><td colspan="11">No hay agentes configurados.</td></tr>';
     return;
   }
 
@@ -45,6 +50,7 @@ function renderAgents(payload) {
       </td>
       <td>${renderHealth(agent.health && agent.health.botApi)}</td>
       <td>${renderHealth(agent.health && agent.health.humanDashboard)}</td>
+      <td>${renderAgentMetrics(agent.metrics)}</td>
       <td>${agent.ports.api || '-'}</td>
       <td>${agent.ports.dashboard || '-'}</td>
       <td>
@@ -60,7 +66,7 @@ function renderAgents(payload) {
 }
 
 function renderError(message) {
-  agentsBody.innerHTML = `<tr><td colspan="10" class="error">${escapeHtml(message)}</td></tr>`;
+  agentsBody.innerHTML = `<tr><td colspan="11" class="error">${escapeHtml(message)}</td></tr>`;
 }
 
 function renderGlobalStatus(health) {
@@ -121,6 +127,26 @@ function renderAlerts(alerts) {
       <small>${escapeHtml(alert.detail || '')}</small>
     </div>
   `).join('');
+}
+
+function renderMetricsSummary(metrics) {
+  if (!metrics) return;
+  if (metricTodayReceived) metricTodayReceived.textContent = metrics.today.received;
+  if (metricTodaySent) metricTodaySent.textContent = metrics.today.sent;
+  if (metricTodayHandoffs) metricTodayHandoffs.textContent = metrics.today.handoffs;
+  if (metricAiCost) metricAiCost.textContent = metrics.ai.estimatedCost === null ? 'Sin datos' : `${metrics.ai.estimatedCost} ${metrics.ai.currency || 'USD'}`;
+}
+
+function renderAgentMetrics(metrics) {
+  if (!metrics) return '<span class="muted">Sin métricas</span>';
+  return `
+    <div class="metrics-cell">
+      <span>rec: ${metrics.today.received}</span>
+      <span>env: ${metrics.today.sent}</span>
+      <span>handoffs: ${metrics.today.handoffs}</span>
+      <small>${escapeHtml(metrics.error || metrics.ai.note || '')}</small>
+    </div>
+  `;
 }
 
 function renderActionsStatus() {
