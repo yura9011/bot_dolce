@@ -3,6 +3,7 @@ const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
 const DEFAULT_CONFIG_PATH = path.resolve(__dirname, '..', '..', '..', 'config', 'agents.json');
+const DEFAULT_OVERRIDE_PATH = path.resolve(__dirname, '..', '..', '..', 'config', 'agents.override.json');
 const DEFAULT_CLIENTS_DIR = path.resolve(__dirname, '..', '..', 'clients');
 
 function normalizeAgent(agent, source) {
@@ -31,12 +32,15 @@ function normalizeAgent(agent, source) {
 }
 
 function readAgents(configPath = process.env.AGENTS_CONFIG_PATH || DEFAULT_CONFIG_PATH) {
+  const overridePath = process.env.AGENTS_OVERRIDE_PATH || getDefaultOverridePath(configPath);
+  const overrides = readPortOverrides(overridePath);
   const rootSource = {
     type: 'root-config',
     path: relativeToRepo(configPath),
-    clientId: null
+    clientId: null,
+    overridePath: overrides ? relativeToRepo(overridePath) : null
   };
-  const rootAgents = readAgentsFromFile(configPath, rootSource);
+  const rootAgents = readAgentsFromFile(configPath, rootSource, overrides);
   const clientSources = readClientSources(process.env.CLIENTS_DIR || DEFAULT_CLIENTS_DIR);
   const agents = [...rootAgents, ...clientSources.flatMap(source => readAgentsFromFile(source.fullPath, source))];
 
@@ -54,12 +58,41 @@ function readAgents(configPath = process.env.AGENTS_CONFIG_PATH || DEFAULT_CONFI
   };
 }
 
-function readAgentsFromFile(configPath, source) {
+function readAgentsFromFile(configPath, source, overrides = null) {
   const raw = fs.readFileSync(configPath, 'utf8');
   const config = JSON.parse(raw);
   return Array.isArray(config.agents)
-    ? config.agents.map(agent => normalizeAgent(agent, withoutFullPath(source)))
+    ? config.agents.map(agent => normalizeAgent(applyPortOverride(agent, overrides), withoutFullPath(source)))
     : [];
+}
+
+function applyPortOverride(agent, overrides) {
+  const override = overrides?.[agent.id];
+  if (!override) return agent;
+
+  return {
+    ...agent,
+    ports: {
+      ...(agent.ports || {}),
+      ...override
+    }
+  };
+}
+
+function readPortOverrides(overridePath) {
+  if (!overridePath || !fs.existsSync(overridePath)) return null;
+
+  const raw = fs.readFileSync(overridePath, 'utf8');
+  const parsed = JSON.parse(raw);
+  return parsed.portOverrides || null;
+}
+
+function getDefaultOverridePath(configPath) {
+  if (path.resolve(configPath) === DEFAULT_CONFIG_PATH) {
+    return DEFAULT_OVERRIDE_PATH;
+  }
+
+  return path.join(path.dirname(configPath), 'agents.override.json');
 }
 
 function readClientSources(clientsDir) {
@@ -89,5 +122,6 @@ function relativeToRepo(filePath) {
 }
 
 module.exports = {
+  applyPortOverride,
   readAgents
 };

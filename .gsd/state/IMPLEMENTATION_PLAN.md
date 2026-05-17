@@ -45,6 +45,7 @@
   - Preparar compatibilidad futura con `/clients/...`
   - Progreso 2026-05-17: adapter read-only creado para `config/agents.json`; UI lista id, nombre, enabled, puertos y paths.
   - Progreso 2026-05-17: adapter preparado para sumar futuros `multi-tenant/clients/*/agents.json` read-only, con `clientId` y metadatos de fuente.
+  - Progreso 2026-05-17: adapter aplica `config/agents.override.json` read-only para que testing use puertos 4011/4001 y 4012/4003.
 
 - [ ] **2.3 Health Collection**
   - Detectar API bot up/down

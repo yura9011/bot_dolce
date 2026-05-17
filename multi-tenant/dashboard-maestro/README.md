@@ -89,6 +89,7 @@ Las métricas IA/costo quedan como `Sin datos` hasta instrumentar tokens, llamad
 - `DASHBOARD_MAESTRO_BACKUP_SCRIPT`: script de backup a ejecutar. Debe apuntar a testing, no a producción.
 - `DASHBOARD_MAESTRO_BACKUP_TIMEOUT_MS`: timeout de backup-now. Default `120000` ms.
 - `AGENTS_CONFIG_PATH`: path alternativo para leer agentes. Default `config/agents.json` del repo.
+- `AGENTS_OVERRIDE_PATH`: path alternativo para overrides de puertos. Default `config/agents.override.json` junto al config.
 - `CLIENTS_DIR`: path alternativo para buscar futuros `clients/*/agents.json`. Default `multi-tenant/clients`.
 - `CORS_ORIGIN`: origen permitido para Socket.IO. Default `*`.
 
