@@ -10,6 +10,17 @@ function buildAlerts(agents) {
     if (agent.health?.humanDashboard?.status === 'down') {
       alerts.push(createAlert(agent, 'critical', 'dashboard-down', 'Dashboard humano no responde', agent.health.humanDashboard.error, now));
     }
+
+    if ((agent.handoffs?.criticalCount || 0) > 0) {
+      alerts.push(createAlert(
+        agent,
+        'critical',
+        'handoff-waiting',
+        'Handoff esperando más de 10 minutos',
+        `${agent.handoffs.criticalCount} handoff(s) crítico(s)`,
+        now
+      ));
+    }
   }
 
   return alerts;

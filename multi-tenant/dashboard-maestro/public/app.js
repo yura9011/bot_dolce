@@ -31,7 +31,7 @@ function renderAgents(payload) {
   renderActionsStatus();
 
   if (agents.length === 0) {
-    agentsBody.innerHTML = '<tr><td colspan="11">No hay agentes configurados.</td></tr>';
+    agentsBody.innerHTML = '<tr><td colspan="12">No hay agentes configurados.</td></tr>';
     return;
   }
 
@@ -51,6 +51,7 @@ function renderAgents(payload) {
       <td>${renderHealth(agent.health && agent.health.botApi)}</td>
       <td>${renderHealth(agent.health && agent.health.humanDashboard)}</td>
       <td>${renderAgentMetrics(agent.metrics)}</td>
+      <td>${renderHandoffs(agent.handoffs)}</td>
       <td>${agent.ports.api || '-'}</td>
       <td>${agent.ports.dashboard || '-'}</td>
       <td>
@@ -66,7 +67,7 @@ function renderAgents(payload) {
 }
 
 function renderError(message) {
-  agentsBody.innerHTML = `<tr><td colspan="11" class="error">${escapeHtml(message)}</td></tr>`;
+  agentsBody.innerHTML = `<tr><td colspan="12" class="error">${escapeHtml(message)}</td></tr>`;
 }
 
 function renderGlobalStatus(health) {
@@ -145,6 +146,19 @@ function renderAgentMetrics(metrics) {
       <span>env: ${metrics.today.sent}</span>
       <span>handoffs: ${metrics.today.handoffs}</span>
       <small>${escapeHtml(metrics.error || metrics.ai.note || '')}</small>
+    </div>
+  `;
+}
+
+function renderHandoffs(handoffs) {
+  if (!handoffs) return '<span class="muted">Sin datos</span>';
+  const oldestMinutes = Math.floor((handoffs.oldestWaitMs || 0) / 60000);
+  return `
+    <div class="metrics-cell">
+      <span>pendientes: ${handoffs.pendingCount}</span>
+      <span>críticos: ${handoffs.criticalCount}</span>
+      <small>mayor espera: ${oldestMinutes} min</small>
+      <small>${escapeHtml(handoffs.error || '')}</small>
     </div>
   `;
 }

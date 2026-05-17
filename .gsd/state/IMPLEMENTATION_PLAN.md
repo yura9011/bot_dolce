@@ -72,6 +72,7 @@
   - Handoff > 10 minutos
   - Mute por mantenimiento por agente
   - Progreso 2026-05-17: alertas visibles derivadas de health para `bot-down` y `dashboard-down`. Pendiente WhatsApp disconnected, handoff >10 minutos y mute.
+  - Progreso 2026-05-17: handoffs pendientes leídos read-only desde `pausas.json`; alerta crítica si esperan más de 10 minutos.
 
 - [ ] **2.7 Metrics & Cost Visibility**
   - Mensajes recibidos/enviados

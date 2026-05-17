@@ -6,6 +6,7 @@ const { readAgents } = require('./lib/agent-registry');
 const { listAuditEvents, recordAuditEvent } = require('./lib/audit-log');
 const { buildAlerts } = require('./lib/alerts');
 const { getBackupConfig, runBackupNow } = require('./lib/backup-control');
+const { collectAgentsHandoffs } = require('./lib/handoff-collector');
 const { collectAgentsHealth } = require('./lib/health-collector');
 const { collectAgentsMetrics } = require('./lib/metrics-collector');
 const { getPm2Config, resolveProcessName, runPm2Action, validateActionInput } = require('./lib/pm2-control');
@@ -52,7 +53,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 async function getRegistryPayload() {
   const registry = readAgents();
   const agentsWithMetrics = collectAgentsMetrics(registry.agents);
-  const agents = await collectAgentsHealth(agentsWithMetrics);
+  const agentsWithHandoffs = collectAgentsHandoffs(agentsWithMetrics);
+  const agents = await collectAgentsHealth(agentsWithHandoffs);
 
   return {
     ...registry,
