@@ -79,11 +79,15 @@ function renderHealth(check) {
   const detail = check.error
     ? escapeHtml(check.error)
     : `${check.httpStatus} · ${check.responseTimeMs}ms`;
+  const lastSuccess = check.lastSuccessfulCheck
+    ? new Date(check.lastSuccessfulCheck).toLocaleTimeString()
+    : 'sin éxito';
 
   return `
     <div class="health-cell">
       <span class="health ${escapeHtml(check.status)}">${label}</span>
       <small>${detail}</small>
+      <small>último ok: ${escapeHtml(lastSuccess)}</small>
     </div>
   `;
 }

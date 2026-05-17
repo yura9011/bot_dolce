@@ -11,7 +11,7 @@ App interna para monitorear agentes existentes sin reemplazar `dashboard-central
 - Adapter read-only que lee `config/agents.json`.
 - Compatibilidad read-only con futuros `multi-tenant/clients/*/agents.json`.
 - Tabla de agentes con id, nombre, enabled, puertos y paths.
-- Health collection read-only para bot API y dashboard humano.
+- Health collection read-only para bot API y dashboard humano, visible en la tabla.
 - Botón "Actualizar ahora".
 - Espacios reservados para semáforo general, alertas y acciones.
 
