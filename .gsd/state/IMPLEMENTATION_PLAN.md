@@ -58,6 +58,7 @@
   - Normalizar nombres PM2 en testing
   - Start/stop/restart por capa segura
   - Auditar acciones y mostrar feedback visible
+  - Progreso 2026-05-17: capa server-side agregada con allowlist de acciones/targets, nombres PM2 normalizados, auditoría en memoria y UI; acciones reales quedan deshabilitadas por default con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL`.
 
 - [ ] **2.5 Backup Now**
   - Crear backup timestamped en testing

@@ -3,7 +3,9 @@ const http = require('http');
 const path = require('path');
 const socketIo = require('socket.io');
 const { readAgents } = require('./lib/agent-registry');
+const { listAuditEvents, recordAuditEvent } = require('./lib/audit-log');
 const { collectAgentsHealth } = require('./lib/health-collector');
+const { getPm2Config, resolveProcessName, runPm2Action, validateActionInput } = require('./lib/pm2-control');
 
 const app = express();
 const server = http.createServer(app);
@@ -11,6 +13,9 @@ const io = socketIo(server, {
   cors: {
     origin: process.env.CORS_ORIGIN || '*',
     methods: ['GET', 'POST']
+  },
+  allowRequest: (req, callback) => {
+    callback(null, isValidBasicAuth(req.headers.authorization));
   }
 });
 
@@ -23,7 +28,6 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   if (req.path === '/health') return next();
-  if (req.path.startsWith('/socket.io')) return next();
 
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith('Basic ')) {
@@ -62,6 +66,18 @@ function summarizeOverallHealth(agents) {
   return 'ok';
 }
 
+function getAuthUser(req) {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Basic ')) return 'unknown';
+  return Buffer.from(auth.slice(6), 'base64').toString().split(':')[0] || 'unknown';
+}
+
+function isValidBasicAuth(authHeader) {
+  if (!authHeader || !authHeader.startsWith('Basic ')) return false;
+  const [user, pass] = Buffer.from(authHeader.slice(6), 'base64').toString().split(':');
+  return user === DASHBOARD_USER && pass === DASHBOARD_PASS;
+}
+
 app.get('/health', (req, res) => {
   res.json({
     ok: true,
@@ -80,6 +96,77 @@ app.get('/api/agents', async (req, res) => {
       message: error.message
     });
   }
+});
+
+app.get('/api/actions/config', (req, res) => {
+  res.json(getPm2Config());
+});
+
+app.get('/api/audit-events', (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 50;
+  res.json({ events: listAuditEvents(limit) });
+});
+
+app.post('/api/agents/:id/actions', async (req, res) => {
+  const { target, action } = req.body || {};
+
+  try {
+    const registry = readAgents();
+    const agent = registry.agents.find(item => item.id === req.params.id);
+    const validationError = validateActionInput(agent, target, action);
+
+    if (validationError) {
+      const audit = recordAuditEvent({
+        user: getAuthUser(req),
+        ip: req.ip,
+        action,
+        target,
+        agentId: req.params.id,
+        result: 'rejected',
+        error: validationError
+      });
+
+      return res.status(agent ? 400 : 404).json({ error: validationError, audit });
+    }
+
+    const processName = resolveProcessName(agent, target);
+    const result = await runPm2Action(agent, target, action);
+    const audit = recordAuditEvent({
+      user: getAuthUser(req),
+      ip: req.ip,
+      action,
+      target,
+      agentId: agent.id,
+      processName,
+      result: 'success',
+      message: `pm2 ${action} ${processName}`
+    });
+
+    res.json({ success: true, ...result, audit });
+  } catch (error) {
+    const audit = recordAuditEvent({
+      user: getAuthUser(req),
+      ip: req.ip,
+      action,
+      target,
+      agentId: req.params.id,
+      processName: error.processName || null,
+      result: error.code === 'PM2_CONTROL_DISABLED' ? 'disabled' : 'error',
+      error: error.stderr || error.message
+    });
+
+    const status = error.code === 'PM2_CONTROL_DISABLED' ? 403 : 500;
+    res.status(status).json({
+      error: error.message,
+      processName: error.processName || null,
+      audit
+    });
+  }
+});
+
+io.use((socket, next) => {
+  if (isValidBasicAuth(socket.handshake.headers.authorization)) return next();
+  next(new Error('Autenticación requerida'));
 });
 
 io.on('connection', async (socket) => {

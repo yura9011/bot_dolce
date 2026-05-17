@@ -30,7 +30,7 @@
       </article>
       <article class="status-panel">
         <h2>Acciones</h2>
-        <p>Sin acciones disponibles.</p>
+        <p id="actionsStatus">Cargando controles...</p>
       </article>
     </section>
 
@@ -56,15 +56,26 @@
               <th>API</th>
               <th>Dashboard</th>
               <th>Paths</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody id="agentsBody">
             <tr>
-              <td colspan="9">Cargando agentes...</td>
+              <td colspan="10">Cargando agentes...</td>
             </tr>
           </tbody>
         </table>
       </div>
+    </section>
+
+    <section class="audit-section">
+      <div class="section-header">
+        <div>
+          <h2>Auditoría</h2>
+          <p>Últimas acciones del Maestro</p>
+        </div>
+      </div>
+      <div id="auditList" class="audit-list">Sin eventos registrados.</div>
     </section>
   </main>
 

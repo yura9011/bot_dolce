@@ -125,6 +125,14 @@ main {
   overflow: hidden;
 }
 
+.audit-section {
+  margin-top: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 .section-header {
   display: flex;
   align-items: center;
@@ -228,6 +236,41 @@ td {
 
 .health.down {
   background: var(--danger);
+}
+
+.actions-cell {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.action-btn {
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.action-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.audit-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px 20px 20px;
+}
+
+.audit-item {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.audit-item small {
+  color: var(--muted);
 }
 
 .paths {
