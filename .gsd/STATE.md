@@ -49,6 +49,12 @@ Pendientes inmediatos:
 3. Antes de habilitar PM2 control real, verificar nombres PM2 reales y mantenerlo solo en testing.
 4. Crear script de backup específico para testing antes de habilitar backup-now. No usar `scripts/backup.sh` tal cual porque apunta a `/home/forma/bot_dolce`.
 
+Avance local posterior:
+
+- Verificación read-only por SSH confirmó Maestro OK en loopback y controles reales deshabilitados.
+- PM2 testing real usa nombres históricos; Dashboard Maestro debe mapearlos con `processOverrides` en `config/agents.override.json`.
+- Se preparó `scripts/backup-testing.sh` para backup-now de `bot_testing`; no está habilitado en VPS.
+
 ## Last Session Summary (anterior)
 
 Sesión `/interrógame` sobre la evolución multi-tenant y el Dashboard Maestro.

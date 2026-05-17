@@ -44,10 +44,11 @@ DASHBOARD_MAESTRO_PASS=<password-no-default>
 DASHBOARD_MAESTRO_PM2_ENV=testing
 DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true
 DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true
-DASHBOARD_MAESTRO_BACKUP_SCRIPT=<script-de-backup-testing>
+DASHBOARD_MAESTRO_BACKUP_SCRIPT=scripts/backup-testing.sh
 ```
 
 - [ ] Confirmar nombres PM2 reales antes de habilitar control.
+- [ ] Declarar nombres PM2 reales en `config/agents.override.json` usando `processOverrides`.
 - [ ] Ejecutar una acción PM2 no crítica en testing.
 - [ ] Confirmar auditoría `success`.
 - [ ] Ejecutar backup-now en testing.
@@ -60,3 +61,4 @@ DASHBOARD_MAESTRO_BACKUP_SCRIPT=<script-de-backup-testing>
 - [ ] No correr Maestro contra `bot_dolce` sin aprobación explícita.
 - [ ] No habilitar PM2 control en producción durante MVP local/testing.
 - [ ] No usar `scripts/backup.sh` hardcodeado a `/home/forma/bot_dolce` como backup script de testing.
+- [ ] Usar `scripts/backup-testing.sh` para backup-now de `bot_testing`.

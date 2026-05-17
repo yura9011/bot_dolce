@@ -27,13 +27,14 @@ function normalizeAgent(agent, source) {
       direccion: agent.info?.direccion || null,
       horario: agent.info?.horario || null
     },
+    pm2: agent.pm2 || null,
     source
   };
 }
 
 function readAgents(configPath = process.env.AGENTS_CONFIG_PATH || DEFAULT_CONFIG_PATH) {
   const overridePath = process.env.AGENTS_OVERRIDE_PATH || getDefaultOverridePath(configPath);
-  const overrides = readPortOverrides(overridePath);
+  const overrides = readOverrides(overridePath);
   const rootSource = {
     type: 'root-config',
     path: relativeToRepo(configPath),
@@ -62,29 +63,39 @@ function readAgentsFromFile(configPath, source, overrides = null) {
   const raw = fs.readFileSync(configPath, 'utf8');
   const config = JSON.parse(raw);
   return Array.isArray(config.agents)
-    ? config.agents.map(agent => normalizeAgent(applyPortOverride(agent, overrides), withoutFullPath(source)))
+    ? config.agents.map(agent => normalizeAgent(applyAgentOverride(agent, overrides), withoutFullPath(source)))
     : [];
 }
 
-function applyPortOverride(agent, overrides) {
-  const override = overrides?.[agent.id];
-  if (!override) return agent;
+function applyAgentOverride(agent, overrides) {
+  const portOverride = overrides?.portOverrides?.[agent.id];
+  const processOverride = overrides?.processOverrides?.[agent.id];
+  if (!portOverride && !processOverride) return agent;
 
   return {
     ...agent,
     ports: {
       ...(agent.ports || {}),
-      ...override
-    }
+      ...(portOverride || {})
+    },
+    pm2: processOverride
+      ? {
+          ...(agent.pm2 || {}),
+          ...processOverride
+        }
+      : agent.pm2
   };
 }
 
-function readPortOverrides(overridePath) {
+function readOverrides(overridePath) {
   if (!overridePath || !fs.existsSync(overridePath)) return null;
 
   const raw = fs.readFileSync(overridePath, 'utf8');
   const parsed = JSON.parse(raw);
-  return parsed.portOverrides || null;
+  return {
+    portOverrides: parsed.portOverrides || null,
+    processOverrides: parsed.processOverrides || null
+  };
 }
 
 function getDefaultOverridePath(configPath) {
@@ -122,6 +133,7 @@ function relativeToRepo(filePath) {
 }
 
 module.exports = {
-  applyPortOverride,
+  applyAgentOverride,
+  applyPortOverride: applyAgentOverride,
   readAgents
 };

@@ -89,13 +89,31 @@ Las métricas IA/costo quedan como `Sin datos` hasta instrumentar tokens, llamad
 - `DASHBOARD_MAESTRO_BACKUP_SCRIPT`: script de backup a ejecutar. Debe apuntar a testing, no a producción.
 - `DASHBOARD_MAESTRO_BACKUP_TIMEOUT_MS`: timeout de backup-now. Default `120000` ms.
 - `AGENTS_CONFIG_PATH`: path alternativo para leer agentes. Default `config/agents.json` del repo.
-- `AGENTS_OVERRIDE_PATH`: path alternativo para overrides de puertos. Default `config/agents.override.json` junto al config.
+- `AGENTS_OVERRIDE_PATH`: path alternativo para overrides de puertos y procesos PM2. Default `config/agents.override.json` junto al config.
 - `CLIENTS_DIR`: path alternativo para buscar futuros `clients/*/agents.json`. Default `multi-tenant/clients`.
 - `CORS_ORIGIN`: origen permitido para Socket.IO. Default `*`.
 
+## Overrides de testing
+
+`config/agents.override.json` permite adaptar testing sin mutar `config/agents.json`. Los procesos PM2 reales de testing pueden declararse así:
+
+```json
+{
+  "portOverrides": {
+    "santa-ana": { "api": 4011, "dashboard": 4001 },
+    "asturias": { "api": 4012, "dashboard": 4003 }
+  },
+  "processOverrides": {
+    "santa-ana": { "bot": "bot-dolce-dev", "dashboard": "dashboard-humano-testing" },
+    "asturias": { "dashboard": "dashboard-humano-asturias" },
+    "demo-local": { "bot": "bot-demo-local" }
+  }
+}
+```
+
 ## Seguridad
 
-Las acciones PM2 y backup-now están deshabilitadas por defecto. Para testing, habilitarlas explícitamente con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true`, `DASHBOARD_MAESTRO_PM2_ENV=testing`, `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true` y un `DASHBOARD_MAESTRO_BACKUP_SCRIPT` de testing. Antes de usarlo fuera de local/testing, definir `DASHBOARD_MAESTRO_USER` y `DASHBOARD_MAESTRO_PASS` con credenciales no default.
+Las acciones PM2 y backup-now están deshabilitadas por defecto. Para testing, habilitarlas explícitamente con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true`, `DASHBOARD_MAESTRO_PM2_ENV=testing`, `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true` y `DASHBOARD_MAESTRO_BACKUP_SCRIPT=scripts/backup-testing.sh`. Antes de usarlo fuera de local/testing, definir `DASHBOARD_MAESTRO_USER` y `DASHBOARD_MAESTRO_PASS` con credenciales no default.
 
 En el VPS testing, el Maestro corre como PM2 `dashboard-maestro-testing` en puerto interno `4050`. Si el puerto no está expuesto externamente, probar con túnel SSH:
 

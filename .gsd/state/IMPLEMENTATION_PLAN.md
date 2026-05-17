@@ -69,6 +69,7 @@
   - Auditar acciones y mostrar feedback visible
   - Progreso 2026-05-17: capa server-side agregada con allowlist de acciones/targets, nombres PM2 normalizados, auditoría en memoria y UI; acciones reales quedan deshabilitadas por default con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL`.
   - Pendiente: verificar nombres PM2 reales y habilitar solo en testing con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true` y `DASHBOARD_MAESTRO_PM2_ENV=testing`.
+  - Progreso 2026-05-17: verificación read-only PM2 en VPS identificó nombres reales testing (`bot-dolce-dev`, `dashboard-humano-testing`, `dashboard-humano-asturias`, `bot-demo-local`). Dashboard Maestro ahora soporta `processOverrides` en `config/agents.override.json` para mapear esos nombres sin tocar `config/agents.json`.
 
 - [ ] **2.5 Backup Now**
   - Crear backup timestamped en testing
@@ -76,6 +77,7 @@
   - No implementar restore desde UI
   - Progreso 2026-05-17: endpoint/UI backup-now agregados con auditoría; ejecución real deshabilitada por default y requiere `DASHBOARD_MAESTRO_BACKUP_SCRIPT` explícito para testing.
   - Pendiente: crear script de backup específico para testing antes de habilitar backup-now. No usar `scripts/backup.sh` actual tal cual porque está hardcodeado a `/home/forma/bot_dolce`.
+  - Progreso 2026-05-17: creado `scripts/backup-testing.sh` para `bot_testing`, con guardrail que rechaza rutas que contengan `/bot_dolce`; queda sin habilitar hasta autorización explícita.
 
 - [x] **2.6 Alerts MVP**
   - Alertas visibles en dashboard
@@ -103,6 +105,7 @@
   - Progreso 2026-05-17: checklist local/testing creado en `multi-tenant/dashboard-maestro/TESTING_CHECKLIST.md`; validación real de PM2/backup queda pendiente para VPS testing autorizado.
   - Progreso 2026-05-17: smoke interno VPS por loopback completado: `/health` OK, `/api/agents` OK con auth, overrides testing aplicados, estado general OK.
   - Pendiente: probar UI completa vía túnel SSH o exponer externamente el puerto 4050; probar PM2 real y backup-now real solo después de autorización/preparación de testing.
+  - Progreso 2026-05-17: controles confirmados deshabilitados en VPS (`DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=false`, `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=false`); backup script no configurado en PM2 actual.
 
 ### Fuera de Alcance del MVP
 
