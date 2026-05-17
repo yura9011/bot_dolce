@@ -66,7 +66,7 @@
   - No implementar restore desde UI
   - Progreso 2026-05-17: endpoint/UI backup-now agregados con auditoría; ejecución real deshabilitada por default y requiere `DASHBOARD_MAESTRO_BACKUP_SCRIPT` explícito para testing.
 
-- [ ] **2.6 Alerts MVP**
+- [x] **2.6 Alerts MVP**
   - Alertas visibles en dashboard
   - Bot down, dashboard down, WhatsApp disconnected si disponible
   - Handoff > 10 minutos
