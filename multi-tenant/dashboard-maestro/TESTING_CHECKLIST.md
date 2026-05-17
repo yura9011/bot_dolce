@@ -19,6 +19,8 @@
 - [ ] Si no hay instrumentación de IA/costo, la UI muestra `Sin datos`.
 - [ ] Handoffs leen `pausas.json` en modo read-only.
 - [ ] Handoff con espera mayor a 10 minutos genera alerta crítica.
+- [ ] Estado WhatsApp muestra `connected`, `disconnected`, `authenticated`, `qr` o `auth_failure` si `/status` expone `whatsapp.status`.
+- [ ] Estado WhatsApp `disconnected` o `auth_failure` genera alerta crítica.
 - [ ] Estado WhatsApp queda `unknown` si `/status` no lo expone.
 
 ## Guarded actions

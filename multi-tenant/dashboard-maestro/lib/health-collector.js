@@ -83,6 +83,14 @@ function parseWhatsappStatus(statusBody) {
     return { status: 'unknown', detail: 'Bot API sin status disponible' };
   }
 
+  if (statusBody.whatsapp && typeof statusBody.whatsapp.status === 'string') {
+    return {
+      status: statusBody.whatsapp.status,
+      detail: statusBody.whatsapp.detail || statusBody.whatsapp.updatedAt || 'whatsapp.status',
+      updatedAt: statusBody.whatsapp.updatedAt || null
+    };
+  }
+
   if (typeof statusBody.whatsappConnected === 'boolean') {
     return {
       status: statusBody.whatsappConnected ? 'connected' : 'disconnected',

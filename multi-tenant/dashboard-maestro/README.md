@@ -68,7 +68,7 @@ Credenciales default para local:
 - `POST /api/agents/:id/actions`: ejecuta acción PM2 allowlisted si `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true`.
 - `POST /api/backups/now`: ejecuta script de backup explícito si `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true`.
 
-Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `lastError`. El último check exitoso se mantiene en memoria mientras el proceso del Maestro esté corriendo. Para dashboards humanos, cualquier respuesta HTTP cuenta como proceso alcanzable; un 404 de ruta raíz no se trata como caída.
+Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `lastError`. El último check exitoso se mantiene en memoria mientras el proceso del Maestro esté corriendo. Para dashboards humanos, cualquier respuesta HTTP cuenta como proceso alcanzable; un 404 de ruta raíz no se trata como caída. El estado WhatsApp se lee desde `GET /status` del bot cuando expone `whatsapp.status`.
 
 Las alertas actuales son derivadas de health collection y handoffs pendientes. Telegram queda para etapas posteriores.
 

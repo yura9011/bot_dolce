@@ -14,7 +14,7 @@ function buildAlerts(agents, options = {}) {
       alerts.push(createAlert(agent, 'critical', 'dashboard-down', 'Dashboard humano no responde', agent.health.humanDashboard.error, now, muted));
     }
 
-    if (agent.health?.whatsapp?.status === 'disconnected') {
+    if (['disconnected', 'auth_failure'].includes(agent.health?.whatsapp?.status)) {
       alerts.push(createAlert(agent, 'critical', 'whatsapp-disconnected', 'WhatsApp desconectado', agent.health.whatsapp.detail, now, muted));
     }
 
