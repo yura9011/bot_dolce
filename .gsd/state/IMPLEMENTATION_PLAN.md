@@ -10,7 +10,11 @@
 **Phase**: Multi-Tenant Fase 2 - Dashboard Maestro MVP
 **Last Updated**: 2026-05-17
 
-> **Última sesión (2026-05-17)**: Se agregó agente `demo-local` en bot_testing VPS para clientes potenciales. Se parametrizó `getMensajeBienvenida()` en `flujos.js` para soportar `agentInfo` por agente. Fix: `express.static` con ruta absoluta en dashboard-humano-v2/server.js. Agente demo corriendo en API 5010, dashboard 5011, WhatsApp 11 7145-8944. Documentado en STATE.md y HANDOFF.md.
+> **Objetivo activo**: Dashboard Maestro MVP sigue siendo la Fase 2 vigente.
+>
+> **Última sesión operativa (2026-05-17)**: Se agregó agente `demo-local` en bot_testing VPS para demos comerciales 24/7. Se parametrizó `getMensajeBienvenida()` en `flujos.js` para soportar `agentInfo` por agente y se corrigió `express.static` con ruta absoluta en `dashboard-humano-v2/server.js`. Agente demo corriendo en API 5010, dashboard 5011, WhatsApp 11 7145-8944. Este trabajo no reemplaza ni desplaza el objetivo Dashboard Maestro.
+>
+> **Último estado Dashboard Maestro (2026-05-17)**: `bot_testing` está actualizado a `76d9513`; PM2 `dashboard-maestro-testing` corre online en puerto interno 4050; `/health` y `/api/agents` con auth responden OK por loopback; `config/agents.override.json` aplica puertos testing para `santa-ana` y `asturias`; overall `ok`, alerts `0`, bots y dashboards `up`. Acceso externo por `http://2.24.89.243:4050` no responde; falta abrir puerto/proxy o usar túnel SSH.
 
 ---
 
@@ -49,26 +53,29 @@
   - Progreso 2026-05-17: adapter preparado para sumar futuros `multi-tenant/clients/*/agents.json` read-only, con `clientId` y metadatos de fuente.
   - Progreso 2026-05-17: adapter aplica `config/agents.override.json` read-only para que testing use puertos 4011/4001 y 4012/4003.
 
-- [ ] **2.3 Health Collection**
+- [x] **2.3 Health Collection**
   - Detectar API bot up/down
   - Detectar dashboard humano up/down
   - Registrar último check exitoso y errores
-  - Progreso 2026-05-17: collector HTTP read-only agregado para bot API `/status` y dashboard humano `/`; el payload muestra estado, errores, timestamp de check y semáforo general. Falta validar contra agentes corriendo en testing.
+  - Progreso 2026-05-17: collector HTTP read-only agregado para bot API `/status` y dashboard humano `/`; el payload muestra estado, errores, timestamp de check y semáforo general.
   - Progreso 2026-05-17: el collector conserva en memoria `lastSuccessfulCheck` y `lastError` por URL durante la vida del proceso.
   - Progreso 2026-05-17: UI muestra estado, error/latencia y último check exitoso por bot API y dashboard humano.
   - Progreso 2026-05-17: para dashboards humanos, cualquier respuesta HTTP cuenta como proceso alcanzable para evitar falso down/degraded por 404 en `/`.
+  - Progreso 2026-05-17: validado en VPS testing por loopback contra `santa-ana` y `asturias`; overall `ok`, ambos bots `up`, ambos dashboards `up`.
 
 - [ ] **2.4 PM2 Control Layer**
   - Normalizar nombres PM2 en testing
   - Start/stop/restart por capa segura
   - Auditar acciones y mostrar feedback visible
   - Progreso 2026-05-17: capa server-side agregada con allowlist de acciones/targets, nombres PM2 normalizados, auditoría en memoria y UI; acciones reales quedan deshabilitadas por default con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL`.
+  - Pendiente: verificar nombres PM2 reales y habilitar solo en testing con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true` y `DASHBOARD_MAESTRO_PM2_ENV=testing`.
 
 - [ ] **2.5 Backup Now**
   - Crear backup timestamped en testing
   - Incluir runtime data y `.wwebjs_auth/`
   - No implementar restore desde UI
   - Progreso 2026-05-17: endpoint/UI backup-now agregados con auditoría; ejecución real deshabilitada por default y requiere `DASHBOARD_MAESTRO_BACKUP_SCRIPT` explícito para testing.
+  - Pendiente: crear script de backup específico para testing antes de habilitar backup-now. No usar `scripts/backup.sh` actual tal cual porque está hardcodeado a `/home/forma/bot_dolce`.
 
 - [x] **2.6 Alerts MVP**
   - Alertas visibles en dashboard
@@ -79,7 +86,7 @@
   - Progreso 2026-05-17: handoffs pendientes leídos read-only desde `pausas.json`; alerta crítica si esperan más de 10 minutos.
   - Progreso 2026-05-17: soporte de `whatsapp-disconnected` cuando `/status` expone estado y mute de mantenimiento por agente en memoria.
 
-- [ ] **2.7 Metrics & Cost Visibility**
+- [x] **2.7 Metrics & Cost Visibility**
   - Mensajes recibidos/enviados
   - Bot vs humano
   - Handoffs
@@ -94,6 +101,8 @@
   - Auditoría registra acciones
   - Producción Santa Ana no fue tocada
   - Progreso 2026-05-17: checklist local/testing creado en `multi-tenant/dashboard-maestro/TESTING_CHECKLIST.md`; validación real de PM2/backup queda pendiente para VPS testing autorizado.
+  - Progreso 2026-05-17: smoke interno VPS por loopback completado: `/health` OK, `/api/agents` OK con auth, overrides testing aplicados, estado general OK.
+  - Pendiente: probar UI completa vía túnel SSH o exponer externamente el puerto 4050; probar PM2 real y backup-now real solo después de autorización/preparación de testing.
 
 ### Fuera de Alcance del MVP
 

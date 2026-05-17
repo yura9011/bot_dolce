@@ -20,7 +20,7 @@ App interna para monitorear agentes existentes sin reemplazar `dashboard-central
 - Botón "Actualizar ahora".
 - Semáforo general, auditoría en memoria, controles PM2 y backup-now server-side deshabilitados por defecto.
 
-No implementa backup-now, restore desde UI, SQLite ni deploy a VPS.
+No implementa restore desde UI, SQLite ni reemplazo/deploy a producción. Backup-now existe como acción protegida y queda deshabilitada hasta configurar un script explícito de testing.
 
 ## Instalación
 
@@ -96,6 +96,14 @@ Las métricas IA/costo quedan como `Sin datos` hasta instrumentar tokens, llamad
 ## Seguridad
 
 Las acciones PM2 y backup-now están deshabilitadas por defecto. Para testing, habilitarlas explícitamente con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true`, `DASHBOARD_MAESTRO_PM2_ENV=testing`, `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true` y un `DASHBOARD_MAESTRO_BACKUP_SCRIPT` de testing. Antes de usarlo fuera de local/testing, definir `DASHBOARD_MAESTRO_USER` y `DASHBOARD_MAESTRO_PASS` con credenciales no default.
+
+En el VPS testing, el Maestro corre como PM2 `dashboard-maestro-testing` en puerto interno `4050`. Si el puerto no está expuesto externamente, probar con túnel SSH:
+
+```powershell
+ssh -L 4050:127.0.0.1:4050 forma@srv1658334.hstgr.cloud
+```
+
+Luego abrir `http://localhost:4050`.
 
 ## Verificación
 

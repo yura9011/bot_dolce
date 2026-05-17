@@ -6,6 +6,8 @@
 
 Sesión deploy demo-local: se agregó instancia demo en bot_testing (VPS) para clientes potenciales.
 
+El objetivo activo del proyecto sigue siendo Multi-Tenant Fase 2: Dashboard Maestro MVP. `demo-local` fue una tarea operativa paralela para demos comerciales 24/7 en testing y no reemplaza el trabajo del Maestro.
+
 ### Cambios Realizados
 - **`config/agents.json`**: Nuevo agente `demo-local` (puertos API 5010, dashboard 5011), sin catálogo, admin solo si se configura
 - **`flujos.js`**: `getMensajeBienvenida()` parametrizada con `agentInfo` opcional — si no se pasa usa valores hardcodeados actuales (compatible con Santa Ana/Asturias)
@@ -24,6 +26,28 @@ Sesión deploy demo-local: se agregó instancia demo en bot_testing (VPS) para c
 2. Crear directorio `data/{agent-id}/` y `logs/{agent-id}/` (se crean solos al iniciar)
 3. Para que no herede admins del `.env`, crear `data/{agent-id}/admin-numbers.json` con `{"admins":[]}`
 4. En VPS: `git pull`, crear PM2, escanear QR
+
+## Dashboard Maestro Current Status
+
+Estado verificado en testing VPS el 2026-05-17:
+
+- `bot_testing` actualizado a `76d9513`.
+- PM2 `dashboard-maestro-testing` online.
+- Puerto interno: `4050`.
+- CWD: `/home/forma/bot_testing/multi-tenant/dashboard-maestro`.
+- `/health` responde OK por `127.0.0.1:4050`.
+- `/api/agents` responde OK con auth.
+- `config/agents.override.json` aplica puertos testing:
+  - `santa-ana`: API `4011`, dashboard `4001`.
+  - `asturias`: API `4012`, dashboard `4003`.
+- Última verificación: overall `ok`, alerts `0`, ambos bots `up`, ambos dashboards `up`.
+
+Pendientes inmediatos:
+
+1. Decidir exposición externa: abrir puerto 4050, proxy reverso o seguir con túnel SSH para MVP.
+2. Probar UI completa vía túnel: `ssh -L 4050:127.0.0.1:4050 forma@srv1658334.hstgr.cloud` y abrir `http://localhost:4050`.
+3. Antes de habilitar PM2 control real, verificar nombres PM2 reales y mantenerlo solo en testing.
+4. Crear script de backup específico para testing antes de habilitar backup-now. No usar `scripts/backup.sh` tal cual porque apunta a `/home/forma/bot_dolce`.
 
 ## Last Session Summary (anterior)
 
