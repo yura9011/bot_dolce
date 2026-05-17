@@ -446,7 +446,7 @@ app.get('/api/phone-map', authenticateToken, (req, res) => {
 // ============================================
 // SERVIR ARCHIVOS ESTÁTICOS (DESPUÉS DE RUTAS API)
 // ============================================
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ============================================
 // INICIAR SERVIDOR
