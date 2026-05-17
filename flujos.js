@@ -17,18 +17,19 @@ const LINKS = {
 
 // ─── MENSAJES DEL SISTEMA ────────────────────────────────────────────────────
 
-function getMensajeBienvenida(nombre = null) {
+function getMensajeBienvenida(nombre = null, agentInfo = null) {
+  const info = agentInfo || INFO_SUCURSAL;
   const saludo = nombre ? `¡Hola ${nombre}! 👋` : "¡Hola! 👋";
   
   return `${saludo}
 
-Bienvenido/a a *${INFO_SUCURSAL.nombre}*
+Bienvenido/a a *${info.nombre}*
 
-📍 *Dirección:* ${INFO_SUCURSAL.direccion}
-📞 *Teléfono:* ${INFO_SUCURSAL.telefono}
+📍 *Dirección:* ${info.direccion}
+📞 *Teléfono:* ${info.telefono}
 
 🕐 *Horario de atención:*
-${INFO_SUCURSAL.horario}
+${info.horario}
 
 ⚠️ *Importante:*
 • No recibimos llamadas ni audios en este momento

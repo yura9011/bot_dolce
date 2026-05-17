@@ -77,6 +77,36 @@
           "name": "Forma"
         }
       ]
+    },
+    {
+      "id": "demo-local",
+      "name": "Demo - Nuevos Clientes",
+      "enabled": true,
+      "whatsappSession": "demo-session",
+      "ports": {
+        "api": 5010,
+        "dashboard": 5011
+      },
+      "paths": {
+        "data": "data/demo-local",
+        "logs": "logs/demo-local",
+        "catalog": "catalogs/catalogo-demo.js"
+      },
+      "info": {
+        "nombre": "Demo - Nuevos Clientes",
+        "telefono": "11 7145-8944",
+        "horario": "Disponible para consultas comerciales",
+        "direccion": "Demostración del sistema WhatsApp - Dolce Party"
+      },
+      "adminNumbers": ["5491158647529"],
+      "dashboardUsers": [
+        {
+          "username": "admin",
+          "password": "$2b$10$DD7OGqlJlDinBTTofXkH.eC6BRra9Sk8JB6cowtOCvvJYjh3gtOeW",
+          "role": "admin",
+          "name": "Administrador"
+        }
+      ]
     }
   ],
   "dashboard": {
