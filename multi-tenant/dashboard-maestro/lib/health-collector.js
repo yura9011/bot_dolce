@@ -4,6 +4,7 @@ const lastErrors = new Map();
 
 async function checkHttp(url, options = {}) {
   const timeoutMs = options.timeoutMs || DEFAULT_TIMEOUT_MS;
+  const acceptHttpResponse = Boolean(options.acceptHttpResponse);
   const startedAt = Date.now();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -15,10 +16,11 @@ async function checkHttp(url, options = {}) {
     });
 
     const checkedAt = new Date().toISOString();
-    const error = response.ok ? null : `HTTP ${response.status}`;
+    const isHealthy = response.ok || acceptHttpResponse;
+    const error = isHealthy ? null : `HTTP ${response.status}`;
 
     let body = null;
-    if (response.ok) {
+    if (isHealthy) {
       body = await readJsonBody(response);
       lastSuccessfulChecks.set(url, checkedAt);
       lastErrors.delete(url);
@@ -27,7 +29,7 @@ async function checkHttp(url, options = {}) {
     }
 
     return {
-      status: response.ok ? 'up' : 'degraded',
+      status: isHealthy ? 'up' : 'degraded',
       httpStatus: response.status,
       responseTimeMs: Date.now() - startedAt,
       checkedAt,
@@ -64,7 +66,7 @@ async function collectAgentHealth(agent) {
       ? checkHttp(`http://127.0.0.1:${apiPort}/status`)
       : Promise.resolve(missingPortHealth('api')),
     dashboardPort
-      ? checkHttp(`http://127.0.0.1:${dashboardPort}/`)
+      ? checkHttp(`http://127.0.0.1:${dashboardPort}/`, { acceptHttpResponse: true })
       : Promise.resolve(missingPortHealth('dashboard'))
   ]);
 

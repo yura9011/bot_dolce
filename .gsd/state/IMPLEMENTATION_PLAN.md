@@ -54,6 +54,7 @@
   - Progreso 2026-05-17: collector HTTP read-only agregado para bot API `/status` y dashboard humano `/`; el payload muestra estado, errores, timestamp de check y semáforo general. Falta validar contra agentes corriendo en testing.
   - Progreso 2026-05-17: el collector conserva en memoria `lastSuccessfulCheck` y `lastError` por URL durante la vida del proceso.
   - Progreso 2026-05-17: UI muestra estado, error/latencia y último check exitoso por bot API y dashboard humano.
+  - Progreso 2026-05-17: para dashboards humanos, cualquier respuesta HTTP cuenta como proceso alcanzable para evitar falso down/degraded por 404 en `/`.
 
 - [ ] **2.4 PM2 Control Layer**
   - Normalizar nombres PM2 en testing
