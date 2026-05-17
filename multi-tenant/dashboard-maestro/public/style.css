@@ -184,6 +184,28 @@ main {
   color: var(--muted);
 }
 
+.section-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.toggle-control input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
 .counter {
   padding: 8px 12px;
   color: #ffffff;
@@ -221,6 +243,14 @@ th {
 td {
   line-height: 1.4;
   word-break: break-word;
+}
+
+tr.agent-disabled {
+  background: #f9fafb;
+}
+
+tr.agent-disabled td {
+  color: var(--muted);
 }
 
 .badge {
@@ -273,6 +303,10 @@ td {
 
 .health.down {
   background: var(--danger);
+}
+
+.health.disabled {
+  background: #6b7280;
 }
 
 .metrics-grid {

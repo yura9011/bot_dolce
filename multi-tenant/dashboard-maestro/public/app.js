@@ -12,6 +12,7 @@ const metricTodayReceived = document.getElementById('metricTodayReceived');
 const metricTodaySent = document.getElementById('metricTodaySent');
 const metricTodayHandoffs = document.getElementById('metricTodayHandoffs');
 const metricAiCost = document.getElementById('metricAiCost');
+const showActiveOnly = document.getElementById('showActiveOnly');
 
 let actionsConfig = {
   enabled: false,
@@ -21,23 +22,31 @@ let backupConfig = {
   enabled: false
 };
 let mutedAgents = new Set();
+let lastAgentsPayload = null;
 
 function renderAgents(payload) {
+  lastAgentsPayload = payload;
   const agents = payload.agents || [];
-  agentCounter.textContent = `${payload.count || 0} agentes`;
+  const visibleAgents = showActiveOnly && showActiveOnly.checked
+    ? agents.filter(agent => agent.enabled)
+    : agents;
+  const enabledCount = payload.enabledCount || agents.filter(agent => agent.enabled).length;
+  const disabledCount = payload.disabledCount || agents.filter(agent => !agent.enabled).length;
+
+  agentCounter.textContent = `${enabledCount} activos · ${disabledCount} off`;
   lastRefresh.textContent = `Última actualización: ${new Date(payload.loadedAt).toLocaleString()} · Fuente: ${payload.source}`;
   renderGlobalStatus(payload.health);
   renderAlerts(payload.alerts);
   renderMetricsSummary(payload.metrics);
   renderActionsStatus();
 
-  if (agents.length === 0) {
+  if (visibleAgents.length === 0) {
     agentsBody.innerHTML = '<tr><td colspan="13">No hay agentes configurados.</td></tr>';
     return;
   }
 
-  agentsBody.innerHTML = agents.map(agent => `
-    <tr>
+  agentsBody.innerHTML = visibleAgents.map(agent => `
+    <tr class="${agent.enabled ? '' : 'agent-disabled'}">
       <td><strong>${escapeHtml(agent.id)}</strong></td>
       <td>${escapeHtml(agent.clientId || 'actual')}</td>
       <td>
@@ -97,7 +106,8 @@ function renderHealth(check) {
     up: 'Up',
     degraded: 'Degraded',
     down: 'Down',
-    unknown: 'Unknown'
+    unknown: 'Unknown',
+    disabled: 'Off'
   }[check.status] || check.status;
 
   const detail = check.error
@@ -134,7 +144,13 @@ function renderAlerts(alerts) {
 
 function renderWhatsapp(whatsapp) {
   if (!whatsapp) return '<span class="health unknown">Unknown</span>';
-  const statusClass = whatsapp.status === 'connected' ? 'up' : whatsapp.status === 'disconnected' ? 'down' : 'unknown';
+  const statusClass = whatsapp.status === 'connected'
+    ? 'up'
+    : ['disconnected', 'auth_failure'].includes(whatsapp.status)
+      ? 'down'
+      : whatsapp.status === 'disabled'
+        ? 'disabled'
+        : 'unknown';
   return `
     <div class="health-cell">
       <span class="health ${statusClass}">${escapeHtml(whatsapp.status)}</span>
@@ -188,6 +204,10 @@ function renderActionsStatus() {
 }
 
 function renderAgentActions(agent) {
+  if (!agent.enabled) {
+    return '<span class="muted">Deshabilitado en este entorno</span>';
+  }
+
   const disabled = actionsConfig.enabled ? '' : 'disabled';
   const muted = mutedAgents.has(agent.id);
   return `
@@ -335,6 +355,12 @@ agentsBody.addEventListener('click', (event) => {
 
 if (backupNowButton) {
   backupNowButton.addEventListener('click', runBackupNow);
+}
+
+if (showActiveOnly) {
+  showActiveOnly.addEventListener('change', () => {
+    if (lastAgentsPayload) renderAgents(lastAgentsPayload);
+  });
 }
 
 socket.on('agents:update', renderAgents);
