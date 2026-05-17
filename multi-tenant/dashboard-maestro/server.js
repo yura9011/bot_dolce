@@ -4,6 +4,7 @@ const path = require('path');
 const socketIo = require('socket.io');
 const { readAgents } = require('./lib/agent-registry');
 const { listAuditEvents, recordAuditEvent } = require('./lib/audit-log');
+const { buildAlerts } = require('./lib/alerts');
 const { getBackupConfig, runBackupNow } = require('./lib/backup-control');
 const { collectAgentsHealth } = require('./lib/health-collector');
 const { getPm2Config, resolveProcessName, runPm2Action, validateActionInput } = require('./lib/pm2-control');
@@ -54,6 +55,7 @@ async function getRegistryPayload() {
   return {
     ...registry,
     agents,
+    alerts: buildAlerts(agents),
     health: {
       overall: summarizeOverallHealth(agents),
       checkedAt: new Date().toISOString()

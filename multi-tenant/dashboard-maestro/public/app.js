@@ -7,6 +7,7 @@ const refreshButton = document.getElementById('refreshButton');
 const actionsStatus = document.getElementById('actionsStatus');
 const auditList = document.getElementById('auditList');
 const backupNowButton = document.getElementById('backupNowButton');
+const alertsList = document.getElementById('alertsList');
 
 let actionsConfig = {
   enabled: false,
@@ -21,6 +22,7 @@ function renderAgents(payload) {
   agentCounter.textContent = `${payload.count || 0} agentes`;
   lastRefresh.textContent = `Última actualización: ${new Date(payload.loadedAt).toLocaleString()} · Fuente: ${payload.source}`;
   renderGlobalStatus(payload.health);
+  renderAlerts(payload.alerts);
   renderActionsStatus();
 
   if (agents.length === 0) {
@@ -103,6 +105,22 @@ function renderHealth(check) {
       <small>último ok: ${escapeHtml(lastSuccess)}</small>
     </div>
   `;
+}
+
+function renderAlerts(alerts) {
+  if (!alertsList) return;
+  if (!alerts || alerts.length === 0) {
+    alertsList.textContent = 'Sin alertas activas.';
+    return;
+  }
+
+  alertsList.innerHTML = alerts.map(alert => `
+    <div class="alert-item ${escapeHtml(alert.severity)}">
+      <strong>${escapeHtml(alert.agentName)}</strong>
+      <span>${escapeHtml(alert.message)}</span>
+      <small>${escapeHtml(alert.detail || '')}</small>
+    </div>
+  `).join('');
 }
 
 function renderActionsStatus() {

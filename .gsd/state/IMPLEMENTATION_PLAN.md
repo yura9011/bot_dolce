@@ -71,6 +71,7 @@
   - Bot down, dashboard down, WhatsApp disconnected si disponible
   - Handoff > 10 minutos
   - Mute por mantenimiento por agente
+  - Progreso 2026-05-17: alertas visibles derivadas de health para `bot-down` y `dashboard-down`. Pendiente WhatsApp disconnected, handoff >10 minutos y mute.
 
 - [ ] **2.7 Metrics & Cost Visibility**
   - Mensajes recibidos/enviados

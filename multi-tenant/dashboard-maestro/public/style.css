@@ -98,6 +98,32 @@ main {
   line-height: 1.4;
 }
 
+.alerts-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.alert-item {
+  display: grid;
+  gap: 3px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+}
+
+.alert-item.critical {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: var(--danger);
+}
+
+.alert-item small {
+  color: var(--muted);
+}
+
 .status-dot {
   width: 14px;
   height: 14px;
