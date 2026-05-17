@@ -10,6 +10,8 @@
 **Phase**: Multi-Tenant Fase 2 - Dashboard Maestro MVP
 **Last Updated**: 2026-05-17
 
+> **Última sesión (2026-05-17)**: Se agregó agente `demo-local` en bot_testing VPS para clientes potenciales. Se parametrizó `getMensajeBienvenida()` en `flujos.js` para soportar `agentInfo` por agente. Fix: `express.static` con ruta absoluta en dashboard-humano-v2/server.js. Agente demo corriendo en API 5010, dashboard 5011, WhatsApp 11 7145-8944. Documentado en STATE.md y HANDOFF.md.
+
 ---
 
 ## 🚨 Milestone Activo: Dashboard Maestro MVP

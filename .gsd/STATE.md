@@ -4,6 +4,29 @@
 
 ## Last Session Summary
 
+Sesión deploy demo-local: se agregó instancia demo en bot_testing (VPS) para clientes potenciales.
+
+### Cambios Realizados
+- **`config/agents.json`**: Nuevo agente `demo-local` (puertos API 5010, dashboard 5011), sin catálogo, admin solo si se configura
+- **`flujos.js`**: `getMensajeBienvenida()` parametrizada con `agentInfo` opcional — si no se pasa usa valores hardcodeados actuales (compatible con Santa Ana/Asturias)
+- **`lib/agent-manager.js`**: Pasa `this.config.info` al llamar a `getMensajeBienvenida()`
+- **`dashboard-humano-v2/server.js`**: Fix `express.static('public')` → usa `path.join(__dirname, 'public')` (ruta absoluta) para que funcione cuando el dashboard es lanzado como hijo del orquestador
+
+### Deploy en VPS
+- `bot_testing` corriendo en PM2 como `bot-demo-local`
+- Dashboard accesible en `http://2.24.89.243:5011`
+- Número WhatsApp: 11 7145-8944
+- Sesión aislada: `.wwebjs_auth_testing/demo-session/`
+- Catalog: no tiene (demo de sistema, no de cotillón)
+
+### Para agregar un nuevo agente demo en el futuro
+1. Agregar entrada en `config/agents.json`
+2. Crear directorio `data/{agent-id}/` y `logs/{agent-id}/` (se crean solos al iniciar)
+3. Para que no herede admins del `.env`, crear `data/{agent-id}/admin-numbers.json` con `{"admins":[]}`
+4. En VPS: `git pull`, crear PM2, escanear QR
+
+## Last Session Summary (anterior)
+
 Sesión `/interrógame` sobre la evolución multi-tenant y el Dashboard Maestro.
 
 ### Decisiones Tomadas

@@ -74,6 +74,21 @@ data/santa-ana/             ← Runtime data (NO EDITAR, está en .gitignore)
 
 ---
 
+## 📌 AGENTES ESPECIALES
+
+### demo-local (testing VPS)
+- **Propósito**: Demo para clientes potenciales probar el bot
+- **ID**: `demo-local` | **Puertos**: API 5010, Dashboard 5011
+- **WhatsApp**: 11 7145-8944 | Sesión: `.wwebjs_auth_testing/demo-session/`
+- **Sin catálogo** (no es un cotillón real)
+- **Admin numbers**: Si querés que NO herede admins del `.env`, creá `data/{agent-id}/admin-numbers.json` con `{"admins":[]}`
+- Dashboard: `http://2.24.89.243:5011`
+
+### Fix conocido: express.static en dashboard-humano-v2
+`dashboard-humano-v2/server.js` usa `path.join(__dirname, 'public')` en vez de `'public'` a secas. Si no, cuando el orquestador lanza el dashboard como proceso hijo, el cwd no es `dashboard-humano-v2/` y no encuentra la carpeta `public/`.
+
+---
+
 ## ⚠️ ERRORES COMETIDOS POR AGENTES ANTERIORES (no los repitas)
 
 | Error | Consecuencia | Cómo evitarlo |
