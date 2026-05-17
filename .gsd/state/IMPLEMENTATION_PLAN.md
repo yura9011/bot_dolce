@@ -31,12 +31,13 @@
 
 ### Tareas Actuales
 
-- [ ] **2.1 App Skeleton**
+- [x] **2.1 App Skeleton**
   - Crear `multi-tenant/dashboard-maestro/` como app Express + Socket.IO independiente
   - Puerto configurable
   - Acceso interno autenticado
   - No reemplazar `dashboard-central.js`
-  - Progreso 2026-05-17: skeleton local creado con Express + Socket.IO, puerto `DASHBOARD_MAESTRO_PORT`, UI estática, endpoint `/health` y README. Auth interna queda pendiente para completar la aceptación completa del task.
+  - Progreso 2026-05-17: skeleton local creado con Express + Socket.IO, puerto `DASHBOARD_MAESTRO_PORT`, UI estática, endpoint `/health` y README.
+  - Progreso 2026-05-17: HTTP Basic Auth agregado con `DASHBOARD_MAESTRO_USER` / `DASHBOARD_MAESTRO_PASS`; `/health` queda libre para monitoreo.
 
 - [ ] **2.2 Agent Registry Adapter**
   - Leer agentes existentes sin mutar configuración

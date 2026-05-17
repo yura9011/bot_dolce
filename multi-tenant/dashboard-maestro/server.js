@@ -16,8 +16,30 @@ const io = socketIo(server, {
 
 const PORT = parseInt(process.env.DASHBOARD_MAESTRO_PORT, 10) || 3050;
 const REFRESH_INTERVAL_MS = parseInt(process.env.DASHBOARD_MAESTRO_REFRESH_MS, 10) || 300000;
+const DASHBOARD_USER = process.env.DASHBOARD_MAESTRO_USER || 'admin';
+const DASHBOARD_PASS = process.env.DASHBOARD_MAESTRO_PASS || 'admin123';
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  if (req.path === '/health') return next();
+  if (req.path.startsWith('/socket.io')) return next();
+
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Basic ')) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Dashboard Maestro"');
+    return res.status(401).send('Autenticación requerida');
+  }
+
+  const [user, pass] = Buffer.from(auth.slice(6), 'base64').toString().split(':');
+  if (user !== DASHBOARD_USER || pass !== DASHBOARD_PASS) {
+    res.setHeader('WWW-Authenticate', 'Basic realm="Dashboard Maestro"');
+    return res.status(401).send('Credenciales incorrectas');
+  }
+
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 async function getRegistryPayload() {

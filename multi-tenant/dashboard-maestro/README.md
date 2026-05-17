@@ -5,6 +5,7 @@ App interna para monitorear agentes existentes sin reemplazar `dashboard-central
 ## Alcance de esta etapa
 
 - Servidor Express + Socket.IO independiente.
+- Acceso interno con HTTP Basic Auth.
 - UI estática desktop-first.
 - Endpoint propio `GET /health`.
 - Adapter read-only que lee `config/agents.json`.
@@ -46,6 +47,11 @@ $env:DASHBOARD_MAESTRO_PORT=3050; npm start
 
 Default local: `http://localhost:3050`
 
+Credenciales default para local:
+
+- usuario: `admin`
+- contraseña: `admin123`
+
 ## Endpoints
 
 - `GET /health`: estado del Dashboard Maestro.
@@ -54,6 +60,8 @@ Default local: `http://localhost:3050`
 ## Variables
 
 - `DASHBOARD_MAESTRO_PORT`: puerto HTTP. Default `3050`.
+- `DASHBOARD_MAESTRO_USER`: usuario de HTTP Basic Auth. Default `admin`.
+- `DASHBOARD_MAESTRO_PASS`: contraseña de HTTP Basic Auth. Default `admin123`.
 - `DASHBOARD_MAESTRO_REFRESH_MS`: intervalo de refresh por WebSocket. Default `300000` ms.
 - `DASHBOARD_MAESTRO_HEALTH_TIMEOUT_MS`: timeout por check HTTP. Default `2500` ms.
 - `AGENTS_CONFIG_PATH`: path alternativo para leer agentes. Default `config/agents.json` del repo.
@@ -61,4 +69,4 @@ Default local: `http://localhost:3050`
 
 ## Seguridad
 
-Esta primera etapa solo lee configuración y no ejecuta acciones. Antes de usarlo fuera de local/testing, agregar acceso interno autenticado según el plan del MVP.
+Esta etapa solo lee configuración y no ejecuta acciones. Antes de usarlo fuera de local/testing, definir `DASHBOARD_MAESTRO_USER` y `DASHBOARD_MAESTRO_PASS` con credenciales no default.
