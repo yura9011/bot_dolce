@@ -4,6 +4,7 @@ const path = require('path');
 const socketIo = require('socket.io');
 const { readAgents } = require('./lib/agent-registry');
 const { listAuditEvents, recordAuditEvent } = require('./lib/audit-log');
+const { getBackupConfig, runBackupNow } = require('./lib/backup-control');
 const { collectAgentsHealth } = require('./lib/health-collector');
 const { getPm2Config, resolveProcessName, runPm2Action, validateActionInput } = require('./lib/pm2-control');
 
@@ -102,6 +103,10 @@ app.get('/api/actions/config', (req, res) => {
   res.json(getPm2Config());
 });
 
+app.get('/api/backups/config', (req, res) => {
+  res.json(getBackupConfig());
+});
+
 app.get('/api/audit-events', (req, res) => {
   const limit = parseInt(req.query.limit, 10) || 50;
   res.json({ events: listAuditEvents(limit) });
@@ -161,6 +166,34 @@ app.post('/api/agents/:id/actions', async (req, res) => {
       processName: error.processName || null,
       audit
     });
+  }
+});
+
+app.post('/api/backups/now', async (req, res) => {
+  try {
+    const result = await runBackupNow();
+    const audit = recordAuditEvent({
+      user: getAuthUser(req),
+      ip: req.ip,
+      action: 'backup-now',
+      target: 'system',
+      result: 'success',
+      message: `backup script ${result.scriptPath}`
+    });
+
+    res.json({ success: true, ...result, audit });
+  } catch (error) {
+    const audit = recordAuditEvent({
+      user: getAuthUser(req),
+      ip: req.ip,
+      action: 'backup-now',
+      target: 'system',
+      result: error.code === 'BACKUP_DISABLED' ? 'disabled' : 'error',
+      error: error.stderr || error.message
+    });
+
+    const status = error.code === 'BACKUP_DISABLED' ? 403 : 500;
+    res.status(status).json({ error: error.message, audit });
   }
 });
 

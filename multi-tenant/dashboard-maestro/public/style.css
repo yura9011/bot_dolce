@@ -255,6 +255,17 @@ td {
   cursor: not-allowed;
 }
 
+.secondary-action {
+  margin-top: 12px;
+  min-height: 34px;
+  background: var(--surface-strong);
+}
+
+.secondary-action:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
 .audit-list {
   display: grid;
   gap: 10px;

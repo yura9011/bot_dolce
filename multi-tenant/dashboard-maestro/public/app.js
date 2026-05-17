@@ -6,10 +6,14 @@ const lastRefresh = document.getElementById('lastRefresh');
 const refreshButton = document.getElementById('refreshButton');
 const actionsStatus = document.getElementById('actionsStatus');
 const auditList = document.getElementById('auditList');
+const backupNowButton = document.getElementById('backupNowButton');
 
 let actionsConfig = {
   enabled: false,
   environment: 'local'
+};
+let backupConfig = {
+  enabled: false
 };
 
 function renderAgents(payload) {
@@ -106,6 +110,10 @@ function renderActionsStatus() {
   actionsStatus.textContent = actionsConfig.enabled
     ? `Controles PM2 habilitados · ${actionsConfig.environment}`
     : 'Controles PM2 deshabilitados';
+
+  if (backupNowButton) {
+    backupNowButton.disabled = !backupConfig.enabled;
+  }
 }
 
 function renderAgentActions(agent) {
@@ -137,8 +145,12 @@ function renderAudit(events) {
 }
 
 async function loadActionsConfig() {
-  const response = await fetch('/api/actions/config');
-  actionsConfig = await response.json();
+  const [actionsResponse, backupResponse] = await Promise.all([
+    fetch('/api/actions/config'),
+    fetch('/api/backups/config')
+  ]);
+  actionsConfig = await actionsResponse.json();
+  backupConfig = await backupResponse.json();
   renderActionsStatus();
 }
 
@@ -174,6 +186,24 @@ async function runAction(button) {
   }
 }
 
+async function runBackupNow() {
+  if (!window.confirm('Confirmar backup now')) return;
+
+  backupNowButton.disabled = true;
+  try {
+    const response = await fetch('/api/backups/now', { method: 'POST' });
+    const payload = await response.json();
+    if (!response.ok) {
+      window.alert(payload.error || 'Backup rechazado');
+    }
+    await loadAudit();
+  } catch (error) {
+    window.alert(error.message);
+  } finally {
+    backupNowButton.disabled = !backupConfig.enabled;
+  }
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -199,6 +229,10 @@ agentsBody.addEventListener('click', (event) => {
   if (!button) return;
   runAction(button);
 });
+
+if (backupNowButton) {
+  backupNowButton.addEventListener('click', runBackupNow);
+}
 
 socket.on('agents:update', renderAgents);
 socket.on('agents:error', error => renderError(error.message || 'Error cargando agentes'));

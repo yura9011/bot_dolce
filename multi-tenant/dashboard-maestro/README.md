@@ -13,7 +13,7 @@ App interna para monitorear agentes existentes sin reemplazar `dashboard-central
 - Tabla de agentes con id, nombre, enabled, puertos y paths.
 - Health collection read-only para bot API y dashboard humano, visible en la tabla.
 - Botón "Actualizar ahora".
-- Semáforo general, auditoría en memoria y controles PM2 server-side deshabilitados por defecto.
+- Semáforo general, auditoría en memoria, controles PM2 y backup-now server-side deshabilitados por defecto.
 
 No implementa backup-now, restore desde UI, SQLite ni deploy a VPS.
 
@@ -59,7 +59,9 @@ Credenciales default para local:
 - `GET /api/agents`: lectura normalizada de `config/agents.json` con checks HTTP read-only.
 - `GET /api/actions/config`: configuración visible de controles PM2.
 - `GET /api/audit-events`: últimos eventos de auditoría en memoria.
+- `GET /api/backups/config`: configuración visible de backup-now.
 - `POST /api/agents/:id/actions`: ejecuta acción PM2 allowlisted si `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true`.
+- `POST /api/backups/now`: ejecuta script de backup explícito si `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true`.
 
 Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `lastError`. El último check exitoso se mantiene en memoria mientras el proceso del Maestro esté corriendo.
 
@@ -74,10 +76,13 @@ Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `las
 - `DASHBOARD_MAESTRO_PM2_ENV`: sufijo de naming para PM2. Usar `testing` en `bot_testing`.
 - `DASHBOARD_MAESTRO_PM2_BIN`: binario PM2. Default `pm2`.
 - `DASHBOARD_MAESTRO_PM2_TIMEOUT_MS`: timeout por acción PM2. Default `15000` ms.
+- `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW`: habilita backup-now real. Default deshabilitado.
+- `DASHBOARD_MAESTRO_BACKUP_SCRIPT`: script de backup a ejecutar. Debe apuntar a testing, no a producción.
+- `DASHBOARD_MAESTRO_BACKUP_TIMEOUT_MS`: timeout de backup-now. Default `120000` ms.
 - `AGENTS_CONFIG_PATH`: path alternativo para leer agentes. Default `config/agents.json` del repo.
 - `CLIENTS_DIR`: path alternativo para buscar futuros `clients/*/agents.json`. Default `multi-tenant/clients`.
 - `CORS_ORIGIN`: origen permitido para Socket.IO. Default `*`.
 
 ## Seguridad
 
-Las acciones PM2 están deshabilitadas por defecto. Para testing, habilitarlas explícitamente con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true` y `DASHBOARD_MAESTRO_PM2_ENV=testing`. Antes de usarlo fuera de local/testing, definir `DASHBOARD_MAESTRO_USER` y `DASHBOARD_MAESTRO_PASS` con credenciales no default.
+Las acciones PM2 y backup-now están deshabilitadas por defecto. Para testing, habilitarlas explícitamente con `DASHBOARD_MAESTRO_ENABLE_PM2_CONTROL=true`, `DASHBOARD_MAESTRO_PM2_ENV=testing`, `DASHBOARD_MAESTRO_ENABLE_BACKUP_NOW=true` y un `DASHBOARD_MAESTRO_BACKUP_SCRIPT` de testing. Antes de usarlo fuera de local/testing, definir `DASHBOARD_MAESTRO_USER` y `DASHBOARD_MAESTRO_PASS` con credenciales no default.
