@@ -7,6 +7,7 @@
 - [ ] Login con credenciales locales o variables `DASHBOARD_MAESTRO_USER` / `DASHBOARD_MAESTRO_PASS`.
 - [ ] Ver agentes de `config/agents.json`.
 - [ ] Confirmar que `santa-ana` y `asturias` aparecen con puertos y paths.
+- [ ] Confirmar que agentes deshabilitados por `enabledOverrides` no generan alertas ni semáforo crítico.
 - [ ] Confirmar que `/health` responde sin auth.
 - [ ] Confirmar que `/api/agents` requiere auth.
 - [ ] Confirmar que Socket.IO sin auth no permite handshake.

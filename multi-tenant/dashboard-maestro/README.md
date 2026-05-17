@@ -95,10 +95,13 @@ Las métricas IA/costo quedan como `Sin datos` hasta instrumentar tokens, llamad
 
 ## Overrides de testing
 
-`config/agents.override.json` permite adaptar testing sin mutar `config/agents.json`. Los procesos PM2 reales de testing pueden declararse así:
+`config/agents.override.json` permite adaptar testing sin mutar `config/agents.json`. También puede deshabilitar agentes que no estén activos en ese entorno para que no afecten el semáforo general:
 
 ```json
 {
+  "enabledOverrides": {
+    "asturias": false
+  },
   "portOverrides": {
     "santa-ana": { "api": 4011, "dashboard": 4001 },
     "asturias": { "api": 4012, "dashboard": 4003 }

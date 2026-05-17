@@ -58,6 +58,15 @@ async function checkHttp(url, options = {}) {
 }
 
 async function collectAgentHealth(agent) {
+  if (!agent.enabled) {
+    return {
+      botApi: disabledHealth(),
+      humanDashboard: disabledHealth(),
+      whatsapp: { status: 'disabled', detail: 'Agente deshabilitado' },
+      overall: 'disabled'
+    };
+  }
+
   const apiPort = agent.ports?.api;
   const dashboardPort = agent.ports?.dashboard;
 
@@ -147,6 +156,19 @@ function summarizeHealth(checks) {
   if (checks.some(check => check.status === 'down')) return 'critical';
   if (checks.some(check => check.status === 'degraded' || check.status === 'unknown')) return 'warning';
   return 'ok';
+}
+
+function disabledHealth() {
+  return {
+    status: 'disabled',
+    httpStatus: null,
+    responseTimeMs: null,
+    checkedAt: new Date().toISOString(),
+    lastSuccessfulCheck: null,
+    error: null,
+    lastError: null,
+    body: null
+  };
 }
 
 module.exports = {

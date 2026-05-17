@@ -71,8 +71,9 @@ async function getRegistryPayload() {
 }
 
 function summarizeOverallHealth(agents) {
-  if (agents.some(agent => agent.health?.overall === 'critical')) return 'critical';
-  if (agents.some(agent => agent.health?.overall === 'warning')) return 'warning';
+  const enabledAgents = agents.filter(agent => agent.enabled);
+  if (enabledAgents.some(agent => agent.health?.overall === 'critical')) return 'critical';
+  if (enabledAgents.some(agent => agent.health?.overall === 'warning')) return 'warning';
   return 'ok';
 }
 

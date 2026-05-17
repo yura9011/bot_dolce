@@ -70,10 +70,12 @@ function readAgentsFromFile(configPath, source, overrides = null) {
 function applyAgentOverride(agent, overrides) {
   const portOverride = overrides?.portOverrides?.[agent.id];
   const processOverride = overrides?.processOverrides?.[agent.id];
-  if (!portOverride && !processOverride) return agent;
+  const enabledOverride = overrides?.enabledOverrides?.[agent.id];
+  if (!portOverride && !processOverride && typeof enabledOverride !== 'boolean') return agent;
 
   return {
     ...agent,
+    enabled: typeof enabledOverride === 'boolean' ? enabledOverride : agent.enabled,
     ports: {
       ...(agent.ports || {}),
       ...(portOverride || {})
@@ -93,6 +95,7 @@ function readOverrides(overridePath) {
   const raw = fs.readFileSync(overridePath, 'utf8');
   const parsed = JSON.parse(raw);
   return {
+    enabledOverrides: parsed.enabledOverrides || null,
     portOverrides: parsed.portOverrides || null,
     processOverrides: parsed.processOverrides || null
   };

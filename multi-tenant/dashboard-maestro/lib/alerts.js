@@ -4,6 +4,8 @@ function buildAlerts(agents, options = {}) {
   const isMuted = options.isMuted || (() => false);
 
   for (const agent of agents) {
+    if (!agent.enabled) continue;
+
     const muted = isMuted(agent.id);
 
     if (agent.health?.botApi?.status === 'down') {
