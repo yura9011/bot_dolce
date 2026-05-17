@@ -1,14 +1,21 @@
-function buildAlerts(agents) {
+function buildAlerts(agents, options = {}) {
   const alerts = [];
   const now = new Date().toISOString();
+  const isMuted = options.isMuted || (() => false);
 
   for (const agent of agents) {
+    const muted = isMuted(agent.id);
+
     if (agent.health?.botApi?.status === 'down') {
-      alerts.push(createAlert(agent, 'critical', 'bot-down', 'Bot API no responde', agent.health.botApi.error, now));
+      alerts.push(createAlert(agent, 'critical', 'bot-down', 'Bot API no responde', agent.health.botApi.error, now, muted));
     }
 
     if (agent.health?.humanDashboard?.status === 'down') {
-      alerts.push(createAlert(agent, 'critical', 'dashboard-down', 'Dashboard humano no responde', agent.health.humanDashboard.error, now));
+      alerts.push(createAlert(agent, 'critical', 'dashboard-down', 'Dashboard humano no responde', agent.health.humanDashboard.error, now, muted));
+    }
+
+    if (agent.health?.whatsapp?.status === 'disconnected') {
+      alerts.push(createAlert(agent, 'critical', 'whatsapp-disconnected', 'WhatsApp desconectado', agent.health.whatsapp.detail, now, muted));
     }
 
     if ((agent.handoffs?.criticalCount || 0) > 0) {
@@ -18,7 +25,8 @@ function buildAlerts(agents) {
         'handoff-waiting',
         'Handoff esperando más de 10 minutos',
         `${agent.handoffs.criticalCount} handoff(s) crítico(s)`,
-        now
+        now,
+        muted
       ));
     }
   }
@@ -26,7 +34,7 @@ function buildAlerts(agents) {
   return alerts;
 }
 
-function createAlert(agent, severity, type, message, detail, timestamp) {
+function createAlert(agent, severity, type, message, detail, timestamp, muted = false) {
   return {
     id: `${agent.id}:${type}`,
     agentId: agent.id,
@@ -37,7 +45,7 @@ function createAlert(agent, severity, type, message, detail, timestamp) {
     detail: detail || null,
     firstSeen: timestamp,
     lastSeen: timestamp,
-    muted: false,
+    muted,
     resolvedAt: null
   };
 }

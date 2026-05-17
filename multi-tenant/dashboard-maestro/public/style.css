@@ -120,6 +120,12 @@ main {
   color: var(--danger);
 }
 
+.alert-item.muted-alert {
+  background: #f3f4f6;
+  border-color: var(--line);
+  color: var(--muted);
+}
+
 .alert-item small {
   color: var(--muted);
 }

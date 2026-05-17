@@ -15,6 +15,8 @@ App interna para monitorear agentes existentes sin reemplazar `dashboard-central
 - Alertas visibles derivadas de health para bot API y dashboard humano caídos.
 - Métricas read-only desde `estadisticas.json`: mensajes recibidos/enviados y handoffs.
 - Handoffs pendientes read-only desde `pausas.json`, con alerta crítica si superan 10 minutos.
+- Estado WhatsApp si el bot API lo expone en `/status`; si no, queda como `unknown`.
+- Mute de mantenimiento por agente en memoria.
 - Botón "Actualizar ahora".
 - Semáforo general, auditoría en memoria, controles PM2 y backup-now server-side deshabilitados por defecto.
 
@@ -68,7 +70,7 @@ Credenciales default para local:
 
 Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `lastError`. El último check exitoso se mantiene en memoria mientras el proceso del Maestro esté corriendo.
 
-Las alertas actuales son derivadas de health collection y handoffs pendientes. Telegram y mute de mantenimiento quedan para etapas posteriores.
+Las alertas actuales son derivadas de health collection y handoffs pendientes. Telegram queda para etapas posteriores.
 
 Las métricas IA/costo quedan como `Sin datos` hasta instrumentar tokens, llamadas y precios.
 

@@ -20,6 +20,7 @@ let actionsConfig = {
 let backupConfig = {
   enabled: false
 };
+let mutedAgents = new Set();
 
 function renderAgents(payload) {
   const agents = payload.agents || [];
@@ -31,7 +32,7 @@ function renderAgents(payload) {
   renderActionsStatus();
 
   if (agents.length === 0) {
-    agentsBody.innerHTML = '<tr><td colspan="12">No hay agentes configurados.</td></tr>';
+    agentsBody.innerHTML = '<tr><td colspan="13">No hay agentes configurados.</td></tr>';
     return;
   }
 
@@ -50,6 +51,7 @@ function renderAgents(payload) {
       </td>
       <td>${renderHealth(agent.health && agent.health.botApi)}</td>
       <td>${renderHealth(agent.health && agent.health.humanDashboard)}</td>
+      <td>${renderWhatsapp(agent.health && agent.health.whatsapp)}</td>
       <td>${renderAgentMetrics(agent.metrics)}</td>
       <td>${renderHandoffs(agent.handoffs)}</td>
       <td>${agent.ports.api || '-'}</td>
@@ -67,7 +69,7 @@ function renderAgents(payload) {
 }
 
 function renderError(message) {
-  agentsBody.innerHTML = `<tr><td colspan="12" class="error">${escapeHtml(message)}</td></tr>`;
+  agentsBody.innerHTML = `<tr><td colspan="13" class="error">${escapeHtml(message)}</td></tr>`;
 }
 
 function renderGlobalStatus(health) {
@@ -122,12 +124,23 @@ function renderAlerts(alerts) {
   }
 
   alertsList.innerHTML = alerts.map(alert => `
-    <div class="alert-item ${escapeHtml(alert.severity)}">
+    <div class="alert-item ${escapeHtml(alert.severity)} ${alert.muted ? 'muted-alert' : ''}">
       <strong>${escapeHtml(alert.agentName)}</strong>
-      <span>${escapeHtml(alert.message)}</span>
+      <span>${escapeHtml(alert.message)}${alert.muted ? ' · mute' : ''}</span>
       <small>${escapeHtml(alert.detail || '')}</small>
     </div>
   `).join('');
+}
+
+function renderWhatsapp(whatsapp) {
+  if (!whatsapp) return '<span class="health unknown">Unknown</span>';
+  const statusClass = whatsapp.status === 'connected' ? 'up' : whatsapp.status === 'disconnected' ? 'down' : 'unknown';
+  return `
+    <div class="health-cell">
+      <span class="health ${statusClass}">${escapeHtml(whatsapp.status)}</span>
+      <small>${escapeHtml(whatsapp.detail || '')}</small>
+    </div>
+  `;
 }
 
 function renderMetricsSummary(metrics) {
@@ -176,12 +189,14 @@ function renderActionsStatus() {
 
 function renderAgentActions(agent) {
   const disabled = actionsConfig.enabled ? '' : 'disabled';
+  const muted = mutedAgents.has(agent.id);
   return `
     <div class="actions-cell">
       <button class="action-btn" data-agent-id="${escapeHtml(agent.id)}" data-target="bot" data-action="start" ${disabled}>Start bot</button>
       <button class="action-btn" data-agent-id="${escapeHtml(agent.id)}" data-target="bot" data-action="restart" ${disabled}>Restart bot</button>
       <button class="action-btn" data-agent-id="${escapeHtml(agent.id)}" data-target="bot" data-action="stop" ${disabled}>Stop bot</button>
       <button class="action-btn" data-agent-id="${escapeHtml(agent.id)}" data-target="dashboard" data-action="restart" ${disabled}>Restart dash</button>
+      <button class="action-btn" data-agent-id="${escapeHtml(agent.id)}" data-mute-action="${muted ? 'unmute' : 'mute'}">${muted ? 'Unmute alerts' : 'Mute alerts'}</button>
     </div>
   `;
 }
@@ -210,6 +225,12 @@ async function loadActionsConfig() {
   actionsConfig = await actionsResponse.json();
   backupConfig = await backupResponse.json();
   renderActionsStatus();
+}
+
+async function loadMutes() {
+  const response = await fetch('/api/maintenance-mutes');
+  const payload = await response.json();
+  mutedAgents = new Set((payload.mutes || []).map(item => item.agentId));
 }
 
 async function loadAudit() {
@@ -242,6 +263,24 @@ async function runAction(button) {
   } finally {
     button.disabled = !actionsConfig.enabled;
   }
+}
+
+async function toggleMute(button) {
+  const agentId = button.dataset.agentId;
+  const muted = button.dataset.muteAction === 'mute';
+
+  const response = await fetch(`/api/agents/${encodeURIComponent(agentId)}/maintenance-mute`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ muted, reason: 'maintenance' })
+  });
+  const payload = await response.json();
+  if (!response.ok) {
+    window.alert(payload.error || 'No se pudo actualizar mute');
+  }
+  await loadMutes();
+  await loadAudit();
+  await refreshAgents();
 }
 
 async function runBackupNow() {
@@ -283,6 +322,12 @@ refreshButton.addEventListener('click', () => {
 });
 
 agentsBody.addEventListener('click', (event) => {
+  const muteButton = event.target.closest('[data-mute-action]');
+  if (muteButton) {
+    toggleMute(muteButton);
+    return;
+  }
+
   const button = event.target.closest('[data-action]');
   if (!button) return;
   runAction(button);
@@ -313,6 +358,7 @@ refreshAgents();
 loadActionsConfig().catch(error => {
   if (actionsStatus) actionsStatus.textContent = error.message;
 });
+loadMutes().catch(() => {});
 loadAudit().catch(error => {
   if (auditList) auditList.textContent = error.message;
 });

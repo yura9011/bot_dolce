@@ -8,6 +8,7 @@ const { buildAlerts } = require('./lib/alerts');
 const { getBackupConfig, runBackupNow } = require('./lib/backup-control');
 const { collectAgentsHandoffs } = require('./lib/handoff-collector');
 const { collectAgentsHealth } = require('./lib/health-collector');
+const { getMaintenanceMutes, isAgentMuted, setAgentMute } = require('./lib/maintenance-mute');
 const { collectAgentsMetrics } = require('./lib/metrics-collector');
 const { getPm2Config, resolveProcessName, runPm2Action, validateActionInput } = require('./lib/pm2-control');
 
@@ -59,7 +60,8 @@ async function getRegistryPayload() {
   return {
     ...registry,
     agents,
-    alerts: buildAlerts(agents),
+    alerts: buildAlerts(agents, { isMuted: isAgentMuted }),
+    maintenanceMutes: getMaintenanceMutes(),
     metrics: summarizeMetrics(agents),
     health: {
       overall: summarizeOverallHealth(agents),
@@ -139,6 +141,10 @@ app.get('/api/audit-events', (req, res) => {
   res.json({ events: listAuditEvents(limit) });
 });
 
+app.get('/api/maintenance-mutes', (req, res) => {
+  res.json({ mutes: getMaintenanceMutes() });
+});
+
 app.post('/api/agents/:id/actions', async (req, res) => {
   const { target, action } = req.body || {};
 
@@ -194,6 +200,24 @@ app.post('/api/agents/:id/actions', async (req, res) => {
       audit
     });
   }
+});
+
+app.post('/api/agents/:id/maintenance-mute', (req, res) => {
+  const muted = Boolean(req.body?.muted);
+  const result = setAgentMute(req.params.id, muted, {
+    reason: req.body?.reason || 'maintenance'
+  });
+  const audit = recordAuditEvent({
+    user: getAuthUser(req),
+    ip: req.ip,
+    action: muted ? 'mute-alerts' : 'unmute-alerts',
+    target: 'agent',
+    agentId: req.params.id,
+    result: 'success',
+    message: result.reason || null
+  });
+
+  res.json({ success: true, mute: result, audit });
 });
 
 app.post('/api/backups/now', async (req, res) => {

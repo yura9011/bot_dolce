@@ -17,7 +17,9 @@ async function checkHttp(url, options = {}) {
     const checkedAt = new Date().toISOString();
     const error = response.ok ? null : `HTTP ${response.status}`;
 
+    let body = null;
     if (response.ok) {
+      body = await readJsonBody(response);
       lastSuccessfulChecks.set(url, checkedAt);
       lastErrors.delete(url);
     } else {
@@ -31,7 +33,8 @@ async function checkHttp(url, options = {}) {
       checkedAt,
       lastSuccessfulCheck: lastSuccessfulChecks.get(url) || null,
       error,
-      lastError: lastErrors.get(url) || null
+      lastError: lastErrors.get(url) || null,
+      body
     };
   } catch (error) {
     const message = error.name === 'AbortError' ? `Timeout after ${timeoutMs}ms` : error.message;
@@ -44,7 +47,8 @@ async function checkHttp(url, options = {}) {
       checkedAt: new Date().toISOString(),
       lastSuccessfulCheck: lastSuccessfulChecks.get(url) || null,
       error: message,
-      lastError: lastErrors.get(url) || null
+      lastError: lastErrors.get(url) || null,
+      body: null
     };
   } finally {
     clearTimeout(timeout);
@@ -67,8 +71,47 @@ async function collectAgentHealth(agent) {
   return {
     botApi,
     humanDashboard,
+    whatsapp: parseWhatsappStatus(botApi.body),
     overall: summarizeHealth([botApi, humanDashboard])
   };
+}
+
+function parseWhatsappStatus(statusBody) {
+  if (!statusBody) {
+    return { status: 'unknown', detail: 'Bot API sin status disponible' };
+  }
+
+  if (typeof statusBody.whatsappConnected === 'boolean') {
+    return {
+      status: statusBody.whatsappConnected ? 'connected' : 'disconnected',
+      detail: 'whatsappConnected'
+    };
+  }
+
+  if (typeof statusBody.connected === 'boolean') {
+    return {
+      status: statusBody.connected ? 'connected' : 'disconnected',
+      detail: 'connected'
+    };
+  }
+
+  if (typeof statusBody.sessionState === 'string') {
+    const normalized = statusBody.sessionState.toLowerCase();
+    return {
+      status: normalized.includes('connect') || normalized === 'ready' ? 'connected' : 'disconnected',
+      detail: statusBody.sessionState
+    };
+  }
+
+  return { status: 'unknown', detail: 'No expuesto por /status' };
+}
+
+async function readJsonBody(response) {
+  try {
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
 }
 
 async function collectAgentsHealth(agents) {
@@ -98,5 +141,6 @@ function summarizeHealth(checks) {
 
 module.exports = {
   checkHttp,
-  collectAgentsHealth
+  collectAgentsHealth,
+  parseWhatsappStatus
 };
