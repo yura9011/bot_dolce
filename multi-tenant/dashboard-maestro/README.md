@@ -9,6 +9,7 @@ App interna para monitorear agentes existentes sin reemplazar `dashboard-central
 - UI estática desktop-first.
 - Endpoint propio `GET /health`.
 - Adapter read-only que lee `config/agents.json`.
+- Compatibilidad read-only con futuros `multi-tenant/clients/*/agents.json`.
 - Tabla de agentes con id, nombre, enabled, puertos y paths.
 - Health collection read-only para bot API y dashboard humano.
 - Botón "Actualizar ahora".
@@ -67,6 +68,7 @@ Los checks incluyen `status`, `checkedAt`, `lastSuccessfulCheck`, `error` y `las
 - `DASHBOARD_MAESTRO_REFRESH_MS`: intervalo de refresh por WebSocket. Default `300000` ms.
 - `DASHBOARD_MAESTRO_HEALTH_TIMEOUT_MS`: timeout por check HTTP. Default `2500` ms.
 - `AGENTS_CONFIG_PATH`: path alternativo para leer agentes. Default `config/agents.json` del repo.
+- `CLIENTS_DIR`: path alternativo para buscar futuros `clients/*/agents.json`. Default `multi-tenant/clients`.
 - `CORS_ORIGIN`: origen permitido para Socket.IO. Default `*`.
 
 ## Seguridad

@@ -12,13 +12,14 @@ function renderAgents(payload) {
   renderGlobalStatus(payload.health);
 
   if (agents.length === 0) {
-    agentsBody.innerHTML = '<tr><td colspan="8">No hay agentes configurados.</td></tr>';
+    agentsBody.innerHTML = '<tr><td colspan="9">No hay agentes configurados.</td></tr>';
     return;
   }
 
   agentsBody.innerHTML = agents.map(agent => `
     <tr>
       <td><strong>${escapeHtml(agent.id)}</strong></td>
+      <td>${escapeHtml(agent.clientId || 'actual')}</td>
       <td>
         <strong>${escapeHtml(agent.name)}</strong><br>
         <span>${escapeHtml(agent.info.telefono || 'Sin teléfono')}</span>
@@ -44,7 +45,7 @@ function renderAgents(payload) {
 }
 
 function renderError(message) {
-  agentsBody.innerHTML = `<tr><td colspan="8" class="error">${escapeHtml(message)}</td></tr>`;
+  agentsBody.innerHTML = `<tr><td colspan="9" class="error">${escapeHtml(message)}</td></tr>`;
 }
 
 function renderGlobalStatus(health) {

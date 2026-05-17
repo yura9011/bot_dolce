@@ -39,11 +39,12 @@
   - Progreso 2026-05-17: skeleton local creado con Express + Socket.IO, puerto `DASHBOARD_MAESTRO_PORT`, UI estática, endpoint `/health` y README.
   - Progreso 2026-05-17: HTTP Basic Auth agregado con `DASHBOARD_MAESTRO_USER` / `DASHBOARD_MAESTRO_PASS`; `/health` queda libre para monitoreo.
 
-- [ ] **2.2 Agent Registry Adapter**
+- [x] **2.2 Agent Registry Adapter**
   - Leer agentes existentes sin mutar configuración
   - Mostrar cliente/agente, puertos API/dashboard y enabled/disabled
   - Preparar compatibilidad futura con `/clients/...`
   - Progreso 2026-05-17: adapter read-only creado para `config/agents.json`; UI lista id, nombre, enabled, puertos y paths.
+  - Progreso 2026-05-17: adapter preparado para sumar futuros `multi-tenant/clients/*/agents.json` read-only, con `clientId` y metadatos de fuente.
 
 - [ ] **2.3 Health Collection**
   - Detectar API bot up/down
